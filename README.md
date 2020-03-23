@@ -10,7 +10,9 @@ We have to be quick, so try using as much abstractions as possible.
 
 ## Running the Project.
 
-To run this project first run `yarn`.
+To run this project first install dependencies with `yarn`.
+
+After that run `yarn run dev`
 
 Once running, the Keystone Admin UI is reachable via `localhost:3000/admin`.
 
