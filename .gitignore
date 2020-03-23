@@ -46,6 +46,11 @@ node_modules/
 jspm_packages/
 node_modules/*
 
+# Dist directory
+
+dist/
+dist/*
+
 # TypeScript v1 declaration files
 typings/
 
