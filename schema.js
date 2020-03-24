@@ -23,10 +23,10 @@ const ClinicSchema = {
 
 const AddressNodeSchema = {
     fields: {
-        id: {
+        addressId: {
             type: Integer,
             isRequired: true,
-            label: 'Идентификатор'
+            label: 'Идентификатор в адресном реестре'
         },
         nameRu: {
             type: Text,
@@ -49,6 +49,16 @@ const AddressNodeSchema = {
         typeKgShort: {
             type: Text
         },
+        location: {
+            // Поле можно заполнить позже
+            type: Location,
+            googleMapsKey: GoogleMapsKey
+        },
+        parentId: {
+            type: Integer,
+            isRequired: true,
+            label: 'Родительский узел в адресном реестре'
+        }
     }
 };
 

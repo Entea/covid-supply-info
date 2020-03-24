@@ -1,3 +1,4 @@
+const { config } = require('dotenv');
 const { Keystone } = require('@keystonejs/keystone');
 const { PasswordAuthStrategy } = require('@keystonejs/auth-password');
 const { Text, Checkbox, Password } = require('@keystonejs/fields');
@@ -6,6 +7,7 @@ const { AdminUIApp } = require('@keystonejs/app-admin-ui');
 const { NextApp } = require('@keystonejs/app-next');
 const initialiseData = require('./initial-data');
 
+config();
 const { MongooseAdapter: Adapter } = require('@keystonejs/adapter-mongoose');
 
 // require our schema.js
