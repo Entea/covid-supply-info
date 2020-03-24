@@ -28,3 +28,16 @@ Keystone generates the admin UI automatically.
 
 ## Good luck!
 
+## Deployment
+```
+# Переходим в директорию с исходниками
+cd /opt/covid-supply
+# Обновляем исходники
+git pull
+# Устанавливаем зависимости
+yarn install
+# Собираем production-пакет
+yarn keystone build
+# Перезапускаем приложение
+systemctl restart keystone
+```
