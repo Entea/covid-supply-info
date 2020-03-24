@@ -12,6 +12,8 @@ services:
         entrypoint: "./start.sh"
         environment: 
             MONGO_URI: "mongodb://root:example@mongo:27017/"
+            ADMIN_USER: "admin@example.com"
+            ADMIN_PASSWORD: "admin322228"
         links: 
             - mongo
     mongo:

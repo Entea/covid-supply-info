@@ -1,4 +1,4 @@
-const {Relationship, Text, Checkbox, Slug, Location, Integer, Select} = require('@keystonejs/fields');
+const {Relationship, Text, Virtual, Slug, Location, Integer, Select} = require('@keystonejs/fields');
 const GoogleMapsKey = "AIzaSyDlGeu3w8Sy1VbEPmEV8ved8V34aszwIyU"
 
 const ClinicSchema = {
@@ -30,10 +30,13 @@ const NeedSchema = {
         count: {
             type: Integer,
             isRequired: true,
-            label: 'Сколько ннада'
+            label: 'Количество'
         },
+        needType: {type: Relationship, ref: 'NeedType'},
         clinic: {type: Relationship, ref: 'Clinic.needs'},
-        needType: {type: Relationship, ref: 'NeedType'}
+    },
+    labelResolver: item => {
+      return `${item['needType']} (${item.needType}) - ${item.count} в ${item.clinic}`
     }
 };
 
@@ -42,15 +45,15 @@ const NeedTypeSchema = {
         name: {
             type: Text,
             isRequired: true,
-            label: 'Шта'
+            label: 'Наименование'
         },
         unit: {
-            type: Select,
+            type: Text,
             isRequired: true,
-            label: 'Тип',
-            options: ['piece', 'kg', 'liter']
+            label: 'Единица измерения',
         }
-    }
+    },
+    labelResolver: item => `${item.name} (${item.unit})`,
 };
 
 const AddressNodeSchema = {
