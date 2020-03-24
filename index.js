@@ -25,6 +25,7 @@ let parameters = {
 };
 if (process.env.NODE_ENV === 'production') {
     parameters.sessionStore = new MongoStore({url: process.env.MONGO_URI});
+    parameters.secureCookies = false;
 }
 const keystone = new Keystone(parameters);
 
