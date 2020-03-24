@@ -50,19 +50,21 @@ async function * fetchChildren(soapClient, rowId) {
                 array[i].parentId = parseInt(rowId);
                 array[i].addressId = parseInt(array[i].id);
                 array[i].type = parseInt(array[i].type);
+
+                let id = array[i].id;
                 delete array[i].id;
+                delete array[i].nameEn;
 
                 yield array[i];
-                yield * fetchChildren(soapClient, array[i].id);
+                yield * fetchChildren(soapClient, id);
             }
         }
     }
 }
 
-// TODO: Не работает.
 async function toGraphqlMutation(data) {
-    return await fetchMutation(`mutation CreateNode($n: AddressNodeCreateInput) { 
-        createAddressNode(data: $n) { id }
+    return await fetchMutation(`mutation CreateNode($data: AddressNodeCreateInput) { 
+        createAddressNode(data: $data) { id }
     }`, {data});
 }
 
