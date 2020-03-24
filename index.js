@@ -5,6 +5,8 @@ const { Text, Checkbox, Password } = require('@keystonejs/fields');
 const { GraphQLApp } = require('@keystonejs/app-graphql');
 const { AdminUIApp } = require('@keystonejs/app-admin-ui');
 const { NextApp } = require('@keystonejs/app-next');
+const session = require('express-session');
+const MongoStore = require('connect-mongo')(session);
 const initialiseData = require('./initial-data');
 
 config();
@@ -16,12 +18,15 @@ const { ClinicSchema, OtherSchema, AddressNodeSchema } = require('./schema');
 
 const PROJECT_NAME = "covid-supply-info";
 
-
-const keystone = new Keystone({
-  name: PROJECT_NAME,
-  adapter: new Adapter(),
-  onConnect: initialiseData,
-});
+let parameters = {
+    name: PROJECT_NAME,
+    adapter: new Adapter(),
+    onConnect: initialiseData
+};
+if (process.env.NODE_ENV === 'production') {
+    parameters.sessionStore = new MongoStore({url: process.env.MONGO_URI});
+}
+const keystone = new Keystone(parameters);
 
 // Access control functions
 const userIsAdmin = ({ authentication: { item: user } }) => Boolean(user && user.isAdmin);
