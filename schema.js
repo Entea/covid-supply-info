@@ -1,6 +1,6 @@
 const { Text, Checkbox, Slug, Location, Integer } = require('@keystonejs/fields');
 
-const GoogleMapsKey = "AIzaSyDlGeu3w8Sy1VbEPmEV8ved8V34aszwIyU"
+const GoogleMapsKey = process.env.GOOGLE_API_KEY
 
 const ClinicSchema = {
   fields: {
@@ -16,7 +16,16 @@ const ClinicSchema = {
     },
     location: {
       type: Location,
-      googleMapsKey: GoogleMapsKey
+      googleMapsKey: GoogleMapsKey,
+      label: 'Адрес учреждения'
+    },
+    phone: {
+      type: Text,
+      label: 'Номер телефона'
+    },
+    email: {
+      type: Text,
+      label: 'E-mail'
     }
   }
 };
