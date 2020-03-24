@@ -16,7 +16,6 @@ async function main() {
     }, {secure: false});
 
     const functions = await soapClient.getAllFunctions();
-    console.log(functions);
 
     const topLevel = await soapClient.call({
         method: 'getOblastLevelUnits', params: {}
@@ -25,8 +24,19 @@ async function main() {
     const rows = topLevel.data.getOblastLevelUnitsResponse.return.item;
     let subItems = [];
 
-    for (const row of rows) {
-        const treeGenerator = fetchChildren(soapClient, row.id);
+    for (let row of rows) {
+        row.addressId = parseInt(row.id);
+        row.type = parseInt(row.type);
+        row.parentId = -1;
+
+        let id = row.id;
+        delete row.id;
+        delete row.nameEn;
+
+        const result = await toGraphqlMutation(row);
+        console.log(result);
+
+        const treeGenerator = fetchChildren(soapClient, id);
         for await (const node of treeGenerator) {
             console.log(node);
 
