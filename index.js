@@ -8,6 +8,10 @@ const initialiseData = require('./initial-data');
 
 const { MongooseAdapter: Adapter } = require('@keystonejs/adapter-mongoose');
 
+// require our schema.js
+
+const { ClinicSchema, OtherSchema } = require('./schema')
+
 const PROJECT_NAME = "covid-supply-info";
 
 
@@ -62,6 +66,10 @@ keystone.createList('User', {
     auth: true,
   },
 });
+
+// Put your schemas here
+
+keystone.createList('Clinic', ClinicSchema)
 
 const authStrategy = keystone.createAuthStrategy({
   type: PasswordAuthStrategy,
