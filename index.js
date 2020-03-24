@@ -1,3 +1,4 @@
+const { config } = require('dotenv');
 const { Keystone } = require('@keystonejs/keystone');
 const { PasswordAuthStrategy } = require('@keystonejs/auth-password');
 const { Text, Checkbox, Password } = require('@keystonejs/fields');
@@ -6,11 +7,12 @@ const { AdminUIApp } = require('@keystonejs/app-admin-ui');
 const { NextApp } = require('@keystonejs/app-next');
 const initialiseData = require('./initial-data');
 
+config();
 const { MongooseAdapter: Adapter } = require('@keystonejs/adapter-mongoose');
 
 // require our schema.js
 
-const { ClinicSchema, OtherSchema } = require('./schema')
+const { ClinicSchema, OtherSchema, AddressNodeSchema } = require('./schema');
 
 const PROJECT_NAME = "covid-supply-info";
 
@@ -69,7 +71,9 @@ keystone.createList('User', {
 
 // Put your schemas here
 
-keystone.createList('Clinic', ClinicSchema)
+keystone.createList('Clinic', ClinicSchema);
+keystone.createList('AddressNode', AddressNodeSchema);
+
 
 const authStrategy = keystone.createAuthStrategy({
   type: PasswordAuthStrategy,

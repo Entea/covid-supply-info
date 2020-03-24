@@ -1,10 +1,8 @@
-# Covid-19 supply app
-
-This project contains a simple list of users and an admin application (`localhost:3000/admin`) with basic authentication.
+# Веб-приложение для информирования о потребностях стационаров и блок-постов в КР для борьбы с COVID-19
 
 ## Technology Stack
 
-Keystone, Graphql e.t.c.
+Keystone, Graphql, Mongodb, Nextjs
 
 We have to be quick, so try using as much abstractions as possible.
 
@@ -12,9 +10,13 @@ We have to be quick, so try using as much abstractions as possible.
 
 To run this project first install dependencies with `yarn`.
 
+Copy `.env.dev` to `.env`
+
+Start the mongodb using `docker-compose up -d mongo`
+
 After that run `yarn run dev`
 
-Once running, the Keystone Admin UI is reachable via `localhost:3000/admin`.
+Once running, the Keystone Admin UI is available via `localhost:3000/admin`.
 
 ## Next steps
 
