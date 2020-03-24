@@ -1,4 +1,5 @@
 import '../styles/style.scss'
+import { gql, graphql } from 'react-apollo'
 
 export default function Index() {
   return (
