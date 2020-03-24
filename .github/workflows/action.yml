@@ -1,7 +1,8 @@
 name: telegram message
-on: [push, pull_request]
+on: 
+  push:
+    branches: master
 jobs:
-
   build:
     name: Build
     runs-on: ubuntu-latest
