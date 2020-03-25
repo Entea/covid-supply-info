@@ -1,7 +1,9 @@
 from django.contrib import admin
+from django.contrib.gis.db import models
+from mapwidgets.widgets import GooglePointFieldWidget
 from rangefilter.filter import DateRangeFilter
 
-from distributor.models import Measure, NeedType, Donation, DonationDetail
+from distributor.models import Measure, NeedType, Donation, DonationDetail, Hospital
 
 
 @admin.register(NeedType)
@@ -72,3 +74,22 @@ class DonationAdmin(admin.ModelAdmin):
             obj.created_by = request.user
         obj.modified_by = request.user
         obj.save()
+
+
+@admin.register(Hospital)
+class HospitalAdmin(admin.ModelAdmin):
+    formfield_overrides = {
+        models.PointField: {"widget": GooglePointFieldWidget}
+    }
+
+    search_fields = (
+        'name',
+        'code',
+        'phone_number',
+    )
+
+    list_display = (
+        'name',
+        'code',
+        'phone_number',
+    )

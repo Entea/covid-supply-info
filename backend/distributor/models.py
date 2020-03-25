@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.contrib.gis.db.models import PointField
 from django.db import models
 
 from django.utils.translation import ugettext as _
@@ -61,3 +62,13 @@ class DonationDetail(models.Model):
 
     def __str__(self):
         return "{} {}".format(self.need_type, self.amount)
+
+
+class Hospital(models.Model):
+    name = models.CharField(max_length=200, verbose_name=_('Name'), null=False, blank=False)
+    code = models.CharField(max_length=50, verbose_name=_('Code'), null=False, blank=False)
+    phone_number = models.CharField(max_length=20, verbose_name=_('Phone Number'), null=False, blank=False)
+    location = PointField(help_text="To generate the map for your location")
+
+    def __str__(self):
+        return self.name
