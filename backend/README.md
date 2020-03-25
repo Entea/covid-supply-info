@@ -18,3 +18,13 @@ docker-compose up -d #make sure that db works :)
 5. pip install -r requirements.txt
 6. DISTRIBUTOR_DB_NAME=distributor DISTRIBUTOR_DB_USER=master DISTRIBUTOR_DB_PASSWORD=123456 DISTRIBUTOR_DB_PORT=5435 python manage.py runserver
 ```
+
+#### How to create an admin?
+```
+DISTRIBUTOR_DB_NAME=distributor DISTRIBUTOR_DB_USER=master DISTRIBUTOR_DB_PASSWORD=123456 DISTRIBUTOR_DB_PORT=5435 python manage.py createsuperuser
+```
+
+#### How to update dependencies?
+```
+python freeze > requirements.txt
+```
