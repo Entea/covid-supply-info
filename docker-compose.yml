@@ -1,26 +1,17 @@
-version: '2'
-
+version: "3"
 services:
-    web:
-        image: node:latest
-        working_dir: /usr/src/app
-        user: ${CURRENT_UID}
-        ports: 
-            - "3000:3000"
-        volumes:
-            - ./:/usr/src/app
-        entrypoint: "./start.sh"
-        environment: 
-            MONGO_URI: "mongodb://root:example@mongo:27017/"
-            ADMIN_USER: "admin@example.com"
-            ADMIN_PASSWORD: "admin322228"
-        links: 
-            - mongo
-    mongo:
-        image: mongo
-        environment:
-            MONGO_INITDB_ROOT_USERNAME: root
-            MONGO_INITDB_ROOT_PASSWORD: example
-            MONGO_INITDB_DATABASE: test
-        ports:
-          - "27017:27017"
+  distributor-db:
+    image: postgres:9.5.15
+    container_name: distributor-db
+    environment:
+      - POSTGRES_USER=master
+      - POSTGRES_PASSWORD=123456
+      - POSTGRES_DB=distributor
+    ports:
+      - 5435:5432
+    volumes:
+      - distributor-postgres-data:/var/lib/postgresql/data
+
+volumes:
+   distributor-postgres-data:
+      driver: local
