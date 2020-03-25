@@ -4,6 +4,7 @@
 
 ```
 sudo apt-get install libpq-dev python3-dev
+sudo apt-get install binutils libproj-dev gdal-bin 
 ```
 
 ```
@@ -26,5 +27,5 @@ DISTRIBUTOR_DB_NAME=distributor DISTRIBUTOR_DB_USER=master DISTRIBUTOR_DB_PASSWO
 
 #### How to update dependencies?
 ```
-python freeze > requirements.txt
+pip freeze > requirements.txt
 ```

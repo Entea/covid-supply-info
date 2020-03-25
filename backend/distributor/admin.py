@@ -2,12 +2,13 @@ from django.contrib import admin
 from django.contrib.gis.db import models
 from mapwidgets.widgets import GooglePointFieldWidget
 from rangefilter.filter import DateRangeFilter
+from modeltranslation.admin import TranslationAdmin
 
 from distributor.models import Measure, NeedType, Donation, DonationDetail, Hospital
 
 
 @admin.register(NeedType)
-class NeedAdmin(admin.ModelAdmin):
+class NeedTypeAdmin(TranslationAdmin):
     search_fields = (
         'name',
     )
@@ -36,7 +37,7 @@ class NeedAdmin(admin.ModelAdmin):
 
 
 @admin.register(Measure)
-class NeedTypeAdmin(admin.ModelAdmin):
+class MeasureAdmin(TranslationAdmin):
     pass
 
 
@@ -48,7 +49,7 @@ class DonationDetailInline(admin.TabularInline):
 
 
 @admin.register(Donation)
-class DonationAdmin(admin.ModelAdmin):
+class DonationAdmin(TranslationAdmin):
     inlines = (DonationDetailInline,)
 
     search_fields = (
@@ -77,7 +78,7 @@ class DonationAdmin(admin.ModelAdmin):
 
 
 @admin.register(Hospital)
-class HospitalAdmin(admin.ModelAdmin):
+class HospitalAdmin(TranslationAdmin):
     formfield_overrides = {
         models.PointField: {"widget": GooglePointFieldWidget}
     }
