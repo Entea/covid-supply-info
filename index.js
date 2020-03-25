@@ -14,7 +14,7 @@ const { MongooseAdapter: Adapter } = require('@keystonejs/adapter-mongoose');
 
 // require our schema.js
 
-const { ClinicSchema, OtherSchema, AddressNodeSchema } = require('./schema');
+const { ClinicSchema, NeedSchema, AddressNodeSchema, NeedTypeSchema } = require('./schema');
 
 const PROJECT_NAME = "covid-supply-info";
 
@@ -77,6 +77,8 @@ keystone.createList('User', {
 
 // Put your schemas here
 
+keystone.createList('NeedType', NeedTypeSchema);
+keystone.createList('Need', NeedSchema);
 keystone.createList('Clinic', ClinicSchema);
 keystone.createList('AddressNode', AddressNodeSchema);
 

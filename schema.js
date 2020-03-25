@@ -1,24 +1,59 @@
-const { Text, Checkbox, Slug, Location, Integer } = require('@keystonejs/fields');
-
+const {Relationship, Text, Virtual, Slug, Location, Integer, Select} = require('@keystonejs/fields');
 const GoogleMapsKey = "AIzaSyDlGeu3w8Sy1VbEPmEV8ved8V34aszwIyU"
 
 const ClinicSchema = {
   fields: {
-    name: {
-      type: Text,
-      isRequired: true,
-      label: 'Название учреждения'
-    },
-    url: {
-      type: Slug,
-      isRequired: true,
-      label: 'URL'
-    },
-    location: {
-      type: Location,
-      googleMapsKey: GoogleMapsKey
-    }
+      name: {
+          type: Text,
+          isRequired: true,
+          label: 'Название учреждения'
+      },
+      url: {
+          type: Slug,
+          isRequired: true,
+          label: 'URL'
+      },
+      needs: {
+          type: Relationship,
+          ref: 'Need.clinic',
+          many: true
+      },
+      location: {
+          type: Location,
+          googleMapsKey: GoogleMapsKey
+      }
   }
+};
+
+const NeedSchema = {
+    fields: {
+        count: {
+            type: Integer,
+            isRequired: true,
+            label: 'Количество'
+        },
+        needType: {type: Relationship, ref: 'NeedType'},
+        clinic: {type: Relationship, ref: 'Clinic.needs'},
+    },
+    labelResolver: item => {
+      return `${item['needType']} (${item.needType}) - ${item.count} в ${item.clinic}`
+    }
+};
+
+const NeedTypeSchema = {
+    fields: {
+        name: {
+            type: Text,
+            isRequired: true,
+            label: 'Наименование'
+        },
+        unit: {
+            type: Text,
+            isRequired: true,
+            label: 'Единица измерения',
+        }
+    },
+    labelResolver: item => `${item.name} (${item.unit})`,
 };
 
 const AddressNodeSchema = {
@@ -67,6 +102,8 @@ const AddressNodeSchema = {
 // API reference here https://www.keystonejs.com/keystonejs/fields/
 
 module.exports = {
-  ClinicSchema,
-  AddressNodeSchema
+    ClinicSchema,
+    AddressNodeSchema,
+    NeedSchema,
+    NeedTypeSchema
 };
