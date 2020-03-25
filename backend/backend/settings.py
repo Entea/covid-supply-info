@@ -35,8 +35,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.gis',
     'distributor',
     'rangefilter',
+    'mapwidgets',
 ]
 
 MIDDLEWARE = [
@@ -75,7 +77,7 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
         'NAME': os.environ.get('DISTRIBUTOR_DB_NAME', 'distributor'),
         'USER': os.environ.get('DISTRIBUTOR_DB_USER', 'master'),
         'PASSWORD': os.environ.get('DISTRIBUTOR_DB_PASSWORD'),
@@ -119,3 +121,15 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+GOOGLE_MAP_API_KEY = os.environ.get("MAP_API_KEY")
+
+MAP_WIDGETS = {
+    "GooglePointFieldWidget": (
+        ("zoom", 15),
+        ("mapCenterLocation", [42.8746, 74.5698]),
+        ("markerFitZoom", 15),
+        ("GooglePlaceAutocompleteOptions", {'componentRestrictions': {'country': 'kg'}})
+    ),
+    "GOOGLE_MAP_API_KEY": GOOGLE_MAP_API_KEY,
+}
