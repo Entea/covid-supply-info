@@ -1,10 +1,10 @@
 from django.contrib import admin
 from rangefilter.filter import DateRangeFilter
 
-from distributor.models import Need, NeedType
+from distributor.models import Measure, NeedType
 
 
-@admin.register(Need)
+@admin.register(NeedType)
 class NeedAdmin(admin.ModelAdmin):
     search_fields = (
         'name',
@@ -12,7 +12,7 @@ class NeedAdmin(admin.ModelAdmin):
 
     list_display = (
         '__str__',
-        'type',
+        'measure',
         'created_at',
         'modified_at',
         'created_by',
@@ -30,6 +30,6 @@ class NeedAdmin(admin.ModelAdmin):
         obj.save()
 
 
-@admin.register(NeedType)
+@admin.register(Measure)
 class NeedTypeAdmin(admin.ModelAdmin):
     pass
