@@ -1,3 +1,12 @@
-from django.shortcuts import render
+from rest_framework import viewsets
 
-# Create your views here.
+from distributor.models import Hospital
+from distributor.serializers import HospitalSerializer
+
+
+class HospitalViewSet(viewsets.ModelViewSet):
+    """
+    API returns the list of the hospitals
+    """
+    queryset = Hospital.objects.all()
+    serializer_class = HospitalSerializer
