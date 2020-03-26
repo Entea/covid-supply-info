@@ -29,3 +29,6 @@ createsuperuser:
 
 runscript:
 	${ENVS} python manage.py runscript ${SCRIPT}
+
+command:
+	${ENVS} python manage.py ${COMMAND}
