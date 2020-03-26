@@ -58,7 +58,8 @@ class Donation(models.Model):
 class DonationDetail(models.Model):
     need_type = models.ForeignKey(NeedType, on_delete=models.PROTECT, verbose_name=_('Need Type'))
     amount = models.PositiveSmallIntegerField(verbose_name=_('Amount'))
-    donation = models.ForeignKey(Donation, on_delete=models.PROTECT, verbose_name=_('Donation)'), null=False)
+    donation = models.ForeignKey(Donation, on_delete=models.PROTECT, verbose_name=_('Donation)'), null=False,
+                                 related_name='details')
 
     def __str__(self):
         return "{} {}".format(self.need_type, self.amount)
