@@ -4,7 +4,7 @@ from mapwidgets.widgets import GooglePointFieldWidget
 from rangefilter.filter import DateRangeFilter
 from modeltranslation.admin import TranslationAdmin
 
-from distributor.models import Measure, NeedType, Donation, DonationDetail, Hospital, HospitalPhoneNumber
+from distributor.models import Measure, NeedType, Donation, DonationDetail, Hospital, HospitalPhoneNumber, Region, District, Locality
 
 
 @admin.register(NeedType)
@@ -101,3 +101,15 @@ class HospitalAdmin(TranslationAdmin):
         'name',
         'code',
     )
+
+@admin.register(Region)
+class RegionAdmin(TranslationAdmin):
+    pass
+
+@admin.register(District)
+class DistrictAdmin(TranslationAdmin):
+    pass
+
+@admin.register(Locality)
+class LocalityAdmin(TranslationAdmin):
+    pass

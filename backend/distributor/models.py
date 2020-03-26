@@ -64,12 +64,48 @@ class DonationDetail(models.Model):
     def __str__(self):
         return "{} {}".format(self.need_type, self.amount)
 
+class Region(models.Model):
+    name = models.CharField(max_length=200, verbose_name=_('Name'), null=False, blank=False)
+    
+    class Meta:
+        verbose_name = _("Region")
+        verbose_name_plural = _("Regions")
+
+    def __str__(self):
+        return self.name
+
+class District(models.Model):
+    name = models.CharField(max_length=200, verbose_name=_('Name'), null=False, blank=False)
+    region = models.ForeignKey(Region, on_delete=models.CASCADE, verbose_name=_('Region'),
+                                null=False)
+
+    class Meta:
+        verbose_name = _("District")
+        verbose_name_plural = _("Districts")
+
+    def __str__(self):
+        return '{} {}'.format(self.name, self.region) 
+
+
+class Locality(models.Model):
+    name = models.CharField(max_length=200, verbose_name=_('Name'), null=False, blank=False)
+    district = models.ForeignKey(District, on_delete=models.CASCADE, verbose_name=_('District'),
+                                null=False)
+
+    class Meta:
+        verbose_name = _("Locality")
+        verbose_name_plural = _("Locality")
+
+    def __str__(self):
+        return '{} {}'.format(self.name, self.district) 
+
 
 class Hospital(models.Model):
     name = models.CharField(max_length=200, verbose_name=_('Name'), null=False, blank=False)
     code = models.CharField(max_length=50, verbose_name=_('Code'), null=False, blank=False)
     address = models.CharField(max_length=500, verbose_name=_('Address'), null=True, blank=False)
     location = PointField(help_text="To generate the map for your location")
+    locality = models.ForeignKey(Locality, on_delete=models.CASCADE, verbose_name=_("Locality"), null=True)
 
     def __str__(self):
         return self.name
