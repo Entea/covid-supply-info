@@ -23,6 +23,9 @@ from distributor import views
 router = routers.DefaultRouter()
 router.register(r'hospitals', views.HospitalViewSet)
 router.register(r'donations', views.DonationViewSet)
+router.register(r'regions', views.RegionViewSet)
+router.register(r'districts', views.DistrictViewSet)
+router.register(r'localities', views.LocalityViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),

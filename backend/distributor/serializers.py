@@ -1,6 +1,8 @@
 from rest_framework import serializers
+from rest_framework.viewsets import ReadOnlyModelViewSet
 
-from distributor.models import Hospital, HospitalPhoneNumber, Donation, DonationDetail, NeedType, Measure
+from distributor.models import Hospital, HospitalPhoneNumber, Donation, DonationDetail, NeedType, Measure, Region, \
+    District, Locality
 
 
 class HospitalPhoneNumberSerializer(serializers.ModelSerializer):
@@ -50,3 +52,21 @@ class DonationSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Donation
         fields = ['id', 'donator_name', 'donator_type', 'description', 'created_at', 'details']
+
+
+class RegionSerializer(serializers.HyperlinkedModelSerializer, ReadOnlyModelViewSet):
+    class Meta:
+        model = Region
+        fields = ['id', 'name']
+
+
+class DistrictSerializer(serializers.HyperlinkedModelSerializer, ReadOnlyModelViewSet):
+    class Meta:
+        model = District
+        fields = ['id', 'region_id', 'name']
+
+
+class LocalitySerializer(serializers.HyperlinkedModelSerializer, ReadOnlyModelViewSet):
+    class Meta:
+        model = Locality
+        fields = ['id', 'district_id', 'name']

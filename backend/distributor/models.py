@@ -64,9 +64,10 @@ class DonationDetail(models.Model):
     def __str__(self):
         return "{} {}".format(self.need_type, self.amount)
 
+
 class Region(models.Model):
     name = models.CharField(max_length=200, verbose_name=_('Name'), null=False, blank=False)
-    
+
     class Meta:
         verbose_name = _("Region")
         verbose_name_plural = _("Regions")
@@ -74,30 +75,31 @@ class Region(models.Model):
     def __str__(self):
         return self.name
 
+
 class District(models.Model):
     name = models.CharField(max_length=200, verbose_name=_('Name'), null=False, blank=False)
     region = models.ForeignKey(Region, on_delete=models.CASCADE, verbose_name=_('Region'),
-                                null=False)
+                               null=False)
 
     class Meta:
         verbose_name = _("District")
         verbose_name_plural = _("Districts")
 
     def __str__(self):
-        return '{} {}'.format(self.name, self.region) 
+        return '{} {}'.format(self.name, self.region)
 
 
 class Locality(models.Model):
     name = models.CharField(max_length=200, verbose_name=_('Name'), null=False, blank=False)
     district = models.ForeignKey(District, on_delete=models.CASCADE, verbose_name=_('District'),
-                                null=False)
+                                 null=False)
 
     class Meta:
         verbose_name = _("Locality")
         verbose_name_plural = _("Locality")
 
     def __str__(self):
-        return '{} {}'.format(self.name, self.district) 
+        return '{} {}'.format(self.name, self.district)
 
 
 class Hospital(models.Model):
