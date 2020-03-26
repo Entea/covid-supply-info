@@ -67,8 +67,17 @@ class DonationDetail(models.Model):
 class Hospital(models.Model):
     name = models.CharField(max_length=200, verbose_name=_('Name'), null=False, blank=False)
     code = models.CharField(max_length=50, verbose_name=_('Code'), null=False, blank=False)
-    phone_number = models.CharField(max_length=20, verbose_name=_('Phone Number'), null=False, blank=False)
+    address = models.CharField(max_length=500, verbose_name=_('Address'), null=True, blank=False)
     location = PointField(help_text="To generate the map for your location")
 
     def __str__(self):
         return self.name
+
+
+class HospitalPhoneNumber(models.Model):
+    hospital = models.ForeignKey(Hospital, on_delete=models.PROTECT, verbose_name=_("Hospital"),
+                                 related_name='phone_numbers')
+    value = models.CharField(max_length=30, verbose_name=_('Phone Number'), null=False, blank=False)
+
+    def __str__(self):
+        return self.value

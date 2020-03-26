@@ -4,7 +4,7 @@ from mapwidgets.widgets import GooglePointFieldWidget
 from rangefilter.filter import DateRangeFilter
 from modeltranslation.admin import TranslationAdmin
 
-from distributor.models import Measure, NeedType, Donation, DonationDetail, Hospital
+from distributor.models import Measure, NeedType, Donation, DonationDetail, Hospital, HospitalPhoneNumber
 
 
 @admin.register(NeedType)
@@ -77,20 +77,27 @@ class DonationAdmin(TranslationAdmin):
         obj.save()
 
 
+class HospitalPhoneNumberInline(admin.TabularInline):
+    model = HospitalPhoneNumber
+
+    def has_module_permission(self, request):
+        return False
+
+
 @admin.register(Hospital)
 class HospitalAdmin(TranslationAdmin):
     formfield_overrides = {
         models.PointField: {"widget": GooglePointFieldWidget}
     }
 
+    inlines = (HospitalPhoneNumberInline,)
+
     search_fields = (
         'name',
         'code',
-        'phone_number',
     )
 
     list_display = (
         'name',
         'code',
-        'phone_number',
     )
