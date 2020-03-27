@@ -147,3 +147,17 @@ class Statistic(models.Model):
 
     def __str__(self):
         return self.category.name
+
+
+class HelpRequest(models.Model):
+    first_name = models.CharField(max_length=50, verbose_name=_('First Name'), null=False, blank=False)
+    last_name = models.CharField(max_length=50, verbose_name=_('Last Name'), null=False, blank=False)
+    locality = models.ForeignKey(Locality, on_delete=models.PROTECT, verbose_name=_("Locality"), null=True)
+    position = models.CharField(max_length=50, verbose_name=_('Position'), null=False, blank=False)
+    hospital_name = models.CharField(max_length=250, verbose_name=_('Hospital Name'), null=False, blank=False)
+    phone_number = models.CharField(max_length=100, verbose_name=_('Phone Number'), null=False, blank=False)
+    description = models.TextField(max_length=500, verbose_name=_('Description'), null=False, blank=False)
+    created_at = models.DateTimeField(verbose_name=_('Created Date'), blank=False, null=False, editable=True,
+                                      auto_now_add=True)
+    is_read = models.BooleanField(verbose_name=_("Read"), default=False)
+    read_at = models.DateTimeField(verbose_name=_('Read Date'), blank=True, null=True, editable=False)

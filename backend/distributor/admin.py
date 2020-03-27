@@ -1,11 +1,12 @@
 from django.contrib import admin
 from django.contrib.gis.db import models
+from django.utils.timezone import now
 from mapwidgets.widgets import GooglePointFieldWidget
+from modeltranslation.admin import TranslationAdmin
 from rangefilter.filter import DateRangeFilter
-from modeltranslation.admin import TranslationAdmin, TranslationTabularInline
 
 from distributor.models import Measure, NeedType, Donation, DonationDetail, Hospital, HospitalPhoneNumber, Region, \
-    District, Locality, Statistic, StatisticCategory
+    District, Locality, Statistic, StatisticCategory, HelpRequest
 
 
 @admin.register(NeedType)
@@ -142,3 +143,39 @@ class LocalityAdmin(TranslationAdmin):
 @admin.register(StatisticCategory)
 class StatisticCategoryAdmin(TranslationAdmin):
     pass
+
+
+@admin.register(HelpRequest)
+class HelpRequestAdmin(admin.ModelAdmin):
+    search_fields = (
+        'first_name',
+        'last_name',
+    )
+
+    list_display = (
+        'first_name',
+        'last_name',
+        'position',
+        'phone_number',
+        'locality',
+        'created_at',
+        'read_at',
+        'is_read',
+    )
+
+    list_filter = (
+        'is_read',
+        ('created_at', DateRangeFilter),
+    )
+
+    ordering = ('-created_at',)
+
+    def get_object(self, request, object_id, from_field=None):
+        obj = super(HelpRequestAdmin, self).get_object(request, object_id)
+        if obj and not obj.is_read:
+            obj.is_read = True
+            obj.save()
+        if obj and not obj.read_at:
+            obj.read_at = now()
+            obj.save()
+        return obj
