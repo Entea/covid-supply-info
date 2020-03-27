@@ -29,6 +29,10 @@ class NeedType(models.Model):
     def __str__(self):
         return "%s %s" % (self.name, self.measure)
 
+    class Meta:
+        verbose_name = _("Need Type")
+        verbose_name_plural = _("Need Types")
+
 
 class Donation(models.Model):
     ORGANIZATION = 'ORGANIZATION'
@@ -122,13 +126,24 @@ class HospitalPhoneNumber(models.Model):
         return self.value
 
 
-class Statistic(models.Model):
-    hospital = models.ForeignKey(Hospital, on_delete=models.CASCADE, verbose_name=_("Hospital"),
-                                 related_name='statistics')
-    name = models.CharField(max_length=200, verbose_name=_('Name'), null=False, blank=False)
-    actual = models.PositiveSmallIntegerField(verbose_name=_('Actual'))
-    capacity = models.PositiveSmallIntegerField(verbose_name=_('Capacity'), null=True, blank=True)
-    has_capacity = models.BooleanField(verbose_name=_("Has Capacity?"), default=False)
+class StatisticCategory(models.Model):
+    name = models.CharField(max_length=200, verbose_name=_('Name'), null=False, blank=False, unique=True)
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        verbose_name = _("Statistic Category")
+        verbose_name_plural = _("Statistic Categories")
+
+
+class Statistic(models.Model):
+    hospital = models.ForeignKey(Hospital, on_delete=models.CASCADE, verbose_name=_("Hospital"),
+                                 related_name='statistics')
+    category = models.ForeignKey(StatisticCategory, on_delete=models.CASCADE, verbose_name=_("Category"), null=True)
+    actual = models.IntegerField(verbose_name=_('Actual'))
+    capacity = models.IntegerField(verbose_name=_('Capacity'), null=True, blank=True)
+    has_capacity = models.BooleanField(verbose_name=_("Has Capacity?"), default=False)
+
+    def __str__(self):
+        return self.category.name

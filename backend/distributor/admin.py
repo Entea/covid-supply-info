@@ -5,7 +5,7 @@ from rangefilter.filter import DateRangeFilter
 from modeltranslation.admin import TranslationAdmin, TranslationTabularInline
 
 from distributor.models import Measure, NeedType, Donation, DonationDetail, Hospital, HospitalPhoneNumber, Region, \
-    District, Locality, Statistic
+    District, Locality, Statistic, StatisticCategory
 
 
 @admin.register(NeedType)
@@ -85,8 +85,9 @@ class HospitalPhoneNumberInline(admin.TabularInline):
         return False
 
 
-class StatisticInline(TranslationTabularInline):
+class StatisticInline(admin.TabularInline):
     model = Statistic
+    extra = 7
 
     def has_module_permission(self, request):
         return False
@@ -136,3 +137,8 @@ class LocalityAdmin(TranslationAdmin):
     list_filter = (
         'district',
     )
+
+
+@admin.register(StatisticCategory)
+class StatisticCategoryAdmin(TranslationAdmin):
+    pass

@@ -1,5 +1,5 @@
 from modeltranslation.translator import translator, TranslationOptions
-from .models import Measure, NeedType, Donation, Hospital, Region, District, Locality, Statistic
+from .models import Measure, NeedType, Donation, Hospital, Region, District, Locality, Statistic, StatisticCategory
 
 
 class MeasureTranslationOptions(TranslationOptions):
@@ -51,8 +51,8 @@ class LocalityTranslationOptions(TranslationOptions):
 translator.register(Locality, LocalityTranslationOptions)
 
 
-class StatisticTranslationOptions(TranslationOptions):
+class StatisticCategoryTranslationOptions(TranslationOptions):
     fields = ('name',)
 
 
-translator.register(Statistic, StatisticTranslationOptions)
+translator.register(StatisticCategory, StatisticCategoryTranslationOptions)
