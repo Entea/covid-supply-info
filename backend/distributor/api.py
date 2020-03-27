@@ -1,4 +1,6 @@
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
+from rest_framework.filters import SearchFilter
 
 from distributor.models import Hospital, Donation, Region, District, Locality
 from distributor.serializers import HospitalSerializer, DonationSerializer, RegionSerializer, DistrictSerializer, \
@@ -11,6 +13,9 @@ class HospitalViewSet(viewsets.ModelViewSet):
     """
     queryset = Hospital.objects.all()
     serializer_class = HospitalSerializer
+    filter_backends = (DjangoFilterBackend, SearchFilter)
+    search_fields = ('name',)
+    filter_fields = ('locality',)
 
 
 class DonationViewSet(viewsets.ModelViewSet):
