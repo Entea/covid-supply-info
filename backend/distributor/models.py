@@ -127,7 +127,7 @@ class Statistic(models.Model):
                                  related_name='statistics')
     name = models.CharField(max_length=200, verbose_name=_('Name'), null=False, blank=False)
     actual = models.PositiveSmallIntegerField(verbose_name=_('Actual'))
-    capacity = models.PositiveSmallIntegerField(verbose_name=_('Capacity'))
+    capacity = models.PositiveSmallIntegerField(verbose_name=_('Capacity'), null=True, blank=True)
     has_capacity = models.BooleanField(verbose_name=_("Has Capacity?"), default=False)
 
     def __str__(self):

@@ -12,9 +12,15 @@ class HospitalPhoneNumberSerializer(serializers.ModelSerializer):
 
 
 class StatisticPhoneNumberSerializer(serializers.ModelSerializer):
+    need_help = serializers.SerializerMethodField()
+
     class Meta:
         model = Statistic
-        fields = ['name', 'actual', 'capacity', 'has_capacity']
+        fields = ['name', 'actual', 'capacity', 'has_capacity', 'need_help']
+
+    @staticmethod
+    def get_need_help(obj):
+        return True if obj.has_capacity and obj.actual > obj.capacity else False
 
 
 class HospitalSerializer(serializers.HyperlinkedModelSerializer):
