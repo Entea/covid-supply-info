@@ -2,9 +2,10 @@ from django.contrib import admin
 from django.contrib.gis.db import models
 from mapwidgets.widgets import GooglePointFieldWidget
 from rangefilter.filter import DateRangeFilter
-from modeltranslation.admin import TranslationAdmin
+from modeltranslation.admin import TranslationAdmin, TranslationTabularInline
 
-from distributor.models import Measure, NeedType, Donation, DonationDetail, Hospital, HospitalPhoneNumber, Region, District, Locality
+from distributor.models import Measure, NeedType, Donation, DonationDetail, Hospital, HospitalPhoneNumber, Region, \
+    District, Locality, Statistic
 
 
 @admin.register(NeedType)
@@ -84,13 +85,20 @@ class HospitalPhoneNumberInline(admin.TabularInline):
         return False
 
 
+class StatisticInline(TranslationTabularInline):
+    model = Statistic
+
+    def has_module_permission(self, request):
+        return False
+
+
 @admin.register(Hospital)
 class HospitalAdmin(TranslationAdmin):
     formfield_overrides = {
         models.PointField: {"widget": GooglePointFieldWidget}
     }
 
-    inlines = (HospitalPhoneNumberInline,)
+    inlines = (HospitalPhoneNumberInline, StatisticInline)
 
     search_fields = (
         'name',
@@ -102,15 +110,26 @@ class HospitalAdmin(TranslationAdmin):
         'code',
     )
 
+    class Media:
+        js = (
+            "js/statistic.js",
+        )
+        css = {
+            'all': ("css/statistic.css",)
+        }
+
+
 @admin.register(Region)
 class RegionAdmin(TranslationAdmin):
     pass
+
 
 @admin.register(District)
 class DistrictAdmin(TranslationAdmin):
     list_filter = (
         'region',
     )
+
 
 @admin.register(Locality)
 class LocalityAdmin(TranslationAdmin):
