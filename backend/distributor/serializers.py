@@ -13,14 +13,19 @@ class HospitalPhoneNumberSerializer(serializers.ModelSerializer):
 
 class StatisticPhoneNumberSerializer(serializers.ModelSerializer):
     need_help = serializers.SerializerMethodField()
+    category = serializers.SerializerMethodField()
 
     class Meta:
         model = Statistic
-        fields = ['name', 'actual', 'capacity', 'has_capacity', 'need_help']
+        fields = ['category', 'actual', 'capacity', 'has_capacity', 'need_help']
 
     @staticmethod
     def get_need_help(obj):
         return True if obj.has_capacity and obj.actual > obj.capacity else False
+
+    @staticmethod
+    def get_category(obj):
+        return obj.category.name
 
 
 class HospitalSerializer(serializers.HyperlinkedModelSerializer):
