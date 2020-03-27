@@ -1,8 +1,23 @@
 version: "3"
 services:
+
+  backend:
+    build:
+      context: backend
+    container_name: backend
+    ports:
+      - 8000:8000
+    depends_on:
+      - distributor-db
+    links:
+      - distributor-db
+    env_file:
+      - ./backend/.env
+
   distributor-db:
     image: mdillon/postgis:9.5
     container_name: distributor-db
+    hostname: distributor-db
     environment:
       - POSTGRES_USER=master
       - POSTGRES_PASSWORD=123456
@@ -13,5 +28,5 @@ services:
       - distributor-postgres-data:/var/lib/postgresql/data
 
 volumes:
-   distributor-postgres-data:
-      driver: local
+  distributor-postgres-data:
+    driver: local

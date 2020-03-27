@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'distributor',
     'rangefilter',
     'mapwidgets',
+    'rest_framework',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
@@ -138,8 +140,6 @@ LOCALE_PATHS = (
 
 TIME_ZONE = 'UTC'
 
-USE_I18N = True
-
 USE_L10N = True
 
 USE_TZ = True
@@ -159,4 +159,16 @@ MAP_WIDGETS = {
         ("GooglePlaceAutocompleteOptions", {'componentRestrictions': {'country': 'kg'}})
     ),
     "GOOGLE_MAP_API_KEY": GOOGLE_MAP_API_KEY,
+}
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 20,
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+    ],
 }
