@@ -10,7 +10,6 @@ django-modeltranslation==0.14.4
 djangorestframework==3.11.0
 idna==2.9
 Markdown==3.2.1
-pkg-resources==0.0.0
 psycopg2==2.8.4
 pytz==2019.3
 requests==2.23.0
