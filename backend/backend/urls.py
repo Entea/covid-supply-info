@@ -18,14 +18,14 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
 
-from distributor import views
+from distributor import api
 
 router = routers.DefaultRouter()
-router.register(r'hospitals', views.HospitalViewSet)
-router.register(r'donations', views.DonationViewSet)
-router.register(r'regions', views.RegionViewSet)
-router.register(r'districts', views.DistrictViewSet)
-router.register(r'localities', views.LocalityViewSet)
+router.register(r'hospitals', api.HospitalViewSet)
+router.register(r'donations', api.DonationViewSet)
+router.register(r'regions', api.RegionViewSet)
+router.register(r'districts', api.DistrictViewSet)
+router.register(r'localities', api.LocalityViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),

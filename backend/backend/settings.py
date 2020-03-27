@@ -149,6 +149,10 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),
+]
+
 GOOGLE_MAP_API_KEY = os.environ.get("MAP_API_KEY")
 
 MAP_WIDGETS = {
