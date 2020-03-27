@@ -1,8 +1,10 @@
 from django.contrib.auth.models import User
 from django.contrib.gis.db.models import PointField
 from django.db import models
+from django.core.exceptions import ValidationError
 
 from django.utils.translation import ugettext as _
+from django.core.validators import RegexValidator
 
 
 class Measure(models.Model):
@@ -120,7 +122,11 @@ class Hospital(models.Model):
 class HospitalPhoneNumber(models.Model):
     hospital = models.ForeignKey(Hospital, on_delete=models.PROTECT, verbose_name=_("Hospital"),
                                  related_name='phone_numbers')
-    value = models.CharField(max_length=30, verbose_name=_('Phone Number'), null=False, blank=False)
+    phone_number_regex = RegexValidator(regex='^[0]\d{3,4}[- ]?\d{1,2}[- ]?\d{2}[- ]?\d{2}$',
+                                        message="Phone number must be in these formats : 0555123456 or 03134 5 26 71 or 0312 45-26-71")
+
+    value = models.CharField(validators=[phone_number_regex], max_length=30, verbose_name=_('Phone Number'), null=False,
+                             blank=False)
 
     def __str__(self):
         return self.value
