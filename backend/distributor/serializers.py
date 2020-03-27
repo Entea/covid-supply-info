@@ -2,7 +2,7 @@ from rest_framework import serializers
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
 from distributor.models import Hospital, HospitalPhoneNumber, Donation, DonationDetail, NeedType, Measure, Region, \
-    District, Locality, Statistic
+    District, Locality, Statistic, HelpRequest
 
 
 class HospitalPhoneNumberSerializer(serializers.ModelSerializer):
@@ -88,3 +88,14 @@ class LocalitySerializer(serializers.HyperlinkedModelSerializer, ReadOnlyModelVi
     class Meta:
         model = Locality
         fields = ['id', 'district_id', 'name']
+
+
+class HelpRequestSerializer(serializers.HyperlinkedModelSerializer):
+    locality = LocalitySerializer(many=False, read_only=True)
+    locality_id = serializers.IntegerField(write_only=True)
+
+    class Meta:
+        model = HelpRequest
+        fields = ['first_name', 'last_name', 'position', 'hospital_name', 'locality', 'locality_id', 'phone_number',
+                  'description']
+        read_only_fields = ['created_at', 'read_at']

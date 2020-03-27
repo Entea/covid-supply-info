@@ -2,12 +2,12 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
 from rest_framework.filters import SearchFilter
 
-from distributor.models import Hospital, Donation, Region, District, Locality
+from distributor.models import Hospital, Donation, Region, District, Locality, HelpRequest
 from distributor.serializers import HospitalSerializer, DonationSerializer, RegionSerializer, DistrictSerializer, \
-    LocalitySerializer
+    LocalitySerializer, HelpRequestSerializer
 
 
-class HospitalViewSet(viewsets.ModelViewSet):
+class HospitalViewSet(viewsets.ReadOnlyModelViewSet):
     """
     API returns the list of the hospitals
     """
@@ -18,7 +18,7 @@ class HospitalViewSet(viewsets.ModelViewSet):
     filter_fields = ('locality',)
 
 
-class DonationViewSet(viewsets.ModelViewSet):
+class DonationViewSet(viewsets.ReadOnlyModelViewSet):
     """
     API returns the list of the donations
     """
@@ -26,7 +26,7 @@ class DonationViewSet(viewsets.ModelViewSet):
     serializer_class = DonationSerializer
 
 
-class RegionViewSet(viewsets.ModelViewSet):
+class RegionViewSet(viewsets.ReadOnlyModelViewSet):
     """
     API returns the list of the regions
     """
@@ -34,7 +34,7 @@ class RegionViewSet(viewsets.ModelViewSet):
     serializer_class = RegionSerializer
 
 
-class DistrictViewSet(viewsets.ModelViewSet):
+class DistrictViewSet(viewsets.ReadOnlyModelViewSet):
     """
     API returns the list of the districts
     """
@@ -44,7 +44,7 @@ class DistrictViewSet(viewsets.ModelViewSet):
     filter_fields = ('region',)
 
 
-class LocalityViewSet(viewsets.ModelViewSet):
+class LocalityViewSet(viewsets.ReadOnlyModelViewSet):
     """
     API returns the list of the localities
     """
@@ -52,3 +52,14 @@ class LocalityViewSet(viewsets.ModelViewSet):
     serializer_class = LocalitySerializer
     filter_backends = (DjangoFilterBackend,)
     filter_fields = ('district',)
+
+
+class HelpRequestCreateViewSet(viewsets.ModelViewSet):
+    """
+    API create help requests
+    """
+    queryset = HelpRequest.objects.all()
+    serializer_class = HelpRequestSerializer
+    permission_classes = ()
+    authentication_classes = ()
+    http_method_names = ['post', 'head']

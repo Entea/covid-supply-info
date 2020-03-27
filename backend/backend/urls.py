@@ -26,6 +26,7 @@ router.register(r'donations', api.DonationViewSet)
 router.register(r'regions', api.RegionViewSet)
 router.register(r'districts', api.DistrictViewSet)
 router.register(r'localities', api.LocalityViewSet)
+router.register(r'help-requests', api.HelpRequestCreateViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
