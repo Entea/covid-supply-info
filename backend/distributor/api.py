@@ -40,6 +40,8 @@ class DistrictViewSet(viewsets.ModelViewSet):
     """
     queryset = District.objects.all().order_by('name')
     serializer_class = DistrictSerializer
+    filter_backends = (DjangoFilterBackend,)
+    filter_fields = ('region',)
 
 
 class LocalityViewSet(viewsets.ModelViewSet):
@@ -48,3 +50,5 @@ class LocalityViewSet(viewsets.ModelViewSet):
     """
     queryset = Locality.objects.all().order_by('name')
     serializer_class = LocalitySerializer
+    filter_backends = (DjangoFilterBackend,)
+    filter_fields = ('district',)
