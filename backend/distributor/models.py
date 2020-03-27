@@ -167,3 +167,6 @@ class HelpRequest(models.Model):
                                       auto_now_add=True)
     is_read = models.BooleanField(verbose_name=_("Read"), default=False)
     read_at = models.DateTimeField(verbose_name=_('Read Date'), blank=True, null=True, editable=False)
+
+    def __str__(self):
+        return "{} {}".format(self.first_name, self.last_name)
