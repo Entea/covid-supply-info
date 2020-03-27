@@ -108,8 +108,12 @@ class RegionAdmin(TranslationAdmin):
 
 @admin.register(District)
 class DistrictAdmin(TranslationAdmin):
-    pass
+    list_filter = (
+        'region',
+    )
 
 @admin.register(Locality)
 class LocalityAdmin(TranslationAdmin):
-    pass
+    list_filter = (
+        'district',
+    )

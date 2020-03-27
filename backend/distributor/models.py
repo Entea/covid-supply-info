@@ -106,11 +106,11 @@ class Hospital(models.Model):
     name = models.CharField(max_length=200, verbose_name=_('Name'), null=False, blank=False)
     code = models.CharField(max_length=50, verbose_name=_('Code'), null=False, blank=False)
     address = models.CharField(max_length=500, verbose_name=_('Address'), null=True, blank=False)
-    location = PointField(help_text="To generate the map for your location")
+    location = PointField(help_text="To generate the map for your location", null=True)
     locality = models.ForeignKey(Locality, on_delete=models.CASCADE, verbose_name=_("Locality"), null=True)
 
     def __str__(self):
-        return self.name
+        return '{} {}'.format(self.name, self.locality)
 
 
 class HospitalPhoneNumber(models.Model):
