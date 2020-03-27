@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'mapwidgets',
     'rest_framework',
     'django_extensions',
+    'django_filters',
 ]
 
 MIDDLEWARE = [
