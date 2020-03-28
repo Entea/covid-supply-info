@@ -1,5 +1,7 @@
 import React from 'react';
 import GoogleMapReact from 'google-map-react';
+import getConfig from 'next/config';
+const { publicRuntimeConfig } = getConfig();
 
 const AnyReactComponent = ({ text }) => <div>{ text }</div>;
 
@@ -8,7 +10,7 @@ const Main = () => {
 		<main>
 			<div style={ { height: '100vh', width: '100%' } }>
 				<GoogleMapReact
-					bootstrapURLKeys={ { key: '' } }
+					bootstrapURLKeys={ { key: publicRuntimeConfig.mapKey } }
 					defaultCenter={ { lat: 42.882004, lng: 74.582748 } }
 					defaultZoom={ 14 }
 				>
