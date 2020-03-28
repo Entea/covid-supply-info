@@ -1,8 +1,12 @@
 from rest_framework import serializers
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
-from distributor.models import Hospital, HospitalPhoneNumber, Donation, DonationDetail, NeedType, Measure, Region, \
-    District, Locality, Statistic, HelpRequest, HospitalNeeds
+from distributor.models import (
+    Hospital, HospitalPhoneNumber, Donation,
+    DonationDetail, NeedType, Measure,
+    Region, District, Locality,
+    Statistic, HelpRequest, HospitalNeeds
+)
 
 
 class HospitalPhoneNumberSerializer(serializers.ModelSerializer):
@@ -52,13 +56,13 @@ class HospitalNeedsSerializer(serializers.ModelSerializer):
 
 class HospitalSerializer(serializers.HyperlinkedModelSerializer):
     phone_numbers = HospitalPhoneNumberSerializer(many=True, read_only=True)
-    statistics = StatisticPhoneNumberSerializer(many=True, read_only=True)
     location = serializers.SerializerMethodField()
+    statistics = StatisticPhoneNumberSerializer(many=True, read_only=True)
     needs = HospitalNeedsSerializer(many=True, read_only=True)
 
     class Meta:
         model = Hospital
-        fields = ['id', 'name', 'code', 'address', 'location', 'locality_id', 'phone_numbers', 'statistics', 'needs']
+        fields = ('id', 'name', 'code', 'address', 'location', 'locality_id', 'phone_numbers', 'needs', 'statistics')
 
     @staticmethod
     def get_location(obj):

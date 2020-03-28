@@ -1,5 +1,9 @@
 from modeltranslation.translator import translator, TranslationOptions
-from .models import Measure, NeedType, Donation, Hospital, Region, District, Locality, Statistic, StatisticCategory
+from .models import (
+    Measure, NeedType, Donation,
+    Hospital, Region, District,
+    Locality, Statistic, StatisticCategory
+)
 
 
 class MeasureTranslationOptions(TranslationOptions):
