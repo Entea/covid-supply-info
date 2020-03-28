@@ -28,20 +28,6 @@ class StatisticPhoneNumberSerializer(serializers.ModelSerializer):
         return obj.category.name
 
 
-class HospitalSerializer(serializers.HyperlinkedModelSerializer):
-    phone_numbers = HospitalPhoneNumberSerializer(many=True, read_only=True)
-    statistics = StatisticPhoneNumberSerializer(many=True, read_only=True)
-    location = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Hospital
-        fields = ['id', 'name', 'code', 'address', 'location', 'locality_id', 'phone_numbers', 'statistics']
-
-    @staticmethod
-    def get_location(obj):
-        return {"longitude": obj.location.y, 'latitude': obj.location.x}
-
-
 class MeasureTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Measure
@@ -66,12 +52,13 @@ class HospitalNeedsSerializer(serializers.ModelSerializer):
 
 class HospitalSerializer(serializers.HyperlinkedModelSerializer):
     phone_numbers = HospitalPhoneNumberSerializer(many=True, read_only=True)
+    statistics = StatisticPhoneNumberSerializer(many=True, read_only=True)
     location = serializers.SerializerMethodField()
     needs = HospitalNeedsSerializer(many=True, read_only=True)
 
     class Meta:
         model = Hospital
-        fields = ['id', 'name', 'code', 'address', 'location', 'phone_numbers', 'needs']
+        fields = ['id', 'name', 'code', 'address', 'location', 'locality_id', 'phone_numbers', 'statistics', 'needs']
 
     @staticmethod
     def get_location(obj):
