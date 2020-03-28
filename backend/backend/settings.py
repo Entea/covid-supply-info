@@ -203,7 +203,7 @@ REDIS_PORT = os.environ.get('REDIS_PORT', '6379')
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://{REDIS_HOST}:6379/1".format(REDIS_HOST=REDIS_HOST, REDIS_PORT=REDIS_PORT),
+        "LOCATION": "redis://{REDIS_HOST}:{REDIS_PORT}/1".format(REDIS_HOST=REDIS_HOST, REDIS_PORT=REDIS_PORT),
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient"
         },
