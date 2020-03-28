@@ -20,6 +20,11 @@ docker-compose up -d #make sure that db works :)
 6. DISTRIBUTOR_DB_NAME=distributor DISTRIBUTOR_DB_USER=master DISTRIBUTOR_DB_PASSWORD=123456 DISTRIBUTOR_DB_PORT=5435 python manage.py runserver
 ```
 
+#### How to run migrations?
+```
+DISTRIBUTOR_DB_NAME=distributor DISTRIBUTOR_DB_USER=master DISTRIBUTOR_DB_PASSWORD=123456 DISTRIBUTOR_DB_PORT=5435 python manage.py migrate
+```
+
 #### How to create an admin?
 ```
 DISTRIBUTOR_DB_NAME=distributor DISTRIBUTOR_DB_USER=master DISTRIBUTOR_DB_PASSWORD=123456 DISTRIBUTOR_DB_PORT=5435 python manage.py createsuperuser
