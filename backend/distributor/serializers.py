@@ -1,8 +1,12 @@
 from rest_framework import serializers
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
-from distributor.models import Hospital, HospitalPhoneNumber, Donation, DonationDetail, NeedType, Measure, Region, \
-    District, Locality, Statistic, HelpRequest, HospitalNeeds
+from distributor.models import (
+    Hospital, HospitalPhoneNumber, Donation,
+    DonationDetail, NeedType, Measure,
+    Region, District, Locality,
+    Statistic, HelpRequest, HospitalNeeds
+)
 
 
 class HospitalPhoneNumberSerializer(serializers.ModelSerializer):

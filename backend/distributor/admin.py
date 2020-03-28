@@ -5,8 +5,14 @@ from mapwidgets.widgets import GooglePointFieldWidget
 from modeltranslation.admin import TranslationAdmin
 from rangefilter.filter import DateRangeFilter
 
-from distributor.models import Measure, NeedType, Donation, DonationDetail, Hospital, HospitalPhoneNumber, Region, \
-    District, Locality, Statistic, StatisticCategory, HelpRequest, HospitalNeeds
+from distributor.models import (
+    Measure, NeedType, Donation,
+    DonationDetail, Hospital, HospitalPhoneNumber,
+    Region, District, Locality,
+    Statistic, StatisticCategory, HelpRequest,
+    HospitalNeeds
+)
+
 
 @admin.register(NeedType)
 class NeedTypeAdmin(TranslationAdmin):
@@ -98,7 +104,6 @@ class NeedsInline(admin.TabularInline):
 
     def has_module_permission(self, request):
         return False
-
 
 
 @admin.register(Hospital)
