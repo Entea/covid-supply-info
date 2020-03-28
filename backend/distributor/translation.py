@@ -1,5 +1,9 @@
 from modeltranslation.translator import translator, TranslationOptions
-from .models import Measure, NeedType, Donation, Hospital, Region, District, Locality, Statistic, StatisticCategory
+
+from .models import (
+    Measure, NeedType, Donation,
+    Hospital, Region, District,
+    Locality, StatisticCategory, Page)
 
 
 class MeasureTranslationOptions(TranslationOptions):
@@ -56,3 +60,10 @@ class StatisticCategoryTranslationOptions(TranslationOptions):
 
 
 translator.register(StatisticCategory, StatisticCategoryTranslationOptions)
+
+
+class PageTranslationOptions(TranslationOptions):
+    fields = ('name', 'content')
+
+
+translator.register(Page, PageTranslationOptions)

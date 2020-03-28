@@ -1,10 +1,8 @@
 from django.contrib.auth.models import User
 from django.contrib.gis.db.models import PointField
-from django.db import models
-from django.core.exceptions import ValidationError
-
-from django.utils.translation import ugettext as _
 from django.core.validators import RegexValidator
+from django.db import models
+from django.utils.translation import ugettext as _
 
 
 class Measure(models.Model):
@@ -15,11 +13,10 @@ class Measure(models.Model):
 
 
 class NeedType(models.Model):
-    name = models.CharField(max_length=200, verbose_name=_('Name'), null=False, blank=False)
+    name = models.CharField(max_length=200, verbose_name=_('Name'))
     measure = models.ForeignKey(Measure, on_delete=models.PROTECT, verbose_name=_('Measure (liters, kg, etc.)'),
                                 null=True)
-    price_per_piece = models.DecimalField(max_digits=12, decimal_places=2, verbose_name=_("Price per piece (KGS)"),
-                                          null=False)
+    price_per_piece = models.DecimalField(max_digits=12, decimal_places=2, verbose_name=_("Price per piece (KGS)"))
     modified_at = models.DateTimeField(verbose_name=_('Modified Date'), auto_now=True, null=True, blank=True,
                                        editable=False)
     created_at = models.DateTimeField(verbose_name=_('Created Date'), auto_now_add=True, blank=True, editable=False)
@@ -46,12 +43,12 @@ class Donation(models.Model):
     )
     donator_type = models.CharField(verbose_name=_('Donator Type'), choices=DONATOR_TYPES, max_length=12,
                                     default=ORGANIZATION)
-    donator_name = models.CharField(max_length=200, verbose_name=_('Donator Name'), null=False, blank=False)
-    description = models.TextField(verbose_name=_("Donation Description"), max_length=1000, blank=False)
+    donator_name = models.CharField(max_length=200, verbose_name=_('Donator Name'))
+    description = models.TextField(verbose_name=_("Donation Description"), max_length=1000)
 
     modified_at = models.DateTimeField(verbose_name=_('Modified Date'), auto_now=True, null=True, blank=True,
                                        editable=False)
-    created_at = models.DateTimeField(verbose_name=_('Created Date'), blank=False, null=False, editable=True)
+    created_at = models.DateTimeField(verbose_name=_('Created Date'), editable=True)
     created_by = models.ForeignKey(User, on_delete=models.PROTECT, related_name='%(class)s_created_by',
                                    auto_created=True, editable=False)
     modified_by = models.ForeignKey(User, on_delete=models.PROTECT, related_name='%(class)s_modified_by',
@@ -64,7 +61,7 @@ class Donation(models.Model):
 class DonationDetail(models.Model):
     need_type = models.ForeignKey(NeedType, on_delete=models.PROTECT, verbose_name=_('Need Type'))
     amount = models.PositiveSmallIntegerField(verbose_name=_('Amount'))
-    donation = models.ForeignKey(Donation, on_delete=models.PROTECT, verbose_name=_('Donation)'), null=False,
+    donation = models.ForeignKey(Donation, on_delete=models.PROTECT, verbose_name=_('Donation)'),
                                  related_name='details')
 
     def __str__(self):
@@ -72,7 +69,7 @@ class DonationDetail(models.Model):
 
 
 class Region(models.Model):
-    name = models.CharField(max_length=200, verbose_name=_('Name'), null=False, blank=False)
+    name = models.CharField(max_length=200, verbose_name=_('Name'))
 
     class Meta:
         verbose_name = _("Region")
@@ -83,9 +80,8 @@ class Region(models.Model):
 
 
 class District(models.Model):
-    name = models.CharField(max_length=200, verbose_name=_('Name'), null=False, blank=False)
-    region = models.ForeignKey(Region, on_delete=models.CASCADE, verbose_name=_('Region'),
-                               null=False)
+    name = models.CharField(max_length=200, verbose_name=_('Name'))
+    region = models.ForeignKey(Region, on_delete=models.CASCADE, verbose_name=_('Region'))
 
     class Meta:
         verbose_name = _("District")
@@ -96,9 +92,8 @@ class District(models.Model):
 
 
 class Locality(models.Model):
-    name = models.CharField(max_length=200, verbose_name=_('Name'), null=False, blank=False)
-    district = models.ForeignKey(District, on_delete=models.CASCADE, verbose_name=_('District'),
-                                 null=False)
+    name = models.CharField(max_length=200, verbose_name=_('Name'))
+    district = models.ForeignKey(District, on_delete=models.CASCADE, verbose_name=_('District'))
 
     class Meta:
         verbose_name = _("Locality")
@@ -109,14 +104,22 @@ class Locality(models.Model):
 
 
 class Hospital(models.Model):
-    name = models.CharField(max_length=200, verbose_name=_('Name'), null=False, blank=False)
-    code = models.CharField(max_length=50, verbose_name=_('Code'), null=False, blank=False)
-    address = models.CharField(max_length=500, verbose_name=_('Address'), null=True, blank=False)
+    name = models.CharField(max_length=200, verbose_name=_('Name'))
+    code = models.CharField(max_length=50, verbose_name=_('Code'))
+    address = models.CharField(max_length=500, verbose_name=_('Address'), null=True)
     location = PointField(help_text="To generate the map for your location", null=True)
     locality = models.ForeignKey(Locality, on_delete=models.CASCADE, verbose_name=_("Locality"), null=True)
 
     def __str__(self):
         return '{} {}'.format(self.name, self.locality)
+
+    @property
+    def full_location(self):
+        full_location = dict(
+            longitude=None if not self.location or not self.location.y else self.location.y,
+            latitude=None if not self.location or not self.location.x else self.location.x
+        )
+        return full_location
 
 
 class HospitalPhoneNumber(models.Model):
@@ -125,15 +128,14 @@ class HospitalPhoneNumber(models.Model):
     phone_number_regex = RegexValidator(regex='^[0]\d{3,4}[- ]?\d{1,2}[- ]?\d{2}[- ]?\d{2}$',
                                         message="Phone number must be in these formats : 0555123456 or 03134 5 26 71 or 0312 45-26-71")
 
-    value = models.CharField(validators=[phone_number_regex], max_length=30, verbose_name=_('Phone Number'), null=False,
-                             blank=False)
+    value = models.CharField(validators=[phone_number_regex], max_length=30, verbose_name=_('Phone Number'))
 
     def __str__(self):
         return self.value
 
 
 class StatisticCategory(models.Model):
-    name = models.CharField(max_length=200, verbose_name=_('Name'), null=False, blank=False, unique=True)
+    name = models.CharField(max_length=200, verbose_name=_('Name'), unique=True)
 
     def __str__(self):
         return self.name
@@ -154,17 +156,20 @@ class Statistic(models.Model):
     def __str__(self):
         return self.category.name
 
+    @property
+    def need_help(self):
+        return True if self.has_capacity and self.actual > self.capacity else False
+
 
 class HelpRequest(models.Model):
-    first_name = models.CharField(max_length=50, verbose_name=_('First Name'), null=False, blank=False)
-    last_name = models.CharField(max_length=50, verbose_name=_('Last Name'), null=False, blank=False)
+    first_name = models.CharField(max_length=50, verbose_name=_('First Name'))
+    last_name = models.CharField(max_length=50, verbose_name=_('Last Name'))
     locality = models.ForeignKey(Locality, on_delete=models.PROTECT, verbose_name=_("Locality"), null=True)
-    position = models.CharField(max_length=50, verbose_name=_('Position'), null=False, blank=False)
-    hospital_name = models.CharField(max_length=250, verbose_name=_('Hospital Name'), null=False, blank=False)
-    phone_number = models.CharField(max_length=100, verbose_name=_('Phone Number'), null=False, blank=False)
-    description = models.TextField(max_length=500, verbose_name=_('Description'), null=False, blank=False)
-    created_at = models.DateTimeField(verbose_name=_('Created Date'), blank=False, null=False, editable=True,
-                                      auto_now_add=True)
+    position = models.CharField(max_length=50, verbose_name=_('Position'))
+    hospital_name = models.CharField(max_length=250, verbose_name=_('Hospital Name'))
+    phone_number = models.CharField(max_length=100, verbose_name=_('Phone Number'))
+    description = models.TextField(max_length=500, verbose_name=_('Description'))
+    created_at = models.DateTimeField(verbose_name=_('Created Date'), editable=True, auto_now_add=True)
     is_read = models.BooleanField(verbose_name=_("Read"), default=False)
     read_at = models.DateTimeField(verbose_name=_('Read Date'), blank=True, null=True, editable=False)
 
@@ -180,4 +185,17 @@ class HospitalNeeds(models.Model):
     created_at = models.DateTimeField(verbose_name=_('Created Date'), auto_now_add=True, blank=True, editable=False)
 
     def __str__(self):
-        return "{} {}" .format(self.reserve_amount, self.request_amount)
+        return "{} {}".format(self.reserve_amount, self.request_amount)
+
+
+class Page(models.Model):
+    name = models.CharField(max_length=200, verbose_name=_('Name'))
+    url = models.CharField(max_length=200, verbose_name=_('Url'))
+    content = models.TextField(max_length=1000, verbose_name=_('Content'))
+
+    class Meta:
+        verbose_name = _("Page")
+        verbose_name_plural = _("Pages")
+
+    def __str__(self):
+        return '{} /{}'.format(self.name, self.url)

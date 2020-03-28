@@ -2,9 +2,14 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
 from rest_framework.filters import SearchFilter
 
-from distributor.models import Hospital, Donation, Region, District, Locality, HelpRequest
-from distributor.serializers import HospitalSerializer, DonationSerializer, RegionSerializer, DistrictSerializer, \
-    LocalitySerializer, HelpRequestSerializer
+from distributor.models import (
+    Hospital, Donation, Region,
+    District, Locality, HelpRequest,
+    Page)
+from distributor.serializers import (
+    HospitalSerializer, DonationSerializer, RegionSerializer,
+    DistrictSerializer, LocalitySerializer, HelpRequestSerializer,
+    PageSerializer)
 
 
 class HospitalViewSet(viewsets.ReadOnlyModelViewSet):
@@ -63,3 +68,13 @@ class HelpRequestCreateViewSet(viewsets.ModelViewSet):
     permission_classes = ()
     authentication_classes = ()
     http_method_names = ['post', 'head']
+
+
+class PageViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    API returns the list of the pages
+    """
+    queryset = Page.objects.all()
+    serializer_class = PageSerializer
+    filter_backends = (DjangoFilterBackend,)
+    filter_fields = ('url',)
