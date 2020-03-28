@@ -1,6 +1,11 @@
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
 from rest_framework.filters import SearchFilter
+from rest_framework.generics import ListAPIView
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from distributor.models import (
     Hospital, Donation, Region,
@@ -9,7 +14,8 @@ from distributor.models import (
 from distributor.serializers import (
     HospitalSerializer, DonationSerializer, RegionSerializer,
     DistrictSerializer, LocalitySerializer, HelpRequestSerializer,
-    PageSerializer)
+    PageSerializer, HospitalShortInfoSerializer, HospitalDetailSerializer)
+from distributor.services import HospitalService
 
 
 class HospitalViewSet(viewsets.ReadOnlyModelViewSet):
@@ -78,3 +84,23 @@ class PageViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = PageSerializer
     filter_backends = (DjangoFilterBackend,)
     filter_fields = ('url',)
+
+
+class HospitalShortInfoListAPIView(ListAPIView):
+    queryset = Hospital.objects.all()
+    serializer_class = HospitalShortInfoSerializer
+    pagination_class = None
+
+    @method_decorator(cache_page(60 * 120))
+    def dispatch(self, *args, **kwargs):
+        return super(HospitalShortInfoListAPIView, self).dispatch(*args, **kwargs)
+
+
+class HospitalDetailAPIView(APIView):
+    serializer_class = HospitalDetailSerializer
+    permission_classes = ()
+
+    def get(self, request, pk):
+        hospital = HospitalService.get(pk=pk)
+
+        return Response(self.serializer_class(hospital).data)

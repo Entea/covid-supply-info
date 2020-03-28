@@ -59,6 +59,22 @@ class HospitalSerializer(serializers.HyperlinkedModelSerializer):
         )
 
 
+class HospitalDetailSerializer(serializers.ModelSerializer):
+    phone_numbers = HospitalPhoneNumberSerializer(many=True, read_only=True)
+    statistics = StatisticPhoneNumberSerializer(many=True, read_only=True)
+    needs = HospitalNeedsSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Hospital
+        fields = ('id', 'phone_numbers', 'statistics', 'needs')
+
+
+class HospitalShortInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Hospital
+        fields = ('id', 'name', 'full_location', 'code')
+
+
 class DonationDetailSerializer(serializers.ModelSerializer):
     need_type = NeedTypeSerializer(read_only=True)
 
