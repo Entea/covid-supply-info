@@ -1,10 +1,11 @@
+from django.urls import path
 from rest_framework import routers
 
 from distributor.api import (
     HospitalViewSet, DonationViewSet,
     RegionViewSet, DistrictViewSet, LocalityViewSet,
     HelpRequestCreateViewSet,
-    PageViewSet)
+    PageViewSet, HospitalShortInfoListAPIView)
 
 router = routers.DefaultRouter()
 router.register(r'hospitals', HospitalViewSet)
@@ -16,6 +17,7 @@ router.register(r'help-requests', HelpRequestCreateViewSet)
 router.register(r'pages', PageViewSet)
 
 urlpatterns = [
+    path('all_hospitals', HospitalShortInfoListAPIView.as_view(), name='all_hospitals')
 ]
 
 urlpatterns += router.urls

@@ -196,3 +196,15 @@ CORS_ALLOW_METHODS = (
 )
 
 CORS_PREFLIGHT_MAX_AGE = 86400
+
+REDIS_HOST = os.environ.get('REDIS_HOST', '127.0.0.1')
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://{REDIS_HOST}:6379/1".format(REDIS_HOST=REDIS_HOST),
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient"
+        },
+    }
+}

@@ -59,6 +59,12 @@ class HospitalSerializer(serializers.HyperlinkedModelSerializer):
         )
 
 
+class HospitalShortInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Hospital
+        fields = ('id', 'name', 'full_location', 'code')
+
+
 class DonationDetailSerializer(serializers.ModelSerializer):
     need_type = NeedTypeSerializer(read_only=True)
 
