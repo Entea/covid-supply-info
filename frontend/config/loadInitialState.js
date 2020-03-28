@@ -1,5 +1,8 @@
 export default () => {
 	return {
-		example: ''
+		donates: {
+			fetching: false,
+			data: {results:[]}
+		}
 	}
 }

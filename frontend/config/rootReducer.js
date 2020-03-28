@@ -1,6 +1,5 @@
 import { combineReducers } from 'redux';
-import exampleReducer from '../reducers/exampleReducer';
-
+import donateReducer from '../reducers/donatesReducer';
 export default combineReducers({
-	example: exampleReducer,
+	donates: donateReducer,
 });

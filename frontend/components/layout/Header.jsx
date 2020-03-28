@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Dropdown } from 'react-bootstrap';
+import Link from 'next/link';
 
 class Header extends Component {
 	state = {
@@ -34,10 +35,13 @@ class Header extends Component {
 					<div className="collapse navbar-collapse" id="navbarCollapse">
 						<ul className="navbar-nav mr-auto">
 							<li className="nav-item active">
-								<a className="nav-link active" href="http://test.kg/">Карта</a>
+								<a className="nav-link active" href="/">Карта</a>
 							</li>
 							<li className="nav-item">
-								<a className="nav-link" href="http://test.kg/">Список пожертований</a>
+								<Link>
+									<a className="nav-link" href="/donates">Список пожертований</a>
+								</Link>
+
 							</li>
 							<li className="nav-item">
 								<a className="nav-link" href="http://test.kg/">Контакты</a>
