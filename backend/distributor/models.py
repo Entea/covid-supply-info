@@ -6,21 +6,21 @@ from django.utils.translation import ugettext as _
 
 
 class Measure(models.Model):
-    name = models.CharField(max_length=200, verbose_name=_('Наименование (liter, kg, и др.)'), unique=True,
-                            help_text=_('Введите наименование, например liter'))
+    name = models.CharField(max_length=200, verbose_name=_('Наименование (литры, килограммы, и др.)'), unique=True,
+                            help_text=_('Введите наименование, например литр'))
 
     def __str__(self):
         return self.name
 
     class Meta:
-        verbose_name = _('Расширение')
-        verbose_name_plural = _('Расширения')
+        verbose_name = _('Единица измерения')
+        verbose_name_plural = _('Единицы измерений')
 
 
 class NeedType(models.Model):
     name = models.CharField(max_length=200, verbose_name=_('Наименование'), help_text=_('Введите наименование'))
     measure = models.ForeignKey(Measure, on_delete=models.PROTECT, verbose_name=_('Расширение'),
-                                null=True, help_text=_('Выберите расширение'))
+                                null=True, help_text=_('Выберите единицу измерения'))
     price_per_piece = models.DecimalField(max_digits=12, decimal_places=2, verbose_name=_("Цена за одну единицу (KGS)"),
                                           help_text=_('Цена в сомах'))
     modified_at = models.DateTimeField(verbose_name=_('Дата изменения'), auto_now=True, null=True, blank=True,
@@ -37,8 +37,8 @@ class NeedType(models.Model):
         return "%s %s" % (self.name, self.measure)
 
     class Meta:
-        verbose_name = _('Тип нужды')
-        verbose_name_plural = _('Типы нужд')
+        verbose_name = _('Тип потребности')
+        verbose_name_plural = _('Типы потребностей')
 
 
 class Donation(models.Model):
@@ -51,11 +51,11 @@ class Donation(models.Model):
     )
     donator_type = models.CharField(verbose_name=_('Тип пожертвования'), choices=DONATOR_TYPES, max_length=12,
                                     default=ORGANIZATION, help_text=_('Выберите тип пожертвования'))
-    donator_name = models.CharField(max_length=200, verbose_name=_('Имя Мецената'), help_text=_('Введите имя Мецената'))
+    donator_name = models.CharField(max_length=200, verbose_name=_('Имя мецената'), help_text=_('Введите имя мецената'))
     description = models.TextField(max_length=1000, verbose_name=_("Описание пожертвования"),
                                    help_text=_('Введите описание пожертвования'))
 
-    modified_at = models.DateTimeField(verbose_name=_('Modified Date'), auto_now=True, null=True, blank=True,
+    modified_at = models.DateTimeField(verbose_name=_('Дата изменения'), auto_now=True, null=True, blank=True,
                                        editable=False)
     created_at = models.DateTimeField(verbose_name=_('Дата создания'), editable=True)
     created_by = models.ForeignKey(User, on_delete=models.PROTECT, related_name='%(class)s_created_by',
@@ -92,8 +92,8 @@ class Region(models.Model):
     name = models.CharField(max_length=200, verbose_name=_('Наименование'), help_text=_('Введите название региона'))
 
     class Meta:
-        verbose_name = _("Регион")
-        verbose_name_plural = _("Регионы")
+        verbose_name = _("Область/город")
+        verbose_name_plural = _("Области/города")
 
     def __str__(self):
         return self.name
@@ -118,8 +118,8 @@ class Locality(models.Model):
                                  help_text=_('Выберите район'))
 
     class Meta:
-        verbose_name = _("Местоположение")
-        verbose_name_plural = _("Местоположения")
+        verbose_name = _("Местность")
+        verbose_name_plural = _("Местности")
 
     def __str__(self):
         return '{} {}'.format(self.name, self.district)
@@ -129,7 +129,7 @@ class Hospital(models.Model):
     name = models.CharField(max_length=200, verbose_name=_('Наименование'), help_text=_('Введите название больницы'))
     code = models.CharField(max_length=50, verbose_name=_('Код'), help_text=_('Введите код'))
     address = models.CharField(max_length=500, verbose_name=_('Адрес'), null=True, help_text=_('Введите адрес'))
-    location = PointField(help_text="Для того чтобы сгенерировать местоположение", null=True)
+    location = PointField(help_text="Для создания местоположения", null=True)
     locality = models.ForeignKey(Locality, on_delete=models.CASCADE, verbose_name=_("Местоположение"), null=True)
 
     class Meta:
@@ -205,8 +205,8 @@ class HelpRequest(models.Model):
     phone_number = models.CharField(max_length=100, verbose_name=_('Телефонный номер'))
     description = models.TextField(max_length=500, verbose_name=_('Описание'))
     created_at = models.DateTimeField(verbose_name=_('Дата создания'), editable=True, auto_now_add=True)
-    is_read = models.BooleanField(verbose_name=_("Прочитано"), default=False)
-    read_at = models.DateTimeField(verbose_name=_('Дата прочтения'), blank=True, null=True, editable=False)
+    is_read = models.BooleanField(verbose_name=_("Обработано"), default=False)
+    read_at = models.DateTimeField(verbose_name=_('Дата обработки'), blank=True, null=True, editable=False)
 
     class Meta:
         verbose_name_plural = _('Заявки')
@@ -219,13 +219,13 @@ class HelpRequest(models.Model):
 class HospitalNeeds(models.Model):
     hospital = models.ForeignKey(Hospital, on_delete=models.PROTECT, verbose_name=_("Больница"), related_name='needs')
     need_type = models.ForeignKey(NeedType, on_delete=models.PROTECT, verbose_name=_('Тип нужды'))
-    reserve_amount = models.IntegerField(verbose_name=_('Резервная сумма'))
-    request_amount = models.IntegerField(verbose_name=_('Сумма запроса'))
+    reserve_amount = models.IntegerField(verbose_name=_('В наличии'))
+    request_amount = models.IntegerField(verbose_name=_('Требуемое количество'))
     created_at = models.DateTimeField(verbose_name=_('Дата создания'), auto_now_add=True, blank=True, editable=False)
 
     class Meta:
-        verbose_name_plural = _('Нужды больниц')
-        verbose_name = _('Нужда')
+        verbose_name_plural = _('Потребности больниц')
+        verbose_name = _('Потребность')
 
     def __str__(self):
         return "{} {}".format(self.reserve_amount, self.request_amount)
