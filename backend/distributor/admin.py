@@ -14,6 +14,7 @@ from distributor.models import (
 )
 
 
+
 @admin.register(NeedType)
 class NeedTypeAdmin(TranslationAdmin):
     search_fields = (
@@ -93,7 +94,7 @@ class HospitalPhoneNumberInline(admin.TabularInline):
 
 class StatisticInline(admin.TabularInline):
     model = Statistic
-    extra = 7
+    extra = 1
 
     def has_module_permission(self, request):
         return False
