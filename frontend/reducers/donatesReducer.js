@@ -19,6 +19,12 @@ export default function bonus(state = initialState, action) {
 				fetching: false,
 				data: action.data
 			};
+		case Actions.FAILURE_FETCH_DONATES:
+			return {
+				...state,
+				fetching: false,
+			};
+
 
 		default:
 			return state;

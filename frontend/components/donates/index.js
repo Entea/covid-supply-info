@@ -13,7 +13,6 @@ class DonatesContainer extends Component {
     }
     render() {
         const { fetching, donates } = this.props;
-        console.log(donates)
         return (
             <main>
                 <div className='container'>
