@@ -41,3 +41,10 @@ PrivateTmp=true
 [Install]
 WantedBy=multi-user.target
 ```
+
+Create log dir & file:
+```
+mkdir -p /var/log/django
+touch /var/log/django/error.log
+chown -R www-data /var/log/django
+```
