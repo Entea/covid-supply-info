@@ -118,6 +118,11 @@ class Hospital(models.Model):
     def __str__(self):
         return '{} {}'.format(self.name, self.locality)
 
+    @property
+    def full_location(self):
+        full_location = dict(longitude=self.location.y, latitude=self.location.x)
+        return full_location
+
 
 class HospitalPhoneNumber(models.Model):
     hospital = models.ForeignKey(Hospital, on_delete=models.PROTECT, verbose_name=_("Hospital"),
@@ -154,6 +159,10 @@ class Statistic(models.Model):
     def __str__(self):
         return self.category.name
 
+    @property
+    def need_help(self):
+        return True if self.has_capacity and self.actual > self.capacity else False
+
 
 class HelpRequest(models.Model):
     first_name = models.CharField(max_length=50, verbose_name=_('First Name'), null=False, blank=False)
@@ -180,4 +189,4 @@ class HospitalNeeds(models.Model):
     created_at = models.DateTimeField(verbose_name=_('Created Date'), auto_now_add=True, blank=True, editable=False)
 
     def __str__(self):
-        return "{} {}" .format(self.reserve_amount, self.request_amount)
+        return "{} {}".format(self.reserve_amount, self.request_amount)
