@@ -61,7 +61,7 @@ class HospitalNeedsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = HospitalNeeds
-        fields = ['need_type', 'reserve_quantity', 'need_quantity', 'request_quantity', 'created_at']
+        fields = ['need_type', 'reserve_amount', 'need_amount', 'request_amount', 'created_at']
 
 
 class HospitalSerializer(serializers.HyperlinkedModelSerializer):
