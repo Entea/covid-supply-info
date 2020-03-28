@@ -16,22 +16,15 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 from django.urls import path, include
-from rest_framework import routers
 from rest_framework.documentation import include_docs_urls
 
-from distributor import api
-
-router = routers.DefaultRouter()
-router.register(r'hospitals', api.HospitalViewSet)
-router.register(r'donations', api.DonationViewSet)
-router.register(r'regions', api.RegionViewSet)
-router.register(r'districts', api.DistrictViewSet)
-router.register(r'localities', api.LocalityViewSet)
-router.register(r'help-requests', api.HelpRequestCreateViewSet)
+v1 = ([
+          path('', include('distributor.urls')),
+      ], 'v1')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/v1/', include(router.urls)),
+    path('api/v1/', include(v1)),
     url(r'^api-auth/', include('rest_framework.urls')),
     url(r'^docs/', include_docs_urls(title='API Docs', public=False))
 ]
