@@ -1,10 +1,8 @@
 from django.contrib.auth.models import User
 from django.contrib.gis.db.models import PointField
-from django.db import models
-from django.core.exceptions import ValidationError
-
-from django.utils.translation import ugettext as _
 from django.core.validators import RegexValidator
+from django.db import models
+from django.utils.translation import ugettext as _
 
 
 class Measure(models.Model):
@@ -188,3 +186,16 @@ class HospitalNeeds(models.Model):
 
     def __str__(self):
         return "{} {}".format(self.reserve_amount, self.request_amount)
+
+
+class Page(models.Model):
+    name = models.CharField(max_length=200, verbose_name=_('Name'))
+    url = models.CharField(max_length=200, verbose_name=_('Url'))
+    content = models.TextField(max_length=1000, verbose_name=_('Content'))
+
+    class Meta:
+        verbose_name = _("Page")
+        verbose_name_plural = _("Pages")
+
+    def __str__(self):
+        return '{} /{}'.format(self.name, self.url)
