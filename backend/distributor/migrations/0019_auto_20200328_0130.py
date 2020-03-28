@@ -18,7 +18,6 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('reserve_amount', models.IntegerField(verbose_name='Reserve amount')),
-                ('need_amount', models.IntegerField(verbose_name='Need amount')),
                 ('request_amount', models.IntegerField(verbose_name='Request amount')),
                 ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='Created Date')),
                 ('hospital', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='distributor.Hospital', verbose_name='Hospital')),
