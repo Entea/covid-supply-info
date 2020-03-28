@@ -10,8 +10,7 @@ from distributor.models import (
     DonationDetail, Hospital, HospitalPhoneNumber,
     Region, District, Locality,
     Statistic, StatisticCategory, HelpRequest,
-    HospitalNeeds
-)
+    HospitalNeeds, Page)
 
 
 
@@ -192,3 +191,11 @@ class HelpRequestAdmin(admin.ModelAdmin):
             obj.read_at = now()
             obj.save()
         return obj
+
+
+@admin.register(Page)
+class PageAdmin(TranslationAdmin):
+    search_fields = (
+        'name',
+        'url',
+    )
