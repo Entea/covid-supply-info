@@ -170,3 +170,15 @@ class HelpRequest(models.Model):
 
     def __str__(self):
         return "{} {}".format(self.first_name, self.last_name)
+
+
+class HospitalNeeds(models.Model):
+    hospital = models.ForeignKey(Hospital, on_delete=models.PROTECT, verbose_name=_("Hospital"), related_name='needs')
+    need_type = models.ForeignKey(NeedType, on_delete=models.PROTECT, verbose_name=_('Need Type'))
+    reserve_quantity = models.IntegerField(verbose_name=_('Reserve quantity'))
+    need_quantity = models.IntegerField(verbose_name=_('Need quantity'))
+    request_quantity = models.IntegerField(verbose_name=_('Request quantity'))
+    created_at = models.DateTimeField(verbose_name=_('Created Date'), auto_now_add=True, blank=True, editable=False)
+
+    def __str__(self):
+        return "{} {} {}" .format(self.reserve_quantity, self.need_quantity, self.request_quantity)

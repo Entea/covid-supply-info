@@ -6,8 +6,7 @@ from modeltranslation.admin import TranslationAdmin
 from rangefilter.filter import DateRangeFilter
 
 from distributor.models import Measure, NeedType, Donation, DonationDetail, Hospital, HospitalPhoneNumber, Region, \
-    District, Locality, Statistic, StatisticCategory, HelpRequest
-
+    District, Locality, Statistic, StatisticCategory, HelpRequest, HospitalNeeds
 
 @admin.register(NeedType)
 class NeedTypeAdmin(TranslationAdmin):
@@ -94,13 +93,21 @@ class StatisticInline(admin.TabularInline):
         return False
 
 
+class NeedsInline(admin.TabularInline):
+    model = HospitalNeeds
+
+    def has_module_permission(self, request):
+        return False
+
+
+
 @admin.register(Hospital)
 class HospitalAdmin(TranslationAdmin):
     formfield_overrides = {
         models.PointField: {"widget": GooglePointFieldWidget}
     }
 
-    inlines = (HospitalPhoneNumberInline, StatisticInline)
+    inlines = (HospitalPhoneNumberInline, NeedsInline, StatisticInline)
 
     search_fields = (
         'name',
