@@ -13,4 +13,4 @@ jobs:
       with:
         to: -477706553
         token: 971718801:AAGhQD8eN6xG4R9u2leF4BVzfl6F26wqVLQ
-        args: The ${{ github.event_name }} event triggered first step.
+        args: В мастер-ветку прилетел новый коммит ^_^
