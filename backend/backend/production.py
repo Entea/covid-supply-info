@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False 
+DEBUG = False
 
 ALLOWED_HOSTS = ['127.0.0.1', 'antivirus.el.kg']
 
@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_extensions',
     'django_filters',
+    'cacheops',
 ]
 
 MIDDLEWARE = [
@@ -201,12 +202,15 @@ LOGGING = {
 REDIS_HOST = os.environ.get('REDIS_HOST', 'redis')
 REDIS_PORT = os.environ.get('REDIS_PORT', '6379')
 
-CACHES = {
-    "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://{REDIS_HOST}:{REDIS_PORT}/1".format(REDIS_HOST=REDIS_HOST, REDIS_PORT=REDIS_PORT),
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient"
-        },
-    }
+CACHEOPS_REDIS = "redis://{REDIS_HOST}:{REDIS_PORT}/1".format(REDIS_HOST=REDIS_HOST, REDIS_PORT=REDIS_PORT)
+
+CACHEOPS_DEFAULTS = {
+    'timeout': 7200  # 2 hours
+}
+
+CACHEOPS = {
+    'distributor.hospital': {'ops': 'get', 'timeout': 3600},
+    'distributor.locality': {'ops': 'get', 'timeout': 3600},
+    'distributor.district': {'ops': 'get', 'timeout': 3600},
+    'distributor.region': {'ops': 'get', 'timeout': 3600},
 }

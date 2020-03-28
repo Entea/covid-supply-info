@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'django_filters',
     'corsheaders',
+    'cacheops',
 ]
 
 MIDDLEWARE = [
@@ -187,12 +188,9 @@ CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = False
 
 CORS_ALLOW_METHODS = (
-    'DELETE',
     'GET',
     'OPTIONS',
-    'PATCH',
     'POST',
-    'PUT',
 )
 
 CORS_PREFLIGHT_MAX_AGE = 86400
@@ -200,12 +198,15 @@ CORS_PREFLIGHT_MAX_AGE = 86400
 REDIS_HOST = os.environ.get('REDIS_HOST', 'redis')
 REDIS_PORT = os.environ.get('REDIS_PORT', '6379')
 
-CACHES = {
-    "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://{REDIS_HOST}:{REDIS_PORT}/1".format(REDIS_HOST=REDIS_HOST, REDIS_PORT=REDIS_PORT),
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient"
-        },
-    }
+CACHEOPS_REDIS = "redis://{REDIS_HOST}:{REDIS_PORT}/1".format(REDIS_HOST=REDIS_HOST, REDIS_PORT=REDIS_PORT)
+
+CACHEOPS_DEFAULTS = {
+    'timeout': 7200  # 2 hours
+}
+
+CACHEOPS = {
+    'distributor.hospital': {'ops': 'get', 'timeout': 3600},
+    'distributor.locality': {'ops': 'get', 'timeout': 3600},
+    'distributor.district': {'ops': 'get', 'timeout': 3600},
+    'distributor.region': {'ops': 'get', 'timeout': 3600},
 }
