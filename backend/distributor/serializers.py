@@ -5,8 +5,8 @@ from distributor.models import (
     Hospital, HospitalPhoneNumber, Donation,
     DonationDetail, NeedType, Measure,
     Region, District, Locality,
-    Statistic, HelpRequest, HospitalNeeds
-)
+    Statistic, HelpRequest, HospitalNeeds,
+    Page)
 
 
 class HospitalPhoneNumberSerializer(serializers.ModelSerializer):
@@ -102,3 +102,9 @@ class HelpRequestSerializer(serializers.HyperlinkedModelSerializer):
         fields = ['first_name', 'last_name', 'position', 'hospital_name', 'locality', 'locality_id', 'phone_number',
                   'description']
         read_only_fields = ['created_at', 'read_at']
+
+
+class PageSerializer(serializers.HyperlinkedModelSerializer, ReadOnlyModelViewSet):
+    class Meta:
+        model = Page
+        fields = ['id', 'name', 'url', 'content']
