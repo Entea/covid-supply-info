@@ -62,7 +62,7 @@ class HospitalSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Hospital
-        fields = ('id', 'name', 'code', 'address', 'location', 'phone_numbers', 'needs', 'locality_id', 'statistics')
+        fields = ('id', 'name', 'code', 'address', 'location', 'locality_id', 'phone_numbers', 'needs', 'statistics')
 
     @staticmethod
     def get_location(obj):
