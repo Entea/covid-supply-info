@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Dropdown } from 'react-bootstrap';
+import Link from 'next/link';
 
 class Header extends Component {
 	state = {
@@ -24,7 +25,7 @@ class Header extends Component {
 					<button className="navbar-toggler" type="button" data-toggle="collapse"
 					        data-target="#navbarCollapse"
 					        aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-						<span className="navbar-toggler-icon"></span>
+						<span className="navbar-toggler-icon"/>
 					</button>
 					<form className="form-inline search-box">
 						<input className="form-control mr-sm-2 input-search" type="text" placeholder="Поиск больницы"
@@ -34,10 +35,13 @@ class Header extends Component {
 					<div className="collapse navbar-collapse" id="navbarCollapse">
 						<ul className="navbar-nav mr-auto">
 							<li className="nav-item active">
-								<a className="nav-link active" href="http://test.kg/">Карта</a>
+								<a className="nav-link active" href="/">Карта</a>
 							</li>
 							<li className="nav-item">
-								<a className="nav-link" href="http://test.kg/">Список пожертований</a>
+								<Link href="/donates">
+									<a className="nav-link">Список пожертований</a>
+								</Link>
+
 							</li>
 							<li className="nav-item">
 								<a className="nav-link" href="http://test.kg/">Контакты</a>
@@ -95,6 +99,6 @@ class Header extends Component {
 			</header>
 		);
 	}
-};
+}
 
 export default Header;
