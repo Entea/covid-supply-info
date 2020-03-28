@@ -117,7 +117,10 @@ class Hospital(models.Model):
 
     @property
     def full_location(self):
-        full_location = dict(longitude=self.location.y, latitude=self.location.x)
+        full_location = dict(
+            longitude=None if not self.location or not self.location.y else self.location.y,
+            latitude=None if not self.location or not self.location.x else self.location.x
+        )
         return full_location
 
 
