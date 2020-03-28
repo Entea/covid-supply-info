@@ -1,8 +1,5 @@
-DISTRIBUTOR_DB_NAME ?= distributor
-DISTRIBUTOR_DB_USER ?= master
-DISTRIBUTOR_DB_PASSWORD ?= 123456
-DISTRIBUTOR_DB_PORT ?= 5435
-ENVS = DISTRIBUTOR_DB_NAME=${DISTRIBUTOR_DB_NAME} DISTRIBUTOR_DB_USER=${DISTRIBUTOR_DB_USER} DISTRIBUTOR_DB_PASSWORD=${DISTRIBUTOR_DB_PASSWORD} DISTRIBUTOR_DB_PORT=${DISTRIBUTOR_DB_PORT} MAP_API_KEY=${MAP_API_KEY} 
+include .env
+export $(shell sed 's/=.*//' .env)
 
 init:
 	sudo apt-get install libpq-dev python3-dev
@@ -22,13 +19,16 @@ activate:
 	source venv/bin/activate
 
 start:
-	${ENVS} python manage.py runserver
+	python manage.py runserver
 
 createsuperuser:
-	${ENVS} python manage.py createsuperuser
+	python manage.py createsuperuser
+
+migrate:
+	python manage.py migrate
 
 runscript:
-	${ENVS} python manage.py runscript ${SCRIPT}
+	python manage.py runscript ${SCRIPT}
 
 command:
-	${ENVS} python manage.py ${COMMAND}
+	python manage.py ${COMMAND}
