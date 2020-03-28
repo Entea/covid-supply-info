@@ -25,7 +25,7 @@ class Header extends Component {
 					<button className="navbar-toggler" type="button" data-toggle="collapse"
 					        data-target="#navbarCollapse"
 					        aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-						<span className="navbar-toggler-icon"></span>
+						<span className="navbar-toggler-icon"/>
 					</button>
 					<form className="form-inline search-box">
 						<input className="form-control mr-sm-2 input-search" type="text" placeholder="Поиск больницы"
@@ -38,8 +38,8 @@ class Header extends Component {
 								<a className="nav-link active" href="/">Карта</a>
 							</li>
 							<li className="nav-item">
-								<Link>
-									<a className="nav-link" href="/donates">Список пожертований</a>
+								<Link href="/donates">
+									<a className="nav-link">Список пожертований</a>
 								</Link>
 
 							</li>
@@ -99,6 +99,6 @@ class Header extends Component {
 			</header>
 		);
 	}
-};
+}
 
 export default Header;
