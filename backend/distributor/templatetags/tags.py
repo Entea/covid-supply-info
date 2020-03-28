@@ -10,7 +10,7 @@ cache = {'version': DEFAULT_VERSION}
 
 @register.simple_tag(name='current_application_version')
 def get_current_application_version():
-    if cache['version'] != DEFAULT_VERSION:
+    if cache['version'] == DEFAULT_VERSION:
         cache['version'] = get_git_revision_short_hash()
     return cache['version']
 
