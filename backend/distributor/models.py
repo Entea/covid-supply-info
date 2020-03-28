@@ -44,10 +44,12 @@ class NeedType(models.Model):
 class Donation(models.Model):
     ORGANIZATION = 'ORGANIZATION'
     PERSON = 'PERSONAL'
+    DONOR = 'DONOR'
 
     DONATOR_TYPES = (
         (ORGANIZATION, _('ORGANIZATION')),
-        (PERSON, _('PERSONAL'))
+        (PERSON, _('PERSONAL')),
+        (DONOR, _('DONOR')),
     )
     donator_type = models.CharField(verbose_name=_('Тип пожертвования'), choices=DONATOR_TYPES, max_length=12,
                                     default=ORGANIZATION, help_text=_('Выберите тип пожертвования'))
