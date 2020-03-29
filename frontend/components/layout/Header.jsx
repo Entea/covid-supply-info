@@ -38,7 +38,7 @@ class Header extends Component {
 								<a className="nav-link active" href="/">Карта</a>
 							</li>
 							<li className="nav-item">
-								<Link href="/donates">
+								<Link href="/donations">
 									<a className="nav-link">Список пожертований</a>
 								</Link>
 
