@@ -35,7 +35,7 @@ header {
   color: #BDBDBD;
 }
 
-.navbar .nav-link.active  {
+.navbar .nav-link.active {
   color: #333333;
 }
 
@@ -52,7 +52,7 @@ header {
   background: #F2F2F2;
   border-radius: 4px;
   width: 100% !important;
-  height: 30px;
+  height: 38px;
   border: 1px solid transparent;
 }
 
@@ -64,7 +64,7 @@ header {
 
 .search-btn {
   position: absolute;
-  top: 4px;
+  top: 8px;
   right: 2px;
   border: none;
   background-color: transparent;
@@ -95,6 +95,7 @@ header {
   max-width: 130px;
   padding-right: 10px !important;
 }
+
 .filters-box .btn-primary,
 .filters-box .btn-primary:focus,
 .dropdown-item {
@@ -106,16 +107,18 @@ header {
   line-height: 14px;
   color: #828282 !important;
   border: none !important;
-  outline:  none !important;
+  outline: none !important;
   box-shadow: none !important;
   margin: 0px 5px;
   padding: 5px;
 }
+
 .filters-box .dropdown-toggle {
   position: relative;
   text-align: left;
   padding-right: 10px;
 }
+
 .filters-box .dropdown-toggle::after {
   display: inline-block;
   position: absolute;
@@ -130,22 +133,23 @@ header {
   border-left: 5px solid transparent;
 }
 
-.filters-box  .dropdown-menu.show {
+.filters-box .dropdown-menu.show {
   box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
   border-radius: 4px;
   border: none;
 }
 
 
-.filters-box  .dropdown {
+.filters-box .dropdown {
   display: inline-block;
   width: 100%;
-  max-width: 130px;
+  max-width: 220px;
   margin-right: 10px;
 }
 
 .circle-mark {
   position: relative;
+
   .circle {
     background: #27AE60;
     height: 30px;
@@ -155,7 +159,9 @@ header {
     position: absolute;
     left: 0;
   }
+
   cursor: pointer;
+
   .name {
     opacity: 0;
     visibility: hidden;
@@ -182,6 +188,7 @@ header {
   .circle {
     z-index: 3;
   }
+
   .name {
     opacity: 1;
     visibility: visible;
