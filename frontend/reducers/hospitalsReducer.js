@@ -1,4 +1,4 @@
-	import * as Actions from '../actions/hospitals'
+import * as Actions from '../actions/hospitals'
 
 const initialState = {
 	fetching: false,
