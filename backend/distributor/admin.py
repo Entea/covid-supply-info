@@ -109,7 +109,7 @@ class NeedsInline(admin.TabularInline):
 
 
 @admin.register(Hospital)
-class HospitalAdmin(admin.ModelAdmin):
+class HospitalAdmin(TranslationAdmin):
     change_list_template = 'admin/hospital_change_list.html'
 
     formfield_overrides = {
