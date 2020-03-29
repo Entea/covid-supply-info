@@ -14,6 +14,15 @@ services:
     env_file:
       - ./backend/.env
 
+  redis:
+    image: redis:alpine
+    container_name: redis
+    restart: always
+    expose:
+      - 6379
+    ports:
+      - 6379:6379
+
   distributor-db:
     image: mdillon/postgis:9.5
     container_name: distributor-db
