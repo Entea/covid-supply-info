@@ -16,7 +16,6 @@ class NeedType(models.Model):
     name = models.CharField(max_length=200, verbose_name=_('Name'))
     measure = models.ForeignKey(Measure, on_delete=models.PROTECT, verbose_name=_('Measure (liters, kg, etc.)'),
                                 null=True)
-    price_per_piece = models.DecimalField(max_digits=12, decimal_places=2, verbose_name=_("Price per piece (KGS)"))
     modified_at = models.DateTimeField(verbose_name=_('Modified Date'), auto_now=True, null=True, blank=True,
                                        editable=False)
     created_at = models.DateTimeField(verbose_name=_('Created Date'), auto_now_add=True, blank=True, editable=False)
@@ -61,6 +60,8 @@ class Donation(models.Model):
 class DonationDetail(models.Model):
     need_type = models.ForeignKey(NeedType, on_delete=models.PROTECT, verbose_name=_('Need Type'))
     amount = models.PositiveIntegerField(verbose_name=_('Amount'))
+    price_per_piece = models.DecimalField(max_digits=12, decimal_places=2, verbose_name=_("Price per piece (KGS)"),
+                                          null=True)
     donation = models.ForeignKey(Donation, on_delete=models.PROTECT, verbose_name=_('Donation)'),
                                  related_name='details')
 
@@ -82,7 +83,6 @@ class Region(models.Model):
 class District(models.Model):
     name = models.CharField(max_length=200, verbose_name=_('Name'))
     region = models.ForeignKey(Region, on_delete=models.CASCADE, verbose_name=_('Region'))
-
 
     class Meta:
         verbose_name = _("District")
