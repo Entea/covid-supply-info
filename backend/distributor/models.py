@@ -60,7 +60,7 @@ class Donation(models.Model):
 
 class DonationDetail(models.Model):
     need_type = models.ForeignKey(NeedType, on_delete=models.PROTECT, verbose_name=_('Need Type'))
-    amount = models.PositiveSmallIntegerField(verbose_name=_('Amount'))
+    amount = models.PositiveIntegerField(verbose_name=_('Amount'))
     donation = models.ForeignKey(Donation, on_delete=models.PROTECT, verbose_name=_('Donation)'),
                                  related_name='details')
 
@@ -82,6 +82,7 @@ class Region(models.Model):
 class District(models.Model):
     name = models.CharField(max_length=200, verbose_name=_('Name'))
     region = models.ForeignKey(Region, on_delete=models.CASCADE, verbose_name=_('Region'))
+
 
     class Meta:
         verbose_name = _("District")
