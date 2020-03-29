@@ -110,6 +110,22 @@ class Hospital(models.Model):
     location = PointField(help_text="To generate the map for your location", null=True)
     locality = models.ForeignKey(Locality, on_delete=models.CASCADE, verbose_name=_("Locality"), null=True)
 
+    search_locality_id = models.IntegerField(null=True, verbose_name=_("Search Locality ID"))
+    search_district_id = models.IntegerField(null=True, verbose_name=_("Search District ID"))
+    search_region_id = models.IntegerField(null=True, verbose_name=_("Search Region ID"))
+
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        if self.locality:
+            self.search_locality_id = self.locality.pk
+            if self.locality.district:
+                self.search_district_id = self.locality.district.pk
+                if self.locality.district.region:
+                    self.search_region_id = self.locality.district.region.pk
+
+        super(Hospital, self).save_base(force_insert=force_insert, force_update=force_update, using=using,
+                                        update_fields=update_fields)
+
     def __str__(self):
         return '{} {}'.format(self.name, self.locality)
 
