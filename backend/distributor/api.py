@@ -90,6 +90,9 @@ class HospitalShortInfoListAPIView(ListAPIView):
     queryset = Hospital.objects.all()
     serializer_class = HospitalShortInfoSerializer
     pagination_class = None
+    filter_backends = (DjangoFilterBackend, SearchFilter)
+    search_fields = ('name',)
+    filter_fields = ('search_locality_id', 'search_district_id', 'search_region_id')
 
     @method_decorator(cached_view_as(Hospital))
     def dispatch(self, *args, **kwargs):

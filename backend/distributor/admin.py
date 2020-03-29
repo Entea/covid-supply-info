@@ -1,9 +1,12 @@
-from django.contrib import admin
+from django.contrib import admin, messages
 from django.contrib.gis.db import models
+from django.shortcuts import redirect
+from django.urls import path, reverse_lazy
 from django.utils.timezone import now
 from mapwidgets.widgets import GooglePointFieldWidget
 from modeltranslation.admin import TranslationAdmin
 from rangefilter.filter import DateRangeFilter
+from django.utils.translation import ugettext as _
 
 from distributor.models import (
     Measure, NeedType, Donation,
@@ -106,12 +109,16 @@ class NeedsInline(admin.TabularInline):
 
 
 @admin.register(Hospital)
-class HospitalAdmin(TranslationAdmin):
+class HospitalAdmin(admin.ModelAdmin):
+    change_list_template = 'admin/hospital_change_list.html'
+
     formfield_overrides = {
         models.PointField: {"widget": GooglePointFieldWidget}
     }
 
     inlines = (HospitalPhoneNumberInline, NeedsInline, StatisticInline)
+
+    readonly_fields = ('search_locality_id', 'search_district_id', 'search_region_id')
 
     search_fields = (
         'name',
@@ -122,6 +129,25 @@ class HospitalAdmin(TranslationAdmin):
         'name',
         'code',
     )
+
+    def get_urls(self):
+        urls = super(HospitalAdmin, self).get_urls()
+        my_urls = [
+            path(r'hospital_update_search_fields',
+                 self.admin_site.admin_view(self.update_hospital_search_fields), name="update_hospitals_search_fields"),
+        ]
+        return my_urls + urls
+
+    @staticmethod
+    def update_hospital_search_fields(request):
+        try:
+            hospitals = Hospital.objects.all()
+            for hospital in hospitals:
+                hospital.save()
+            messages.add_message(request, messages.INFO, _("Search fields have been updated successfully"))
+        except:
+            messages.add_message(request, messages.ERROR, _("An error occurred during the updating search fields"))
+        return redirect(reverse_lazy('admin:distributor_hospital_changelist'))
 
     class Media:
         js = (
