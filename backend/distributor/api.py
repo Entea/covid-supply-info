@@ -1,5 +1,5 @@
+from cacheops import cached_view_as
 from django.utils.decorators import method_decorator
-from django.views.decorators.cache import cache_page
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
 from rest_framework.filters import SearchFilter
@@ -90,8 +90,11 @@ class HospitalShortInfoListAPIView(ListAPIView):
     queryset = Hospital.objects.all()
     serializer_class = HospitalShortInfoSerializer
     pagination_class = None
+    filter_backends = (DjangoFilterBackend, SearchFilter)
+    search_fields = ('name',)
+    filter_fields = ('search_locality_id', 'search_district_id', 'search_region_id')
 
-    @method_decorator(cache_page(60 * 120))
+    @method_decorator(cached_view_as(Hospital))
     def dispatch(self, *args, **kwargs):
         return super(HospitalShortInfoListAPIView, self).dispatch(*args, **kwargs)
 
