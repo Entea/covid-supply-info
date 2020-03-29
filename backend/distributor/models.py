@@ -22,7 +22,7 @@ class NeedType(models.Model):
     measure = models.ForeignKey(Measure, on_delete=models.PROTECT, verbose_name=_('Расширение'),
                                 null=True, help_text=_('Выберите единицу измерения'))
     price_per_piece = models.DecimalField(max_digits=12, decimal_places=2, verbose_name=_("Цена за одну единицу (KGS)"),
-                                          help_text=_('Цена в сомах'))
+                                          help_text=_('Цена в сомах'), null=True)
     modified_at = models.DateTimeField(verbose_name=_('Дата изменения'), auto_now=True, null=True, blank=True,
                                        editable=False)
     created_at = models.DateTimeField(verbose_name=_('Дата создания'), auto_now_add=True, blank=True, editable=False)
