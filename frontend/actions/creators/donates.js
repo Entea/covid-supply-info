@@ -6,6 +6,7 @@ const { publicRuntimeConfig } = getConfig();
 export const fetchDonates = () => async dispatch => {
     dispatch({ type: Actions.FETCH_DONATES });
     try {
+        conosle.log(publicRuntimeConfig.apiUrl)
         const { data } = await axios.get(`${publicRuntimeConfig.apiUrl}/donations/`);
         return Promise.resolve(dispatch({ type: Actions.SUCCESS_FETCH_DONATES, data }));
     } catch (err) {

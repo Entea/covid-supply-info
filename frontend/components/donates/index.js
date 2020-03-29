@@ -9,7 +9,7 @@ import {
 import {Table} from 'react-bootstrap'
 class DonatesContainer extends Component {
     componentDidMount() {
-        this.props.fetchDonatesAction();
+      this.props.fetchDonatesAction();
     }
     render() {
         const { fetching, donates } = this.props;
@@ -58,8 +58,8 @@ class DonatesContainer extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        fetching: state.donates.fetching,
-        donates: state.donates.data.results
+        fetching: state.donations.fetching,
+        donates: state.donations.results
     }
 };
 
