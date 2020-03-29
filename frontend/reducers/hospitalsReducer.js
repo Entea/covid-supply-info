@@ -20,7 +20,7 @@ export default function hospitals(state = initialState, action) {
 				...state,
 				fetching: false,
 				count: action.data.count,
-				results: action.data.results
+				results: action.data
 			};
 
 		case Actions.FAILURE_FETCH_HOSPITALS:

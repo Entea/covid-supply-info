@@ -78,7 +78,7 @@ class Donation(models.Model):
 class DonationDetail(models.Model):
     need_type = models.ForeignKey(NeedType, on_delete=models.PROTECT, verbose_name=_('Тип нужды'),
                                   help_text=_('Выберите тип нужды'))
-    amount = models.PositiveSmallIntegerField(verbose_name=_('Количество'), help_text=_('Введите количество'))
+    amount = models.PositiveIntegerField(verbose_name=_('Количество'), help_text=_('Введите количество'))
     donation = models.ForeignKey(Donation, on_delete=models.PROTECT, verbose_name=_('Пожертвование)'),
                                  related_name='details', help_text=_('Выберите ранее созданное пожертвование'))
 
@@ -138,14 +138,30 @@ class Hospital(models.Model):
         verbose_name_plural = _('Больницы')
         verbose_name = _('Больница')
 
+    search_locality_id = models.IntegerField(null=True, verbose_name=_("Search Locality ID"))
+    search_district_id = models.IntegerField(null=True, verbose_name=_("Search District ID"))
+    search_region_id = models.IntegerField(null=True, verbose_name=_("Search Region ID"))
+
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        if self.locality:
+            self.search_locality_id = self.locality.pk
+            if self.locality.district:
+                self.search_district_id = self.locality.district.pk
+                if self.locality.district.region:
+                    self.search_region_id = self.locality.district.region.pk
+
+        super(Hospital, self).save_base(force_insert=force_insert, force_update=force_update, using=using,
+                                        update_fields=update_fields)
+
     def __str__(self):
         return '{} {}'.format(self.name, self.locality)
 
     @property
     def full_location(self):
         full_location = dict(
-            longitude=None if not self.location or not self.location.y else self.location.y,
-            latitude=None if not self.location or not self.location.x else self.location.x
+            lat=None if not self.location or not self.location.y else self.location.y,
+            lng=None if not self.location or not self.location.x else self.location.x
         )
         return full_location
 
@@ -181,10 +197,10 @@ class Statistic(models.Model):
     hospital = models.ForeignKey(Hospital, on_delete=models.CASCADE, verbose_name=_("Больница"),
                                  related_name='statistics')
     category = models.ForeignKey(StatisticCategory, on_delete=models.CASCADE, verbose_name=_("Категория"), null=True)
-    actual = models.IntegerField(verbose_name=_('Актуальное'))
-    capacity = models.IntegerField(verbose_name=_('Вместимость'), null=True, blank=True)
-    has_capacity = models.BooleanField(verbose_name=_("Имеет ли вместимость?"), default=False,
-                                       help_text=_('Отметьте галочкой если имеет вместимость'))
+    actual = models.IntegerField(verbose_name=_('Текущий показатель'))
+    capacity = models.IntegerField(verbose_name=_('Требуемое количество'), null=True, blank=True)
+    has_capacity = models.BooleanField(verbose_name=_('Показывать поле "Требуемое количество" '), default=False,
+                                       help_text=_('Отметьте галочкой чтобы показать поле'))
 
     class Meta:
         verbose_name_plural = _('Статистики')
