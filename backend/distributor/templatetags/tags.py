@@ -4,16 +4,20 @@ from django.template import Library
 
 register = Library()
 
-cache = {'version': None}
+DEFAULT_VERSION = 'Unknown'
+cache = {'version': DEFAULT_VERSION}
 
 
 @register.simple_tag(name='current_application_version')
 def get_current_application_version():
-    if not cache['version']:
+    if cache['version'] == DEFAULT_VERSION:
         cache['version'] = get_git_revision_short_hash()
     return cache['version']
 
 
 def get_git_revision_short_hash():
-    last_hash = subprocess.check_output(['git', 'rev-parse', '--short', 'HEAD'])
-    return last_hash.strip().decode() if last_hash else None
+    try:
+        last_hash = subprocess.check_output(['git', 'rev-parse', '--short', 'HEAD'])
+        return last_hash.strip().decode()
+    except:
+        return DEFAULT_VERSION

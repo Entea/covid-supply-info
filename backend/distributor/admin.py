@@ -13,7 +13,6 @@ from distributor.models import (
     HospitalNeeds, Page)
 
 
-
 @admin.register(NeedType)
 class NeedTypeAdmin(TranslationAdmin):
     search_fields = (
