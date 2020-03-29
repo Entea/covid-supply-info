@@ -60,7 +60,7 @@ class Donation(models.Model):
 
 class DonationDetail(models.Model):
     need_type = models.ForeignKey(NeedType, on_delete=models.PROTECT, verbose_name=_('Need Type'))
-    amount = models.PositiveSmallIntegerField(verbose_name=_('Amount'))
+    amount = models.PositiveIntegerField(verbose_name=_('Amount'))
     donation = models.ForeignKey(Donation, on_delete=models.PROTECT, verbose_name=_('Donation)'),
                                  related_name='details')
 
@@ -82,6 +82,7 @@ class Region(models.Model):
 class District(models.Model):
     name = models.CharField(max_length=200, verbose_name=_('Name'))
     region = models.ForeignKey(Region, on_delete=models.CASCADE, verbose_name=_('Region'))
+
 
     class Meta:
         verbose_name = _("District")
@@ -109,6 +110,22 @@ class Hospital(models.Model):
     address = models.CharField(max_length=500, verbose_name=_('Address'), null=True)
     location = PointField(help_text="To generate the map for your location", null=True)
     locality = models.ForeignKey(Locality, on_delete=models.CASCADE, verbose_name=_("Locality"), null=True)
+
+    search_locality_id = models.IntegerField(null=True, verbose_name=_("Search Locality ID"))
+    search_district_id = models.IntegerField(null=True, verbose_name=_("Search District ID"))
+    search_region_id = models.IntegerField(null=True, verbose_name=_("Search Region ID"))
+
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        if self.locality:
+            self.search_locality_id = self.locality.pk
+            if self.locality.district:
+                self.search_district_id = self.locality.district.pk
+                if self.locality.district.region:
+                    self.search_region_id = self.locality.district.region.pk
+
+        super(Hospital, self).save_base(force_insert=force_insert, force_update=force_update, using=using,
+                                        update_fields=update_fields)
 
     def __str__(self):
         return '{} {}'.format(self.name, self.locality)
