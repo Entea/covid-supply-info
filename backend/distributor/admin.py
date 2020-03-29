@@ -3,6 +3,7 @@ from django.contrib.gis.db import models
 from django.shortcuts import redirect
 from django.urls import path, reverse_lazy
 from django.utils.timezone import now
+from import_export.admin import ImportExportModelAdmin
 from mapwidgets.widgets import GooglePointFieldWidget
 from modeltranslation.admin import TranslationAdmin
 from rangefilter.filter import DateRangeFilter
@@ -14,6 +15,7 @@ from distributor.models import (
     Region, District, Locality,
     Statistic, StatisticCategory, HelpRequest,
     HospitalNeeds, Page)
+from distributor.resources import HospitalResource
 
 
 @admin.register(NeedType)
@@ -109,7 +111,8 @@ class NeedsInline(admin.TabularInline):
 
 
 @admin.register(Hospital)
-class HospitalAdmin(TranslationAdmin):
+class HospitalAdmin(TranslationAdmin, ImportExportModelAdmin):
+    resource_class = HospitalResource
     change_list_template = 'admin/hospital_change_list.html'
 
     formfield_overrides = {
