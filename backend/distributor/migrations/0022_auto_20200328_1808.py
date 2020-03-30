@@ -357,11 +357,6 @@ class Migration(migrations.Migration):
             field=models.CharField(help_text='Введите наименование', max_length=200, null=True, verbose_name='Наименование'),
         ),
         migrations.AlterField(
-            model_name='needtype',
-            name='price_per_piece',
-            field=models.DecimalField(decimal_places=2, help_text='Цена в сомах', max_digits=12, verbose_name='Цена за одну единицу (KGS)'),
-        ),
-        migrations.AlterField(
             model_name='page',
             name='content',
             field=models.TextField(max_length=1000, verbose_name='Контент'),
