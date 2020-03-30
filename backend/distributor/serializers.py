@@ -71,7 +71,14 @@ class HospitalDetailSerializer(serializers.ModelSerializer):
 class HospitalShortInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Hospital
-        fields = ('id', 'name', 'full_location', 'code', 'search_locality_id', 'search_district_id', 'search_region_id')
+        fields = ('id',
+                  'name',
+                  'full_location',
+                  'code',
+                  'search_locality_id',
+                  'search_district_id',
+                  'search_region_id',
+                  'indicator')
 
 
 class DonationDetailSerializer(serializers.ModelSerializer):
