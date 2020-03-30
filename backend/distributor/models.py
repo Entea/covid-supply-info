@@ -1,4 +1,3 @@
-from cacheops import cached
 from django.contrib.auth.models import User
 from django.contrib.gis.db.models import PointField
 from django.core.validators import RegexValidator
