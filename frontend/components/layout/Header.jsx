@@ -1,192 +1,209 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import Link from 'next/link';
-
-import {bindActionCreators} from "redux";
-import {connect} from "react-redux";
-import Select from 'react-select'
-
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import Select from 'react-select';
 import {
-    fetchRegions as fetchRegionsAction,
+	fetchRegions as fetchRegionsAction,
 } from '../../actions/creators/regions'
-
 import {
-    fetchDistricts as fetchDistrictsAction,
+	fetchDistricts as fetchDistrictsAction,
 } from '../../actions/creators/districts'
-
 import {
-    fetchLocalities as fetchLocalitiesAction,
+	fetchLocalities as fetchLocalitiesAction,
 } from '../../actions/creators/localities'
-
+import {
+	fetchHospitals as fetchHospitalsAction
+} from '../../actions/creators/hospitals'
 
 class Header extends Component {
-    state = {
-        regionValue: null,
-        districtValue: null,
-        localityValue: null
-    };
+	state = {
+		districts: [],
+		localities: [],
+		regionValue: null,
+		districtValue: null,
+		localityValue: null,
+		search: ''
+	};
 
-    updateFilterValues() {
-        const regionId = this.state.regionValue ? this.state.regionValue.value : null;
-        const districtId = this.state.districtValue ? this.state.districtValue.value : null;
-        const localityId = this.state.localityValue ? this.state.localityValue.value : null;
-        this.props.onFilterChange(regionId, districtId, localityId);
-    }
+	onChange = (e) => {
+		this.setState({
+			[e.target.name]: e.target.value
+		})
+	};
 
-    onRegionChange(region) {
-        if ('value' in region) {
-            this.props.fetchDistrictsAction(region.value);
+	updateFilterValues = (e) => {
+		e && e.preventDefault();
+		const {regionValue, districtValue, localityValue, search} = this.state;
+		const regionId = regionValue ? regionValue.value : null;
+		const districtId = districtValue ? districtValue.value : null;
+		const localityId = localityValue ? localityValue.value : null;
+		this.props.fetchHospitalsAction(regionId, districtId, localityId, search);
+	};
 
-            this.setState(
-                (state) => ({regionValue: region, districtValue: null, localityValue: null}),
-                () => this.updateFilterValues()
-            );
-        }
-    }
+	onRegionChange(region) {
+		if (region) {
+			this.props.fetchDistrictsAction(region.value).then(() => this.setState({ districts: this.props.districts }));
 
-    onDistrictChange(district) {
-        if ('value' in district) {
-            this.props.fetchLocalitiesAction(district.value);
+			this.setState({ regionValue: region, districtValue: null, localityValue: null },
+				() => this.updateFilterValues()
+			);
+		} else {
+			this.setState({ districts: [], regionValue: null, districtValue: null, localityValue: null }, () => this.updateFilterValues())
+		}
+	};
 
-            this.setState(
-                (state) => ({districtValue: district}),
-                () => {
-                    this.setState(
-                        (state) => ({localityValue: null}),
-                        () => this.updateFilterValues()
-                    );
-                }
-            );
-        }
-    }
+	onDistrictChange(district) {
+		if (district) {
+			this.props.fetchLocalitiesAction(district.value).then(() => this.setState({ localities: this.props.localities }));
 
-    onLocalityChange(locality) {
-        if ('value' in locality) {
-            this.setState(
-                (state) => ({localityValue: locality}),
-                () => this.updateFilterValues()
-            );
-        }
-    }
+			this.setState({ districtValue: district },
+				() => {
+					this.setState(
+						(state) => ({ localityValue: null }),
+						() => this.updateFilterValues()
+					);
+				}
+			);
+		} else {
+			this.setState({ localities: [], districtValue: null, localityValue: null }, () => this.updateFilterValues())
+		}
+	};
 
-    componentDidMount() {
-        this.props.fetchRegionsAction();
-    }
+	onLocalityChange(locality) {
+		if (locality) {
+			this.setState({ localityValue: locality },
+				() => this.updateFilterValues()
+			);
+		} else {
+			this.setState({ localityValue: null }, () => this.updateFilterValues());
+		}
+	};
 
-    onRegionOptionsMessage() {
-        return "Область";
-    }
+	componentDidMount() {
+		this.props.fetchHospitalsAction();
+		this.props.fetchRegionsAction();
+	};
 
-    onDistrictOptionsMessage() {
-        return "Город";
-    }
+	onRegionOptionsMessage() {
+		return 'Область';
+	};
 
-    onLocalityOptionsMessage() {
-        return "Район";
-    }
+	onDistrictOptionsMessage() {
+		return 'Город';
+	};
 
-    render() {
+	onLocalityOptionsMessage() {
+		return 'Район';
+	};
 
-        const {localities, districts, regions} = this.props;
+	render() {
+		const { regions } = this.props;
+		const { localities, districts } = this.state;
 
-        const regionOptions = (regions || []).map((region, index) => {
-            return {value: region.id, label: region.name};
-        });
+		const regionOptions = (regions || []).map((region, index) => {
+			return { value: region.id, label: region.name };
+		});
 
-        const districtOptions = (districts || []).map((district, index) => {
-            return {value: district.id, label: district.name};
-        });
+		const districtOptions = (districts || []).map((district, index) => {
+			return { value: district.id, label: district.name };
+		});
 
-        const localityOptions = (localities || []).map((locality, index) => {
-            return {value: locality.id, label: locality.name};
-        });
+		const localityOptions = (localities || []).map((locality, index) => {
+			return { value: locality.id, label: locality.name };
+		});
 
-        return (
-            <header className="fixed-top">
-                <nav className="navbar navbar-expand-md center">
-                    <img src='logo.png' className="logo" alt="logo"/>
-                    <a className="navbar-brand" href="/">HELPMAP</a>
-                    <button className="navbar-toggler" type="button" data-toggle="collapse"
-                            data-target="#navbarCollapse"
-                            aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-                        <span className="navbar-toggler-icon"/>
-                    </button>
-                    <form className="form-inline search-box">
-                        <input className="form-control mr-sm-2 input-search" type="text" placeholder="Поиск больницы"
-                               aria-label="Search"/>
-                        <button className="search-btn" type="submit"><img src='mdi_search.svg' alt=""/></button>
-                    </form>
-                    <div className="collapse navbar-collapse" id="navbarCollapse">
-                        <ul className="navbar-nav mr-auto">
-                            <li className="nav-item active">
-                                <a className="nav-link active" href="/">Карта</a>
-                            </li>
-                            <li className="nav-item">
-                                <Link href="/donations">
-                                    <a className="nav-link">Список пожертований</a>
-                                </Link>
+		return (
+			<header className="fixed-top">
+				<nav className="navbar navbar-expand-md center">
+					<img src='logo.png' className="logo" alt="logo"/>
+					<a className="navbar-brand" href="/">HELPMAP</a>
+					<button className="navbar-toggler" type="button" data-toggle="collapse"
+							data-target="#navbarCollapse"
+							aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+						<span className="navbar-toggler-icon"/>
+					</button>
+					<form className="form-inline search-box" onSubmit={this.updateFilterValues}>
+						<input name='search' className="form-control mr-sm-2 input-search" type="text" placeholder="Поиск больницы"
+							   aria-label="Search" onChange={this.onChange}/>
+						<button className="search-btn" type="submit"><img src='mdi_search.svg' alt=""/></button>
+					</form>
+					<div className="collapse navbar-collapse" id="navbarCollapse">
+						<ul className="navbar-nav mr-auto">
+							<li className="nav-item active">
+								<a className="nav-link active" href="/">Карта</a>
+							</li>
+							<li className="nav-item">
+								<Link href="/donations">
+									<a className="nav-link">Список пожертований</a>
+								</Link>
 
-                            </li>
-                            <li className="nav-item">
-                                <a className="nav-link" href="http://test.kg/">Контакты</a>
-                            </li>
-                            <li className="nav-item float-right">
-                                <a className="btn btn-primary" href="http://test.kg/">ПОДАТЬ ЗАЯВКУ</a>
-                            </li>
-                        </ul>
-                    </div>
-                </nav>
-                <div className="center">
-                    <div className="row">
-                        <div className="filters-box">
-                            {<Select instanceId={'region-id'}
-                                     isLoading={this.props.regionFetching}
-                                     placeholder={'Область'}
-                                     className={'dropdown'}
-                                     onChange={this.onRegionChange.bind(this)}
-                                     noOptionsMessage={this.onRegionOptionsMessage.bind(this)}
-                                     options={regionOptions}/>}
+							</li>
+							<li className="nav-item">
+								<a className="nav-link" href="http://test.kg/">Контакты</a>
+							</li>
+							<li className="nav-item float-right">
+								<a className="btn btn-primary" href="http://test.kg/">ПОДАТЬ ЗАЯВКУ</a>
+							</li>
+						</ul>
+					</div>
+				</nav>
+				<div className="center">
+					<div className="row">
+						<div className="filters-box">
+							{<Select instanceId={'region-id'}
+									 isClearable
+									 isLoading={this.props.regionFetching}
+									 placeholder={'Область'}
+									 className={'dropdown'}
+									 onChange={this.onRegionChange.bind(this)}
+									 noOptionsMessage={this.onRegionOptionsMessage.bind(this)}
+									 options={regionOptions}/>}
 
-                            {<Select instanceId={'district-id'}
-                                     isLoading={this.props.districtFetching}
-                                     placeholder={'Город'}
-                                     value={this.state.districtValue}
-                                     className={'dropdown'}
-                                     onChange={this.onDistrictChange.bind(this)}
-                                     noOptionsMessage={this.onDistrictOptionsMessage.bind(this)}
-                                     options={districtOptions}/>}
+							{<Select instanceId={'district-id'}
+									 isClearable
+									 isLoading={this.props.districtFetching}
+									 placeholder={'Район'}
+									 value={this.state.districtValue}
+									 className={'dropdown'}
+									 onChange={this.onDistrictChange.bind(this)}
+									 noOptionsMessage={this.onDistrictOptionsMessage.bind(this)}
+									 options={districtOptions}/>}
 
-                            {<Select instanceId={'locality-id'}
-                                     isLoading={this.props.localityFetching}
-                                     placeholder={'Район'}
-                                     noOptionsMessage={this.onLocalityOptionsMessage.bind(this)}
-                                     value={this.state.localityValue}
-                                     className={'dropdown'}
-                                     onChange={this.onLocalityChange.bind(this)}
-                                     options={localityOptions}/>}
-                        </div>
-                    </div>
-                </div>
-            </header>
-        );
-    }
+							{<Select instanceId={'locality-id'}
+									 isClearable
+									 isLoading={this.props.localityFetching}
+									 placeholder={'Населенный пункт'}
+									 noOptionsMessage={this.onLocalityOptionsMessage.bind(this)}
+									 value={this.state.localityValue}
+									 className={'dropdown'}
+									 onChange={this.onLocalityChange.bind(this)}
+									 options={localityOptions}/>}
+						</div>
+					</div>
+				</div>
+			</header>
+		);
+	}
 }
 
 
 const mapStateToProps = (state) => {
-    return {
-        regionFetching: state.regions.fetching,
-        regions: state.regions.results,
-        districtFetching: state.districts.fetching,
-        districts: state.districts.results,
-        localityFetching: state.localities.fetching,
-        localities: state.localities.results,
-    }
+	return {
+		regionFetching: state.regions.fetching,
+		regions: state.regions.results,
+		districtFetching: state.districts.fetching,
+		districts: state.districts.results,
+		localityFetching: state.localities.fetching,
+		localities: state.localities.results,
+	}
 };
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-    fetchRegionsAction,
-    fetchDistrictsAction,
-    fetchLocalitiesAction
+	fetchRegionsAction,
+	fetchDistrictsAction,
+	fetchLocalitiesAction,
+	fetchHospitalsAction
 }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(Header)
