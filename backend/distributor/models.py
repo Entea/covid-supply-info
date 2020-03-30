@@ -114,7 +114,7 @@ class District(models.Model):
         verbose_name = _("Район")
         verbose_name_plural = _("Районы")
 
-    @cached(timeout=3600)
+    @cached(timeout=36_000)
     def __str__(self):
         return '{} {}'.format(self.name, self.region)
 
@@ -128,7 +128,7 @@ class Locality(models.Model):
         verbose_name = _("Местность")
         verbose_name_plural = _("Местности")
 
-    @cached(timeout=3600)
+    @cached(timeout=36_000)
     def __str__(self):
         return '{} {}'.format(self.name, self.district)
 
