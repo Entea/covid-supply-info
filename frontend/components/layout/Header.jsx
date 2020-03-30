@@ -15,6 +15,7 @@ import {
 import {
 	fetchHospitals as fetchHospitalsAction
 } from '../../actions/creators/hospitals'
+import Submit from "../submit";
 
 class Header extends Component {
 	state = {
@@ -142,9 +143,7 @@ class Header extends Component {
 									<a className="nav-link">Контакты</a>
 								</Link>
 							</li>
-							<li className="nav-item float-right">
-								<a className="btn btn-primary" href="http://test.kg/">ПОДАТЬ ЗАЯВКУ</a>
-							</li>
+							<Submit/>
 						</ul>
 					</div>
 				</nav>
