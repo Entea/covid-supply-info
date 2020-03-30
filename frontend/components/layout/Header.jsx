@@ -58,12 +58,7 @@ class Header extends Component {
 			this.props.fetchLocalitiesAction(district.value).then(() => this.setState({ localities: this.props.localities }));
 
 			this.setState({ districtValue: district },
-				() => {
-					this.setState(
-						(state) => ({ localityValue: null }),
-						() => this.updateFilterValues()
-					);
-				}
+				() => this.updateFilterValues()
 			);
 		} else {
 			this.setState({ localities: [], districtValue: null, localityValue: null }, () => this.updateFilterValues())
