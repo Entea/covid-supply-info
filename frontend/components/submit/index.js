@@ -124,15 +124,15 @@ class Submit extends React.Component {
         }
     };
 
-    onRegionOptionsMessage() {
+    regionOptionsMessage() {
         return 'Область';
     };
 
-    onDistrictOptionsMessage() {
+    districtOptionsMessage() {
         return 'Город';
     };
 
-    onLocalityOptionsMessage() {
+    localityOptionsMessage() {
         return 'Район';
     };
 
@@ -224,7 +224,7 @@ class Submit extends React.Component {
                                         placeholder={'Область'}
                                         className={'dropdown'}
                                         onChange={this.onRegionChange.bind(this)}
-                                        noOptionsMessage={this.onRegionOptionsMessage.bind(this)}
+                                        noOptionsMessage={this.regionOptionsMessage.bind(this)}
                                         options={regionOptions}
 
                                 />
@@ -239,7 +239,7 @@ class Submit extends React.Component {
                                         value={this.state.districtValue}
                                         className={'dropdown'}
                                         onChange={this.onDistrictChange.bind(this)}
-                                        noOptionsMessage={this.onDistrictOptionsMessage.bind(this)}
+                                        noOptionsMessage={this.districtOptionsMessage.bind(this)}
                                         options={districtOptions}/>
                             </div>
                             <div className="mb-3"
@@ -250,7 +250,7 @@ class Submit extends React.Component {
                                         isClearable
                                         isLoading={this.props.localityFetching}
                                         placeholder={'Населенный пункт'}
-                                        noOptionsMessage={this.onLocalityOptionsMessage.bind(this)}
+                                        noOptionsMessage={this.localityOptionsMessage.bind(this)}
                                         value={this.state.localityValue}
                                         className={'dropdown'}
                                         onChange={this.onLocalityChange.bind(this)}
