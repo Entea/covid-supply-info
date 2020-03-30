@@ -176,7 +176,7 @@ class Hospital(models.Model):
         ttl_request = stat['total_request']
         ttl_reserve = stat['total_reserve']
 
-        return DEFAULT_INDICATOR if not ttl_request or not ttl_reserve else int(round(ttl_reserve * 100)) / ttl_request
+        return DEFAULT_INDICATOR if not ttl_request or not ttl_reserve else int(round(ttl_reserve * 100 / ttl_request))
 
 
 class HospitalPhoneNumber(models.Model):
