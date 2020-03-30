@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+from distutils.util import strtobool
+
 import django.conf.locale
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -20,12 +22,13 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'id2!=m#1+zn$u@cs=f)7*e90kb8#-@wo7wbb(1c$smd3@se8bu'
+DEV_SECRET_KEY = 'id2!=m#1+zn$u@cs=f)7*e90kb8#-@wo7wbb(1c$smd3@se8bu'
+SECRET_KEY = os.environ.get('SECRET_KEY', DEV_SECRET_KEY)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = strtobool(os.environ.get('DEBUG', 'true'))
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'antivirus.el.kg']
 
 # Application definition
 
