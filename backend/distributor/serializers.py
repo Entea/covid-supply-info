@@ -1,5 +1,4 @@
 from rest_framework import serializers
-from rest_framework.viewsets import ReadOnlyModelViewSet
 
 from distributor.models import (
     Hospital, HospitalPhoneNumber, Donation,
@@ -91,19 +90,19 @@ class DonationSerializer(serializers.HyperlinkedModelSerializer):
         fields = ['id', 'donator_name', 'donator_type', 'description', 'created_at', 'details']
 
 
-class RegionSerializer(serializers.HyperlinkedModelSerializer, ReadOnlyModelViewSet):
+class RegionSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Region
         fields = ['id', 'name']
 
 
-class DistrictSerializer(serializers.HyperlinkedModelSerializer, ReadOnlyModelViewSet):
+class DistrictSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = District
         fields = ['id', 'region_id', 'name']
 
 
-class LocalitySerializer(serializers.HyperlinkedModelSerializer, ReadOnlyModelViewSet):
+class LocalitySerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Locality
         fields = ['id', 'district_id', 'name']
@@ -120,7 +119,7 @@ class HelpRequestSerializer(serializers.HyperlinkedModelSerializer):
         read_only_fields = ['created_at', 'read_at']
 
 
-class PageSerializer(serializers.HyperlinkedModelSerializer, ReadOnlyModelViewSet):
+class PageSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Page
         fields = ['id', 'name', 'url', 'content']
