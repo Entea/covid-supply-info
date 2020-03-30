@@ -23,6 +23,7 @@ v1 = ([
       ], 'v1')
 
 urlpatterns = [
+    url(r'^jet/', include('jet.urls', 'jet')),
     path('admin/', admin.site.urls),
     path('api/v1/', include(v1)),
     url(r'^api-auth/', include('rest_framework.urls')),
