@@ -21,8 +21,6 @@ class NeedType(models.Model):
     name = models.CharField(max_length=200, verbose_name=_('Наименование'), help_text=_('Введите наименование'))
     measure = models.ForeignKey(Measure, on_delete=models.PROTECT, verbose_name=_('Расширение'),
                                 null=True, help_text=_('Выберите единицу измерения'))
-    price_per_piece = models.DecimalField(max_digits=12, decimal_places=2, verbose_name=_("Цена за одну единицу (KGS)"),
-                                          help_text=_('Цена в сомах'))
     modified_at = models.DateTimeField(verbose_name=_('Дата изменения'), auto_now=True, null=True, blank=True,
                                        editable=False)
     created_at = models.DateTimeField(verbose_name=_('Дата создания'), auto_now_add=True, blank=True, editable=False)
@@ -79,6 +77,9 @@ class DonationDetail(models.Model):
     need_type = models.ForeignKey(NeedType, on_delete=models.PROTECT, verbose_name=_('Тип нужды'),
                                   help_text=_('Выберите тип нужды'))
     amount = models.PositiveIntegerField(verbose_name=_('Количество'), help_text=_('Введите количество'))
+    price_per_piece = models.DecimalField(default=0.0, max_digits=12, decimal_places=2,
+                                          verbose_name=_("Цена за одну единицу (KGS)"),
+                                          help_text=_('Цена в сомах'))
     donation = models.ForeignKey(Donation, on_delete=models.PROTECT, verbose_name=_('Пожертвование)'),
                                  related_name='details', help_text=_('Выберите ранее созданное пожертвование'))
 
