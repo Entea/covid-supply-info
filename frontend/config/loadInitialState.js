@@ -31,7 +31,13 @@ export default () => {
 			single: {}
 		},
 		requests: {
-			sending: false
+			sending: false,
+			regionFetching: false,
+			districtFetching: false,
+			localityFetching: false,
+			districts:[],
+			regions:[],
+			localities:[],
 		}
 	}
 }
