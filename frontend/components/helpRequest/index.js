@@ -35,7 +35,7 @@ const defaultState = {
     resultModal: false,
 }
 
-class Submit extends React.Component {
+class HelpRequest extends React.Component {
     state = {
         ...defaultState
     };
@@ -129,11 +129,11 @@ class Submit extends React.Component {
     };
 
     districtOptionsMessage() {
-        return 'Город';
+        return 'Район';
     };
 
     localityOptionsMessage() {
-        return 'Район';
+        return 'Город';
     };
 
     showResultModal = (resultModal) => {
@@ -249,7 +249,7 @@ class Submit extends React.Component {
                                         styles={localityValueError ? errorStyle : ''}
                                         isClearable
                                         isLoading={this.props.localityFetching}
-                                        placeholder={'Населенный пункт'}
+                                        placeholder={'Город'}
                                         noOptionsMessage={this.localityOptionsMessage.bind(this)}
                                         value={this.state.localityValue}
                                         className={'dropdown'}
@@ -334,4 +334,4 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
     createRequestAction,
 }, dispatch);
 
-export default connect(mapStateToProps, mapDispatchToProps)(Submit)
+export default connect(mapStateToProps, mapDispatchToProps)(HelpRequest)
