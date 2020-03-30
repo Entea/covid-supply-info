@@ -37,20 +37,8 @@ class Header extends Component {
             this.props.fetchDistrictsAction(region.value);
 
             this.setState(
-                (state) => ({regionValue: region}),
-                () => {
-                    this.setState(
-                        (state) => ({districtValue: null}),
-                        () => {
-                            this.setState(
-                                (state) => ({localityValue: null}),
-                                () => {
-                                    this.updateFilterValues();
-                                }
-                            );
-                        }
-                    );
-                }
+                (state) => ({regionValue: region, districtValue: null, localityValue: null}),
+                () => this.updateFilterValues()
             );
         }
     }
@@ -64,9 +52,7 @@ class Header extends Component {
                 () => {
                     this.setState(
                         (state) => ({localityValue: null}),
-                        () => {
-                            this.updateFilterValues();
-                        }
+                        () => this.updateFilterValues()
                     );
                 }
             );
@@ -77,9 +63,7 @@ class Header extends Component {
         if ('value' in locality) {
             this.setState(
                 (state) => ({localityValue: locality}),
-                () => {
-                    this.updateFilterValues();
-                }
+                () => this.updateFilterValues()
             );
         }
     }
