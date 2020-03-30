@@ -5,7 +5,7 @@ from django.db import models
 from django.db.models import Sum
 from django.utils.translation import ugettext as _
 
-DEFAULT_INDICATOR = None
+DEFAULT_INDICATOR = -1
 
 
 class Measure(models.Model):
@@ -173,10 +173,10 @@ class Hospital(models.Model):
         stat = self.needs.aggregate(total_request=Sum('request_amount'),
                                     total_reserve=Sum('reserve_amount'))
 
-        total_request = stat['total_request']
-        total_reserve = stat['total_reserve']
+        ttl_request = stat['total_request']
+        ttl_reserve = stat['total_reserve']
 
-        return DEFAULT_INDICATOR if not total_request or not total_reserve else total_reserve / total_request
+        return DEFAULT_INDICATOR if not ttl_request or not ttl_reserve else int(round(ttl_reserve * 100 / ttl_request))
 
 
 class HospitalPhoneNumber(models.Model):
