@@ -1,3 +1,4 @@
+from cacheops import cached
 from django.contrib.auth.models import User
 from django.contrib.gis.db.models import PointField
 from django.core.validators import RegexValidator
@@ -113,6 +114,7 @@ class District(models.Model):
         verbose_name = _("Район")
         verbose_name_plural = _("Районы")
 
+    @cached(timeout=36_000)
     def __str__(self):
         return '{} {}'.format(self.name, self.region)
 
@@ -126,6 +128,7 @@ class Locality(models.Model):
         verbose_name = _("Местность")
         verbose_name_plural = _("Местности")
 
+    @cached(timeout=36_000)
     def __str__(self):
         return '{} {}'.format(self.name, self.district)
 
