@@ -1,8 +1,12 @@
+from cacheops import cached
 from django.contrib.auth.models import User
 from django.contrib.gis.db.models import PointField
 from django.core.validators import RegexValidator
 from django.db import models
+from django.db.models import Sum
 from django.utils.translation import ugettext as _
+
+DEFAULT_INDICATOR = None
 
 
 class Measure(models.Model):
@@ -164,6 +168,16 @@ class Hospital(models.Model):
             lng=None if not self.location or not self.location.x else self.location.x
         )
         return full_location
+
+    @property
+    def indicator(self):
+        stat = self.needs.aggregate(total_request=Sum('request_amount'),
+                                    total_reserve=Sum('reserve_amount'))
+
+        total_request = stat['total_request']
+        total_reserve = stat['total_reserve']
+
+        return DEFAULT_INDICATOR if not total_request or not total_reserve else total_reserve / total_request
 
 
 class HospitalPhoneNumber(models.Model):
