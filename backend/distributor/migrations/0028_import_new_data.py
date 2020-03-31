@@ -28,8 +28,10 @@ def import_new_stuff(apps, schema_editor):
                             stat_entry, created = Statistic.objects.get_or_create(hospital=hospital,
                                                                                   category=stat_cat,
                                                                                   actual=number_of_beds)
-                            stat_entry.save()
-                        print("Update hospital {} statistic {}".format(hospital, created))
+                            if created:
+                                print("Created hospital {} statistic {}".format(hospital, stat_entry))
+                            else:
+                                print("Updated hospital {} statistic {}".format(hospital, stat_entry))
                     except Hospital.DoesNotExist:
                         print('Hospital not found', hospital_code)
                 else:
