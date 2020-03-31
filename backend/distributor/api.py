@@ -10,11 +10,12 @@ from rest_framework.views import APIView
 from distributor.models import (
     Hospital, Donation, Region,
     District, Locality, HelpRequest,
-    Page)
+    Page, ContactInfo, ContactMessage)
 from distributor.serializers import (
     HospitalSerializer, DonationSerializer, RegionSerializer,
     DistrictSerializer, LocalitySerializer, HelpRequestSerializer,
-    PageSerializer, HospitalShortInfoSerializer, HospitalDetailSerializer)
+    PageSerializer, HospitalShortInfoSerializer, HospitalDetailSerializer, ContactInfoSerializer,
+    ContactMessageSerializer)
 from distributor.services import HospitalService
 
 
@@ -122,3 +123,20 @@ class HospitalDetailAPIView(APIView):
         hospital = HospitalService.get(pk=pk)
 
         return Response(self.serializer_class(hospital).data)
+
+
+class ContactInfoAPIView(APIView):
+    serializer_class = ContactInfoSerializer
+    permission_classes = ()
+
+    def get(self, request):
+        contact_info = ContactInfo.objects.first()
+        return Response(self.serializer_class(contact_info).data)
+
+
+class ContactMessageCreateViewSet(viewsets.ModelViewSet):
+    queryset = ContactMessage.objects.all()
+    serializer_class = ContactMessageSerializer
+    permission_classes = ()
+    authentication_classes = ()
+    http_method_names = ['post', 'head']
