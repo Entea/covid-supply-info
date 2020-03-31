@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Link from 'next/link';
+import Link from '../navigation/ActiveLink';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import Select from 'react-select';
@@ -15,6 +15,7 @@ import {
 import {
 	fetchHospitals as fetchHospitalsAction
 } from '../../actions/creators/hospitals'
+import HelpRequest from "../helpRequest";
 
 class Header extends Component {
 	state = {
@@ -111,7 +112,7 @@ class Header extends Component {
 		return (
 			<header className="fixed-top">
 				<nav className="navbar navbar-expand-md center">
-					<img src='logo.png' className="logo" alt="logo"/>
+					<img src='logo.svg' className="logo" alt="logo"/>
 					<a className="navbar-brand" href="/">HELPMAP</a>
 					<button className="navbar-toggler" type="button" data-toggle="collapse"
 							data-target="#navbarCollapse"
@@ -126,20 +127,23 @@ class Header extends Component {
 					<div className="collapse navbar-collapse" id="navbarCollapse">
 						<ul className="navbar-nav mr-auto">
 							<li className="nav-item active">
-								<a className="nav-link active" href="/">Карта</a>
+								
+								<Link activeClassName="active" href="/">
+									<a className="nav-link">Карта</a>
+								</Link>
 							</li>
 							<li className="nav-item">
-								<Link href="/donations">
+								<Link activeClassName="active" href="/donations">
 									<a className="nav-link">Список пожертований</a>
 								</Link>
 
 							</li>
 							<li className="nav-item">
-								<a className="nav-link" href="http://test.kg/">Контакты</a>
+								<Link activeClassName="active" href="/contact">
+									<a className="nav-link">Контакты</a>
+								</Link>
 							</li>
-							<li className="nav-item float-right">
-								<a className="btn btn-primary" href="http://test.kg/">ПОДАТЬ ЗАЯВКУ</a>
-							</li>
+							<HelpRequest/>
 						</ul>
 					</div>
 				</nav>
@@ -181,7 +185,6 @@ class Header extends Component {
 		);
 	}
 }
-
 
 const mapStateToProps = (state) => {
 	return {

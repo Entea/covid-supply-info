@@ -33,7 +33,7 @@ class NeedTypeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = NeedType
-        fields = ['id', 'name', 'measure', 'price_per_piece']
+        fields = ['id', 'name', 'measure']
 
 
 class HospitalNeedsSerializer(serializers.ModelSerializer):
@@ -71,7 +71,14 @@ class HospitalDetailSerializer(serializers.ModelSerializer):
 class HospitalShortInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Hospital
-        fields = ('id', 'name', 'full_location', 'code', 'search_locality_id', 'search_district_id', 'search_region_id')
+        fields = ('id',
+                  'name',
+                  'full_location',
+                  'code',
+                  'search_locality_id',
+                  'search_district_id',
+                  'search_region_id',
+                  'indicator')
 
 
 class DonationDetailSerializer(serializers.ModelSerializer):
@@ -79,7 +86,7 @@ class DonationDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = DonationDetail
-        fields = ['id', 'amount', 'need_type']
+        fields = ['id', 'amount', 'need_type', 'price_per_piece']
 
 
 class DonationSerializer(serializers.HyperlinkedModelSerializer):
