@@ -112,7 +112,7 @@ class Header extends Component {
 		return (
 			<header className="fixed-top">
 				<nav className="navbar navbar-expand-md center">
-					<img src='logo.png' className="logo" alt="logo"/>
+					<img src='logo.svg' className="logo" alt="logo"/>
 					<a className="navbar-brand" href="/">HELPMAP</a>
 					<button className="navbar-toggler" type="button" data-toggle="collapse"
 							data-target="#navbarCollapse"
@@ -185,7 +185,6 @@ class Header extends Component {
 		);
 	}
 }
-
 
 const mapStateToProps = (state) => {
 	return {

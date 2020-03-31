@@ -193,6 +193,216 @@ header {
     opacity: 1;
     visibility: visible;
     z-index: 2;
-
   }
+}
+
+.right-block {
+  transition: .55s opacity, .55s visibility;
+  opacity: 0;
+  visibility: hidden;
+  background: #FFFFFF;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 15px;
+  padding: 12px 15px;
+  width: 293px;
+  top: 121px;
+  position: fixed;
+  right: 10px;
+  height: calc(100vh - 131px);
+  z-index: 100;
+  overflow-y: scroll;
+  display: block;
+  &.open {
+    opacity: 1;
+    visibility: visible;
+  }
+  .close {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    cursor: pointer;
+  }
+  .hospital-list {
+    .title {
+      font-family: 'Open Sans', sans-serif;
+      font-style: normal;
+      font-weight: 600;
+      font-size: 12px;
+      line-height: 16px;
+      color: #000000;
+    }
+    td, th {
+      width: 180px;
+      padding-bottom: 14px;
+    }
+    tr {
+      td {
+        font-family: 'Open Sans', sans-serif;
+        font-style: normal;
+        font-weight: normal;
+        font-size: 12px;
+        line-height: 16px;
+        color: #000000;
+        .circle {
+          background: #27AE60;
+          height: 24px;
+          width: 24px;
+          border-radius: 12px;
+          display: inline-block;
+          vertical-align: top;
+        }
+        .percentage {
+          vertical-align: top;
+          display: inline-block;
+          margin-left: 24px;
+          margin-top: 4px;
+        }
+      }
+    }
+  }
+  .hospital-box {
+    h1 {
+      font-family: 'Open Sans', sans-serif;
+      font-style: normal;
+      font-weight: bold;
+      font-size: 14px;
+      line-height: 19px;
+      color: #000000;
+      width: 230px;
+    }
+    .address {
+      margin-top: 12px;
+      padding-left: 30px;
+      background: url("./img/mdi_pin_drop.svg") left top no-repeat;
+      font-family: 'Open Sans', sans-serif;
+      font-style: normal;
+      font-weight: normal;
+      font-size: 12px;
+      line-height: 16px;
+      margin-bottom: 18px;
+      .coordinate {
+        font-style: normal;
+        font-weight: normal;
+        font-size: 10px;
+        line-height: 14px;
+        color: #828282;
+        margin-top: 6px;
+      }
+    }
+    .phone {
+      padding-left: 30px;
+      background: url("./img/mdi_phone.svg") left top no-repeat;
+      margin-bottom: 26px;
+      li {
+        font-family: 'Open Sans', sans-serif;
+        font-style: normal;
+        font-weight: normal;
+        font-size: 12px;
+        line-height: 16px;
+      }
+    }
+    .circle {
+      background: #219653;
+      color: #ffffff;
+      font-family: 'Open Sans', sans-serif;
+      font-style: normal;
+      font-weight: normal;
+      font-size: 12px;
+      height: 29px;
+      line-height: 29px;
+      border-radius: 15px;
+      width: 100%;
+      padding: 0 15px;
+      margin: 5px 0;
+      .name {
+        width: 170px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: inline-block;
+        white-space: nowrap;
+        vertical-align: top;
+        float:left;
+      }
+      .count {
+        display: inline-block;
+        vertical-align: top;
+        float:right;
+      }
+    }
+    p {
+      margin: 15px 15px;
+    }
+    table {
+      margin-top: 8px;
+      width: 100%;
+      th {
+        font-family: 'Open Sans', sans-serif;
+        font-style: normal;
+        font-weight: 600;
+        font-size: 8px;
+        line-height: 11px;
+        color: #333333;
+        border-right: 1px solid #E0E0E0;
+        text-align: center;
+        padding: 0 10px;
+        &:first-child {
+          text-align: left;
+          padding: 0;
+          white-space: nowrap;
+        }
+        &:last-child {
+          border-right: 1px solid transparent;
+        }
+      }
+      td {
+        font-family: 'Open Sans', sans-serif;
+        font-style: normal;
+        font-weight: normal;
+        font-size: 10px;
+        line-height: 14px;
+        color: #333333;
+        padding: 0 12px;
+        border-right: 1px solid #E0E0E0;
+        &:first-child {
+          text-align: left;
+          padding: 0;
+        }
+        &:last-child {
+          border-right: 1px solid transparent;
+        }
+      }
+    }
+  }
+}
+
+.circle, .circle-button {
+  .danger {
+    background: #EB5757;
+  }
+  .warning {
+    background: #EBCA57;
+  }
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  overflow: hidden;
+  border-radius: 2px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 2px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
