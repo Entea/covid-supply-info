@@ -4,7 +4,6 @@ from django.db import migrations, transaction
 from distributor.models import Hospital
 from distributor.models import Statistic
 from distributor.models import StatisticCategory
-from django.db import connection, reset_queries
 from csv import reader
 import os
 
@@ -19,24 +18,10 @@ def import_new_stuff(apps, schema_editor):
                 number_of_beds = row[1]
                 try:
                     hospital = Hospital.objects.get(code=hospital_code)
-                    print('Found hospital ' + hospital_code)
 
-                    stat_entry = None
-                    try:
-                        stat_entry = Statistic.objects.get(hospital = hospital, category = stat_cat)
-                        print('Found Statistic object')
-                    except:
-                        pass
-
-                    if (stat_entry is None):
-                        stat_entry = Statistic(hospital = hospital, category = stat_cat)
-
+                    stat_entry, created = Statistic.objects.get_or_create(hospital = hospital, category = stat_cat)
                     stat_entry.actual = number_of_beds
                     stat_entry.save()
-
-                    print('Saved...')
-                    print(connection.queries)
-                    reset_queries()
                 except:
                     raise Exception('Hospital not found ' + hospital_code)
 
