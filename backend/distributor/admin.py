@@ -4,7 +4,7 @@ from django.shortcuts import redirect
 from django.urls import path, reverse_lazy
 from django.utils.timezone import now
 from mapwidgets.widgets import GooglePointFieldWidget
-from modeltranslation.admin import TranslationAdmin
+from modeltranslation.admin import TranslationAdmin, TranslationTabularInline
 from rangefilter.filter import DateRangeFilter
 from django.utils.translation import ugettext as _
 
@@ -13,7 +13,7 @@ from distributor.models import (
     DonationDetail, Hospital, HospitalPhoneNumber,
     Region, District, Locality,
     Statistic, StatisticCategory, HelpRequest,
-    HospitalNeeds, Page)
+    HospitalNeeds, Page, ContactInfo, ContactInfoPhoneNumber, ContactInfoEmail, ContactMessage)
 
 
 @admin.register(NeedType)
@@ -224,3 +224,58 @@ class PageAdmin(TranslationAdmin):
         'name',
         'url',
     )
+
+
+class ContactInfoPhoneNumberInline(admin.TabularInline):
+    model = ContactInfoPhoneNumber
+
+    def has_module_permission(self, request):
+        return False
+
+
+class ContactInfoEmailInline(admin.TabularInline):
+    model = ContactInfoEmail
+
+    def has_module_permission(self, request):
+        return False
+
+
+@admin.register(ContactInfo)
+class ContactInfoAdmin(TranslationAdmin):
+    inlines = (ContactInfoPhoneNumberInline, ContactInfoEmailInline)
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    def has_add_permission(self, request):
+        return False
+
+
+@admin.register(ContactMessage)
+class ContactMessageAdmin(admin.ModelAdmin):
+    readonly_fields = ('full_name', 'title', 'email', 'phone_number', 'body')
+
+    search_fields = (
+        'full_name',
+        'title',
+    )
+
+    list_display = (
+        'full_name',
+        'title',
+        'email',
+        'phone_number',
+        'created_at',
+    )
+
+    list_filter = (
+        ('created_at', DateRangeFilter),
+    )
+
+    ordering = ('-created_at',)
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    def has_view_permission(self, request, obj=None):
+        return True
