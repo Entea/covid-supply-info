@@ -32,7 +32,18 @@ class Message extends Component {
         if (form.checkValidity()) {
             this.props.sendMessage(
                 {'full_name': fullName, 'phone_number': phoneNumber, email, title, body}
-            )
+            ).then(() => {
+                this.setState({
+                    fullName: "",
+                    phoneNumber: "",
+                    email: "",
+                    title: "",
+                    body: "",
+                    validated: false,
+                    verified: false,
+                });
+                this.captcha.reset()
+            });
         }
         this.setState({
             validated: true
@@ -64,7 +75,7 @@ class Message extends Component {
 
                     <Form.Group>
                         <Form.Label>Телефон</Form.Label>
-                        <Form.Control required name="phoneNumber" value={phoneNumber} onChange={this.onChange}/>
+                        <Form.Control required name="phoneNumber" value={phoneNumber} type='phone' onChange={this.onChange}/>
                         <Form.Control.Feedback type="invalid">
                             Введите номер телефона
                         </Form.Control.Feedback>
@@ -96,6 +107,7 @@ class Message extends Component {
 
                     <Form.Group>
                         <Reaptcha
+                            ref={e => (this.captcha = e)}
                             sitekey={publicRuntimeConfig.recaptchaSiteKey}
                             onVerify={this.onVerify}
                         />
