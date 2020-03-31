@@ -42,7 +42,12 @@ class RegionViewSet(viewsets.ReadOnlyModelViewSet):
     API returns the list of the regions
     """
     queryset = Region.objects.all().order_by('name')
+    pagination_class = None
     serializer_class = RegionSerializer
+
+    @method_decorator(cached_view_as(Region))
+    def dispatch(self, *args, **kwargs):
+        return super(RegionViewSet, self).dispatch(*args, **kwargs)
 
 
 class DistrictViewSet(viewsets.ReadOnlyModelViewSet):
@@ -52,7 +57,12 @@ class DistrictViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = District.objects.all().order_by('name')
     serializer_class = DistrictSerializer
     filter_backends = (DjangoFilterBackend,)
+    pagination_class = None
     filter_fields = ('region',)
+
+    @method_decorator(cached_view_as(District))
+    def dispatch(self, *args, **kwargs):
+        return super(DistrictViewSet, self).dispatch(*args, **kwargs)
 
 
 class LocalityViewSet(viewsets.ReadOnlyModelViewSet):
@@ -62,7 +72,12 @@ class LocalityViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Locality.objects.all().order_by('name')
     serializer_class = LocalitySerializer
     filter_backends = (DjangoFilterBackend,)
+    pagination_class = None
     filter_fields = ('district',)
+
+    @method_decorator(cached_view_as(Locality))
+    def dispatch(self, *args, **kwargs):
+        return super(LocalityViewSet, self).dispatch(*args, **kwargs)
 
 
 class HelpRequestCreateViewSet(viewsets.ModelViewSet):

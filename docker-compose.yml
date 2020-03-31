@@ -9,10 +9,20 @@ services:
       - 8000:8000
     depends_on:
       - distributor-db
+      - redis
     links:
       - distributor-db
+      - redis
     env_file:
       - ./backend/.env
+    environment: 
+      - DISTRIBUTOR_DB_HOST=distributor-db
+      - DISTRIBUTOR_DB_NAME=distributor
+      - DISTRIBUTOR_DB_USER=master
+      - DISTRIBUTOR_DB_PASSWORD=123456
+      - DISTRIBUTOR_DB_PORT=5435
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
 
   redis:
     image: redis:alpine

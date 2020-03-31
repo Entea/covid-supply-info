@@ -1,21 +1,113 @@
 import React, { Component } from 'react';
-import { Dropdown } from 'react-bootstrap';
-import Link from 'next/link';
+import Link from '../navigation/ActiveLink';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import Select from 'react-select';
+import {
+	fetchRegions as fetchRegionsAction,
+} from '../../actions/creators/regions'
+import {
+	fetchDistricts as fetchDistrictsAction,
+} from '../../actions/creators/districts'
+import {
+	fetchLocalities as fetchLocalitiesAction,
+} from '../../actions/creators/localities'
+import {
+	fetchHospitals as fetchHospitalsAction
+} from '../../actions/creators/hospitals'
+import HelpRequest from "../helpRequest";
 
 class Header extends Component {
 	state = {
-		selectedPlace: {},
-		region: '',
-		area: '',
-		city: ''
+		districts: [],
+		localities: [],
+		regionValue: null,
+		districtValue: null,
+		localityValue: null,
+		search: ''
 	};
 
-	select(name, value) {
-		this.setState({ [name]: value });
-	}
+	onChange = (e) => {
+		this.setState({
+			[e.target.name]: e.target.value
+		})
+	};
+
+	updateFilterValues = (e) => {
+		e && e.preventDefault();
+		const {regionValue, districtValue, localityValue, search} = this.state;
+		const regionId = regionValue ? regionValue.value : null;
+		const districtId = districtValue ? districtValue.value : null;
+		const localityId = localityValue ? localityValue.value : null;
+		this.props.fetchHospitalsAction(regionId, districtId, localityId, search);
+	};
+
+	onRegionChange(region) {
+		if (region) {
+			this.props.fetchDistrictsAction(region.value).then(() => this.setState({ districts: this.props.districts }));
+
+			this.setState({ regionValue: region, districtValue: null, localityValue: null },
+				() => this.updateFilterValues()
+			);
+		} else {
+			this.setState({ districts: [], regionValue: null, districtValue: null, localityValue: null }, () => this.updateFilterValues())
+		}
+	};
+
+	onDistrictChange(district) {
+		if (district) {
+			this.props.fetchLocalitiesAction(district.value).then(() => this.setState({ localities: this.props.localities }));
+
+			this.setState({ districtValue: district },
+				() => this.updateFilterValues()
+			);
+		} else {
+			this.setState({ localities: [], districtValue: null, localityValue: null }, () => this.updateFilterValues())
+		}
+	};
+
+	onLocalityChange(locality) {
+		if (locality) {
+			this.setState({ localityValue: locality },
+				() => this.updateFilterValues()
+			);
+		} else {
+			this.setState({ localityValue: null }, () => this.updateFilterValues());
+		}
+	};
+
+	componentDidMount() {
+		this.props.fetchHospitalsAction();
+		this.props.fetchRegionsAction();
+	};
+
+	onRegionOptionsMessage() {
+		return 'Область';
+	};
+
+	onDistrictOptionsMessage() {
+		return 'Город';
+	};
+
+	onLocalityOptionsMessage() {
+		return 'Район';
+	};
 
 	render() {
-		const { region, area, city } = this.state;
+		const { regions } = this.props;
+		const { localities, districts } = this.state;
+
+		const regionOptions = (regions || []).map((region, index) => {
+			return { value: region.id, label: region.name };
+		});
+
+		const districtOptions = (districts || []).map((district, index) => {
+			return { value: district.id, label: district.name };
+		});
+
+		const localityOptions = (localities || []).map((locality, index) => {
+			return { value: locality.id, label: locality.name };
+		});
 
 		return (
 			<header className="fixed-top">
@@ -23,76 +115,69 @@ class Header extends Component {
 					<img src='logo.svg' className="logo" alt="logo"/>
 					<a className="navbar-brand" href="/">HELPMAP</a>
 					<button className="navbar-toggler" type="button" data-toggle="collapse"
-					        data-target="#navbarCollapse"
-					        aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+							data-target="#navbarCollapse"
+							aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
 						<span className="navbar-toggler-icon"/>
 					</button>
-					<form className="form-inline search-box">
-						<input className="form-control mr-sm-2 input-search" type="text" placeholder="Поиск больницы"
-						       aria-label="Search"/>
+					<form className="form-inline search-box" onSubmit={this.updateFilterValues}>
+						<input name='search' className="form-control mr-sm-2 input-search" type="text" placeholder="Поиск больницы"
+							   aria-label="Search" onChange={this.onChange}/>
 						<button className="search-btn" type="submit"><img src='mdi_search.svg' alt=""/></button>
 					</form>
 					<div className="collapse navbar-collapse" id="navbarCollapse">
 						<ul className="navbar-nav mr-auto">
 							<li className="nav-item active">
-								<a className="nav-link active" href="/">Карта</a>
+								
+								<Link activeClassName="active" href="/">
+									<a className="nav-link">Карта</a>
+								</Link>
 							</li>
 							<li className="nav-item">
-								<Link href="/donates">
+								<Link activeClassName="active" href="/donations">
 									<a className="nav-link">Список пожертований</a>
 								</Link>
 
 							</li>
 							<li className="nav-item">
-								<a className="nav-link" href="http://test.kg/">Контакты</a>
+								<Link activeClassName="active" href="/contact">
+									<a className="nav-link">Контакты</a>
+								</Link>
 							</li>
-							<li className="nav-item float-right">
-								<a className="btn btn-primary" href="http://test.kg/">ПОДАТЬ ЗАЯВКУ</a>
-							</li>
+							<HelpRequest/>
 						</ul>
 					</div>
 				</nav>
 				<div className="center">
 					<div className="row">
 						<div className="filters-box">
-							<Dropdown>
-								<Dropdown.Toggle id="dropdown-basic">
-									{ region !== '' ? region : 'Область' }
-								</Dropdown.Toggle>
-								<Dropdown.Menu>
-									<Dropdown.Item
-										onClick={ () => this.select('region', 'Чуйская') }>Чуйская</Dropdown.Item>
-									<Dropdown.Item
-										onClick={ () => this.select('region', 'Баткенская') }>Баткенская</Dropdown.Item>
-									<Dropdown.Item onClick={ () => this.select('region', 'Something else') }>Something
-										else</Dropdown.Item>
-								</Dropdown.Menu>
-							</Dropdown>
-							<Dropdown>
-								<Dropdown.Toggle id="dropdown-basic">
-									{ city !== '' ? city : 'Город' }
-								</Dropdown.Toggle>
-								<Dropdown.Menu>
-									<Dropdown.Item
-										onClick={ () => this.select('city', 'Бишкек') }>Бишкек</Dropdown.Item>
-									<Dropdown.Item onClick={ () => this.select('city', 'Кант') }>Кант</Dropdown.Item>
-									<Dropdown.Item onClick={ () => this.select('city', 'Something else') }>Something
-										else</Dropdown.Item>
-								</Dropdown.Menu>
-							</Dropdown>
-							<Dropdown>
-								<Dropdown.Toggle id="dropdown-basic">
-									{ area !== '' ? area : 'Район' }
-								</Dropdown.Toggle>
-								<Dropdown.Menu>
-									<Dropdown.Item
-										onClick={ () => this.select('area', 'Октябрьский') }>Октябрьский</Dropdown.Item>
-									<Dropdown.Item
-										onClick={ () => this.select('area', 'Ленинский') }>Ленинский</Dropdown.Item>
-									<Dropdown.Item onClick={ () => this.select('area', 'Something else') }>Something
-										else</Dropdown.Item>
-								</Dropdown.Menu>
-							</Dropdown>
+							{<Select instanceId={'region-id'}
+									 isClearable
+									 isLoading={this.props.regionFetching}
+									 placeholder={'Область'}
+									 className={'dropdown'}
+									 onChange={this.onRegionChange.bind(this)}
+									 noOptionsMessage={this.onRegionOptionsMessage.bind(this)}
+									 options={regionOptions}/>}
+
+							{<Select instanceId={'district-id'}
+									 isClearable
+									 isLoading={this.props.districtFetching}
+									 placeholder={'Район'}
+									 value={this.state.districtValue}
+									 className={'dropdown'}
+									 onChange={this.onDistrictChange.bind(this)}
+									 noOptionsMessage={this.onDistrictOptionsMessage.bind(this)}
+									 options={districtOptions}/>}
+
+							{<Select instanceId={'locality-id'}
+									 isClearable
+									 isLoading={this.props.localityFetching}
+									 placeholder={'Населенный пункт'}
+									 noOptionsMessage={this.onLocalityOptionsMessage.bind(this)}
+									 value={this.state.localityValue}
+									 className={'dropdown'}
+									 onChange={this.onLocalityChange.bind(this)}
+									 options={localityOptions}/>}
 						</div>
 					</div>
 				</div>
@@ -101,4 +186,22 @@ class Header extends Component {
 	}
 }
 
-export default Header;
+const mapStateToProps = (state) => {
+	return {
+		regionFetching: state.regions.fetching,
+		regions: state.regions.results,
+		districtFetching: state.districts.fetching,
+		districts: state.districts.results,
+		localityFetching: state.localities.fetching,
+		localities: state.localities.results,
+	}
+};
+
+const mapDispatchToProps = (dispatch) => bindActionCreators({
+	fetchRegionsAction,
+	fetchDistrictsAction,
+	fetchLocalitiesAction,
+	fetchHospitalsAction
+}, dispatch);
+
+export default connect(mapStateToProps, mapDispatchToProps)(Header)

@@ -1,4 +1,4 @@
-import React, {Component, Fragment} from 'react';
+import React, { Component } from 'react';
 import GoogleMapReact from 'google-map-react';
 import getConfig from 'next/config';
 const { publicRuntimeConfig } = getConfig();
@@ -10,9 +10,18 @@ import {
   fetchHospitals as fetchHospitalsAction,
   fetchHospital as fetchHospitalAction,
 } from '../../actions/creators/hospitals'
+import { connect } from 'react-redux';
 
+const { publicRuntimeConfig } = getConfig();
 
-class Main extends Component {
+class Main extends Component {  
+	static defaultProps = {
+		center: {
+			lat: 41.822475,
+			lng: 74.754128
+		},
+		zoom: 7,
+	};
   constructor() {
     super();
     this.state = {
@@ -150,50 +159,53 @@ class Main extends Component {
     </div>)
   }
 
-	render() {
-    const { hospitals } = this.props;
-    const Mark = ({name, percent}) => <div className="circle-mark"><div className={'circle ' + this.needHelpStatus(percent)}/><div className="name">{name}</div></div>;
-    let Marks = [];
-    hospitals.forEach((item, index) => {
-      if (item.full_location.latitude && item.full_location.longitude) {
-        Marks.push(<Mark
-          key={index + 'm'}
-          lat={ item.full_location.longitude }
-          lng={ item.full_location.latitude }
-          name={item.name}
-          id={item.id}
-          percent={item.request_amount}
-        />)
-      }
+render() {
+  const Mark = ({ name, percent }) => <div className="circle-mark">
+    <div className={'circle ' + this.needHelpStatus(percent)}/>
+    <div className="name">{name}</div>
+  </div>;
 
-    })
+  let marks = (this.props.hospitals || [])
+    .filter(item => item['full_location'].lat && item['full_location'].lng)
+    .map((item, index) => (<Mark
+      key={index + 'm'}
+      lat={item['full_location'].lat}
+      lng={item['full_location'].lng}
+      name={item.name}                  
+      id={item.id}
+      percent={item.request_amount}           
+    />));
+                             
 		return (
 			<main>
 				<div style={ { height: '100vh', width: '100%' } }>
           <GoogleMapReact
 						bootstrapURLKeys={ { key: publicRuntimeConfig.mapKey } }
-						defaultCenter={ { lat: 41.822475, lng: 74.754128 } }
-						defaultZoom={ 7 }
+						defaultCenter={this.props.center}
+						defaultZoom={this.props.zoom}>
             onChildClick={this.openHospital.bind(this)}
 					>
-            {Marks}
+            {marks}
 					</GoogleMapReact>
-          {this.state.openRightBlock }
           <div ref={this.setWrapperRef} className={ this.state.openRightBlock ? 'open right-block' : 'right-block'}>
             <a className="close" onClick={() => this.closeRightBlock()}>
               <img src="x.svg" alt="close"/>
             </a>
             {this.state.rightBlockTemplate}
           </div>
+				<div style={{ height: '100vh', width: '100%' }}>
+					<GoogleMapReact
+						bootstrapURLKeys={{ key: publicRuntimeConfig.mapKey }}
+						{marks}
+					</GoogleMapReact>
 				</div>
 			</main>
 		);
-  }
-};
+	}
+}
 
 const mapStateToProps = (state) => {
   return {
-    fetching: state.hospitals.fetching,
     hospitals: state.hospitals.results,
     hospital: state.hospitals.single
   }
@@ -204,4 +216,4 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
   fetchHospitalAction,
 }, dispatch);
 
-export default connect(mapStateToProps, mapDispatchToProps)(Main)
+export default connect(mapStateToProps, mapDispatchToProps)(Main);
