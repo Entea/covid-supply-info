@@ -20,7 +20,7 @@ services:
       - DISTRIBUTOR_DB_NAME=distributor
       - DISTRIBUTOR_DB_USER=master
       - DISTRIBUTOR_DB_PASSWORD=123456
-      - DISTRIBUTOR_DB_PORT=5435
+      - DISTRIBUTOR_DB_PORT=5432
       - REDIS_HOST=redis
       - REDIS_PORT=6379
 
