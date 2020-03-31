@@ -12,8 +12,8 @@ const Info = (props) => {
             <ul className={'contact__phones'}>
                 {
                     data.phone_numbers && data.phone_numbers.map(number =>
-                        <li>
-                            {number}
+                        <li key={number.value}>
+                            {number.value}
                         </li>
                     )
                 }
@@ -21,7 +21,7 @@ const Info = (props) => {
 
             <p>
                 Email: {
-                data.emails && data.emails.map(email => <a href={`mailto:${email}`}>{email}</a>)
+                data.emails && data.emails.map(email => <a key={email.value} href={`mailto:${email.value}`}>{email.value}</a>)
             }
             </p>
         </Fragment>
