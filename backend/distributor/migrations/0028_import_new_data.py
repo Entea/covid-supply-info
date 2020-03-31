@@ -9,7 +9,6 @@ import os
 def import_new_stuff(apps, schema_editor):
     try:
         stat_cat = StatisticCategory.objects.get(name='Коек всего')
-
         with open(os.path.dirname(os.path.realpath(__file__)) + '/files/beds.csv', newline='') as file:
             csvin = reader(file, delimiter=',')
             for row in csvin:
@@ -21,19 +20,20 @@ def import_new_stuff(apps, schema_editor):
                 except Exception as e:
                     print("Error occurred during casting", e)
                 if hospital_code and number_of_beds >= 0:
-                    print("Hospital code = {}, # of beds = {}".format(hospital_code, number_of_beds))
                     try:
                         hospital = Hospital.objects.get(code=hospital_code)
-                        with transaction.atomic():
-                            stat_entry, created = Statistic.objects.get_or_create(hospital=hospital,
-                                                                                  category=stat_cat,
-                                                                                  actual=number_of_beds)
-                            if created:
-                                print("Created hospital {} statistic {}".format(hospital, stat_entry))
-                            else:
-                                print("Updated hospital {} statistic {}".format(hospital, stat_entry))
                     except Hospital.DoesNotExist:
-                        print('Hospital not found', hospital_code)
+                        print("Hospital by code = {} does not exist".format(hospital_code))
+                        continue
+                    try:
+                        with transaction.atomic():
+                            Statistic.objects.update_or_create(hospital=hospital,
+                                                               category=stat_cat,
+                                                               defaults={
+                                                                   'actual': number_of_beds
+                                                               })
+                    except Exception as e:
+                        print("Error occurred during saving statistic", e)
                 else:
                     print("Invalid data: hospital code = {}, # of beds = {}", hospital_code, number_of_beds)
     except Exception as e:
