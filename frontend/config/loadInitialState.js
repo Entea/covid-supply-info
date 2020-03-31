@@ -1,3 +1,5 @@
+import * as status from '../constants/messageStatus';
+
 export default () => {
 	return {
 		districts: {
@@ -38,6 +40,12 @@ export default () => {
 			districts:[],
 			regions:[],
 			localities:[],
+		},
+		contacts: {
+			sending: false,
+			status: status.INIT,
+			fetching: false,
+			data: {}
 		}
 	}
 }
