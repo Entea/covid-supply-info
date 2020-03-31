@@ -5,23 +5,39 @@ from distributor.models import Hospital, Statistic, StatisticCategory
 from csv import reader
 import os
 
+
 def import_new_stuff(apps, schema_editor):
-    with transaction.atomic():
-        stat_cat = StatisticCategory.objects.get(name = 'Коек всего')
+    try:
+        stat_cat = StatisticCategory.objects.get(name='Коек всего')
 
         with open(os.path.dirname(os.path.realpath(__file__)) + '/files/beds.csv', newline='') as file:
             csvin = reader(file, delimiter=',')
             for row in csvin:
-                hospital_code = row[0]
-                number_of_beds = row[1]
+                hospital_code = None
+                number_of_beds = None
                 try:
-                    hospital = Hospital.objects.get(code=hospital_code)
-
-                    stat_entry, created = Statistic.objects.get_or_create(hospital = hospital, category = stat_cat)
-                    stat_entry.actual = number_of_beds
-                    stat_entry.save()
-                except Hospital.DoesNotExist:
-                    raise Exception('Hospital not found ' + hospital_code)
+                    hospital_code = str(row[0]).strip()
+                    number_of_beds = int(str(row[1]).strip())
+                except Exception as e:
+                    print("Error occurred during casting", e)
+                if hospital_code and number_of_beds >= 0:
+                    print("Hospital code = {}, # of beds = {}".format(hospital_code, number_of_beds))
+                    try:
+                        hospital = Hospital.objects.get(code=hospital_code)
+                        with transaction.atomic():
+                            stat_entry, created = Statistic.objects.get_or_create(hospital=hospital,
+                                                                                  category=stat_cat,
+                                                                                  actual=number_of_beds)
+                            if created:
+                                print("Created hospital {} statistic {}".format(hospital, stat_entry))
+                            else:
+                                print("Updated hospital {} statistic {}".format(hospital, stat_entry))
+                    except Hospital.DoesNotExist:
+                        print('Hospital not found', hospital_code)
+                else:
+                    print("Invalid data: hospital code = {}, # of beds = {}", hospital_code, number_of_beds)
+    except Exception as e:
+        print("Error happened during migration", e)
 
 
 class Migration(migrations.Migration):
