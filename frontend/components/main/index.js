@@ -9,12 +9,9 @@ import { bindActionCreators } from 'redux'
 import {
   fetchHospitals as fetchHospitalsAction,
   fetchHospital as fetchHospitalAction,
-} from '../../actions/creators/hospitals'
-import { connect } from 'react-redux';
+} from '../../actions/creators/hospitals';
 
-const { publicRuntimeConfig } = getConfig();
-
-class Main extends Component {  
+class Main extends Component {
 	static defaultProps = {
 		center: {
 			lat: 41.822475,
@@ -161,21 +158,27 @@ class Main extends Component {
 
 render() {
   const Mark = ({ name, percent }) => <div className="circle-mark">
-    <div className={'circle ' + this.needHelpStatus(percent)}/>
+    <div className={'circle ' + this.needHelpStatus(percent)} />
     <div className="name">{name}</div>
   </div>;
 
   let marks = (this.props.hospitals || [])
     .filter(item => item['full_location'].lat && item['full_location'].lng)
-    .map((item, index) => (<Mark
-      key={index + 'm'}
-      lat={item['full_location'].lat}
-      lng={item['full_location'].lng}
-      name={item.name}                  
-      id={item.id}
-      percent={item.request_amount}           
-    />));
-                             
+    .map((item, index) => {
+      console.log(item['full_location'].lat, item['full_location'].lng)
+      if (item['full_location'].lat && item['full_location'].lng) {
+        return (<Mark
+          key={index + 'm'}
+          lat={item['full_location'].lat}
+          lng={item['full_location'].lng}
+          name={item.name}
+          id={item.id}
+          percent={item.request_amount}
+        />)
+      }
+
+    });
+
 		return (
 			<main>
 				<div style={ { height: '100vh', width: '100%' } }>
@@ -193,12 +196,7 @@ render() {
             </a>
             {this.state.rightBlockTemplate}
           </div>
-				<div style={{ height: '100vh', width: '100%' }}>
-					<GoogleMapReact
-						bootstrapURLKeys={{ key: publicRuntimeConfig.mapKey }}
-						{marks}
-					</GoogleMapReact>
-				</div>
+       </div>
 			</main>
 		);
 	}
