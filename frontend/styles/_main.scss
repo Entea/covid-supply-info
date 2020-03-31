@@ -205,10 +205,10 @@ header {
   border-radius: 15px;
   padding: 12px 15px;
   width: 293px;
-  top: 121px;
+  top: 131px;
   position: fixed;
   right: 10px;
-  height: calc(100vh - 131px);
+  height: calc(100vh - 141px);
   z-index: 100;
   overflow-y: scroll;
   display: block;
@@ -369,6 +369,9 @@ header {
         }
         &:last-child {
           border-right: 1px solid transparent;
+        }
+        p {
+          text-align: center;
         }
       }
     }

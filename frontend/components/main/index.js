@@ -111,7 +111,7 @@ class Main extends Component {
       <h1>{hospital.name}</h1>
       <div className="address">
         {hospital.address}
-        <div className="coordinate">{hospital.full_location ?  hospital.full_location.longitude + ', ' +  hospital.full_location.latitude : ''}</div>
+        <div className="coordinate">{hospital.full_location ?  hospital.full_location.lat + ', ' +  hospital.full_location.lng : ''}</div>
       </div>
       <ul className="phone">
         {hospital.phone_numbers.map((item) => <li>{item}</li>)}
@@ -151,6 +151,7 @@ class Main extends Component {
             </td>
           </tr>
         ))}
+        {hospital.needs.length === 0 ? <tr><td colSpan={4}><p classsName="text-center">Нет данных</p></td></tr>: null}
         </tbody>
       </table>
     </div>)
@@ -164,20 +165,14 @@ render() {
 
   let marks = (this.props.hospitals || [])
     .filter(item => item['full_location'].lat && item['full_location'].lng)
-    .map((item, index) => {
-      console.log(item['full_location'].lat, item['full_location'].lng)
-      if (item['full_location'].lat && item['full_location'].lng) {
-        return (<Mark
-          key={index + 'm'}
-          lat={item['full_location'].lat}
-          lng={item['full_location'].lng}
-          name={item.name}
-          id={item.id}
-          percent={item.request_amount}
-        />)
-      }
-
-    });
+    .map((item, index) => (<Mark
+      key={index + 'm'}
+      lat={item['full_location'].lat}
+      lng={item['full_location'].lng}
+      name={item.name}
+      id={item.id}
+      percent={item.request_amount}
+    />));
 
 		return (
 			<main>
@@ -185,9 +180,8 @@ render() {
           <GoogleMapReact
 						bootstrapURLKeys={ { key: publicRuntimeConfig.mapKey } }
 						defaultCenter={this.props.center}
-						defaultZoom={this.props.zoom}>
-            onChildClick={this.openHospital.bind(this)}
-					>
+						defaultZoom={this.props.zoom}
+            onChildClick={this.openHospital.bind(this)}>
             {marks}
 					</GoogleMapReact>
           <div ref={this.setWrapperRef} className={ this.state.openRightBlock ? 'open right-block' : 'right-block'}>
