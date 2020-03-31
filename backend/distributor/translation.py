@@ -3,7 +3,7 @@ from modeltranslation.translator import translator, TranslationOptions
 from .models import (
     Measure, NeedType, Donation,
     Hospital, Region, District,
-    Locality, StatisticCategory, Page)
+    Locality, StatisticCategory, Page, ContactInfo, ContactMessage)
 
 
 class MeasureTranslationOptions(TranslationOptions):
@@ -67,3 +67,10 @@ class PageTranslationOptions(TranslationOptions):
 
 
 translator.register(Page, PageTranslationOptions)
+
+
+class ContactInfoTranslationOptions(TranslationOptions):
+    fields = ('text',)
+
+
+translator.register(ContactInfo, ContactInfoTranslationOptions)

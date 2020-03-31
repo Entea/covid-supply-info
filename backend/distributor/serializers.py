@@ -5,7 +5,7 @@ from distributor.models import (
     DonationDetail, NeedType, Measure,
     Region, District, Locality,
     Statistic, HelpRequest, HospitalNeeds,
-    Page)
+    Page, ContactInfo, ContactInfoPhoneNumber, ContactInfoEmail, ContactMessage)
 
 
 class HospitalPhoneNumberSerializer(serializers.ModelSerializer):
@@ -130,3 +130,31 @@ class PageSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Page
         fields = ['id', 'name', 'url', 'content']
+
+
+class ContactInfoPhoneNumberSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ContactInfoPhoneNumber
+        fields = ['value', 'is_whats_app']
+
+
+class ContactInfoEmailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ContactInfoEmail
+        fields = ['value']
+
+
+class ContactInfoSerializer(serializers.HyperlinkedModelSerializer):
+    phone_numbers = ContactInfoPhoneNumberSerializer(many=True, read_only=True)
+    emails = ContactInfoEmailSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = ContactInfo
+        fields = ['text_ru', 'text_ky', 'phone_numbers', 'emails']
+
+
+class ContactMessageSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = ContactMessage
+        fields = ['full_name', 'phone_number', 'email', 'title', 'body']
+        read_only_fields = ['created_at']

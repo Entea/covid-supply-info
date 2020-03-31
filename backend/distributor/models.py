@@ -1,6 +1,7 @@
 from cacheops import cached
 from django.contrib.auth.models import User
 from django.contrib.gis.db.models import PointField
+from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from django.db import models
 from django.db.models import Sum
@@ -276,3 +277,66 @@ class Page(models.Model):
 
     def __str__(self):
         return '{} /{}'.format(self.name, self.url)
+
+
+class ContactInfo(models.Model):
+    text = models.CharField(max_length=300, verbose_name=_('Текст'))
+
+    def save(self, *args, **kwargs):
+        if not self.pk and ContactInfo.objects.exists():
+            raise ValidationError('Контактная информация уже существует')
+        return super(ContactInfo, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return self.text
+
+    class Meta:
+        verbose_name_plural = _('Контактная информация')
+        verbose_name = _('Контактная информация')
+
+
+class ContactInfoPhoneNumber(models.Model):
+    contact_info = models.ForeignKey(ContactInfo, on_delete=models.PROTECT, verbose_name=_("Контактная информация"),
+                                     related_name='phone_numbers')
+    phone_number_regex = RegexValidator(regex=r'^[0]\d{3,4}[- ]?\d{1,2}[- ]?\d{2}[- ]?\d{2}$',
+                                        message="Телефонный номер должен быть: 0555123456, 03134 5 26 71, 0312 45-26-71")
+
+    value = models.CharField(validators=[phone_number_regex], max_length=30, verbose_name=_('Телефонный номер'))
+
+    is_whats_app = models.BooleanField(verbose_name=_("Вотсап номер?"), default=False)
+
+    class Meta:
+        verbose_name_plural = _('Телефонные номера')
+        verbose_name = _('Телефонный номер')
+
+    def __str__(self):
+        return self.value
+
+
+class ContactInfoEmail(models.Model):
+    contact_info = models.ForeignKey(ContactInfo, on_delete=models.PROTECT, verbose_name=_("Контактная информация"),
+                                     related_name='emails')
+    value = models.EmailField(max_length=100, verbose_name=_('Электронный адрес'))
+
+    class Meta:
+        verbose_name_plural = _('Электронные адреса')
+        verbose_name = _('Электронный адрес')
+
+    def __str__(self):
+        return self.value
+
+
+class ContactMessage(models.Model):
+    full_name = models.CharField(max_length=200, verbose_name=_('ФИО'))
+    phone_number = models.CharField(max_length=200, verbose_name=_('Телефон'), null=True)
+    email = models.EmailField(max_length=200, verbose_name=_('Электронный адрес'), null=True)
+    title = models.CharField(max_length=100, verbose_name=_('Тема сообщения'))
+    body = models.TextField(max_length=400, verbose_name=_('Сообщение'))
+    created_at = models.DateTimeField(verbose_name=_('Дата создания'), auto_now_add=True, blank=True, editable=False)
+
+    class Meta:
+        verbose_name_plural = _('Сообщения')
+        verbose_name = _('Сообщение')
+
+    def __str__(self):
+        return self.title
