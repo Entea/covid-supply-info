@@ -7,6 +7,10 @@ import {fetchLocalities as fetchRequestLocalitiesAction} from "../../actions/cre
 import {createRequest as createRequestAction} from "../../actions/creators/requests";
 import {connect} from "react-redux";
 import Select from "react-select";
+import Reaptcha from "reaptcha";
+import getConfig from 'next/config';
+
+const {publicRuntimeConfig} = getConfig();
 
 const inputStyle = {
     marginLeft: 8,
@@ -33,6 +37,7 @@ const defaultState = {
     localityValue: null,
     localityValueError: false,
     resultModal: false,
+    verified: false
 }
 
 class HelpRequest extends React.Component {
@@ -49,7 +54,7 @@ class HelpRequest extends React.Component {
     handleSubmit = (e) => {
         e.preventDefault();
         const {
-            firstName, lastName,
+            firstName, lastName, verified,
             hospitalName, phoneNumber, position, localityValue, description
         } = this.state;
         this.setState({
@@ -66,6 +71,7 @@ class HelpRequest extends React.Component {
         hospitalName !== '' &&
         phoneNumber !== '' &&
         localityValue !== null &&
+        verified &&
         this.props.createRequestAction({
             first_name: firstName,
             last_name: lastName,
@@ -141,13 +147,18 @@ class HelpRequest extends React.Component {
             resultModal
         })
     }
+    onVerify = recaptchaResponse => {
+        this.setState({
+            verified: true
+        });
+    };
 
     render() {
         const {regions} = this.props;
         const {localities, districts} = this.state;
 
         const {
-            visible, firstName, lastName, description,
+            visible, firstName, lastName, description, verified,
             hospitalName, phoneNumber, position, firstNameError, localityValueError,
             lastNameError, hospitalNameError, phoneNumberError, positionError, resultModal
         } = this.state;
@@ -288,10 +299,17 @@ class HelpRequest extends React.Component {
                                     style={inputStyle}
                                 />
                             </InputGroup>
+                            <InputGroup className="recaptcha-container">
+                                <Reaptcha
+                                    sitekey={publicRuntimeConfig.recaptchaSiteKey}
+                                    onVerify={this.onVerify}
+                                />
+                            </InputGroup>
                             <InputGroup>
                                 <Button variant={'info'} onClick={this.handleSubmit}
                                         style={{marginLeft: 8, marginRight: 8, width: '100%'}}>Отправить</Button>
                             </InputGroup>
+
                         </Form>
                     </Modal.Body>
                 </Modal>
