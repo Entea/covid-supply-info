@@ -39,6 +39,7 @@ const defaultState = {
     localityValueError: false,
     resultModal: false,
     verified: false,
+    recaptcha: null,
 };
 
 class HelpRequest extends React.Component {
@@ -55,9 +56,10 @@ class HelpRequest extends React.Component {
     };
     handleSubmit = (e) => {
         e.preventDefault();
+        e.stopPropagation();
         const {
             firstName, lastName, verified,
-            hospitalName, phoneNumber, position, localityValue, description
+            hospitalName, phoneNumber, position, localityValue, description, recaptcha
         } = this.state;
         this.setState({
             lastNameError: lastName === '',
@@ -81,7 +83,8 @@ class HelpRequest extends React.Component {
             hospital_name: hospitalName,
             phone_number: phoneNumber,
             locality_id: localityValue.value,
-            description
+            description,
+            recaptcha
         }).then(() => this.setRequestStatusText())
             .then(() => this.hideModal())
             .then(() => this.showResultModal(true))
@@ -159,9 +162,10 @@ class HelpRequest extends React.Component {
             resultModal
         })
     };
-    onVerify = recaptchaResponse => {
+    onVerify = recaptcha => {
         this.setState({
-            verified: true
+            verified: true,
+            recaptcha
         });
     };
 

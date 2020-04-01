@@ -16,6 +16,7 @@ class Message extends Component {
         body: "",
         validated: false,
         verified: false,
+        recaptcha: null,
     };
 
     onChange = (e) => {
@@ -25,13 +26,13 @@ class Message extends Component {
     };
 
     onSubmit = (e) => {
-        const {fullName, phoneNumber, email, title, body} = this.state;
+        const {fullName, phoneNumber, email, title, body, recaptcha} = this.state;
         const form = e.currentTarget;
         e.preventDefault();
         e.stopPropagation();
         if (form.checkValidity()) {
             this.props.sendMessage(
-                {'full_name': fullName, 'phone_number': phoneNumber, email, title, body}
+                {'full_name': fullName, 'phone_number': phoneNumber, email, title, body, recaptcha}
             ).then(() => {
                 this.setState({
                     fullName: "",
@@ -41,6 +42,7 @@ class Message extends Component {
                     body: "",
                     validated: false,
                     verified: false,
+                    recaptcha: null
                 });
                 this.captcha.reset()
             });
@@ -50,9 +52,10 @@ class Message extends Component {
         })
     };
 
-    onVerify = () => {
+    onVerify = (recaptcha) => {
         this.setState({
-            verified: true
+            verified: true,
+            recaptcha
         })
     };
 
@@ -75,7 +78,8 @@ class Message extends Component {
 
                     <Form.Group>
                         <Form.Label>Телефон</Form.Label>
-                        <Form.Control required name="phoneNumber" value={phoneNumber} type='phone' onChange={this.onChange}/>
+                        <Form.Control required name="phoneNumber" value={phoneNumber} type='phone'
+                                      onChange={this.onChange}/>
                         <Form.Control.Feedback type="invalid">
                             Введите номер телефона
                         </Form.Control.Feedback>
@@ -99,7 +103,8 @@ class Message extends Component {
 
                     <Form.Group>
                         <Form.Label>Сообщение</Form.Label>
-                        <Form.Control required name="body" value={body} as="textarea" rows="3" onChange={this.onChange}/>
+                        <Form.Control required name="body" value={body} as="textarea" rows="3"
+                                      onChange={this.onChange}/>
                         <Form.Control.Feedback type="invalid">
                             Введите сообщение
                         </Form.Control.Feedback>

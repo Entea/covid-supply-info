@@ -1,11 +1,13 @@
 from rest_framework import serializers
+from rest_framework import serializers
+from rest_framework_recaptcha.fields import ReCaptchaField
 
 from distributor.models import (
     Hospital, HospitalPhoneNumber, Donation,
     DonationDetail, NeedType, Measure,
     Region, District, Locality,
-    Statistic, HelpRequest, HospitalNeeds,
-    Page, ContactInfo, ContactInfoPhoneNumber, ContactInfoEmail, ContactMessage)
+    Statistic, HospitalNeeds,
+    Page, ContactInfo, ContactInfoPhoneNumber, ContactInfoEmail)
 
 
 class HospitalPhoneNumberSerializer(serializers.ModelSerializer):
@@ -115,17 +117,6 @@ class LocalitySerializer(serializers.HyperlinkedModelSerializer):
         fields = ['id', 'district_id', 'name']
 
 
-class HelpRequestSerializer(serializers.HyperlinkedModelSerializer):
-    locality = LocalitySerializer(many=False, read_only=True)
-    locality_id = serializers.IntegerField(write_only=True)
-
-    class Meta:
-        model = HelpRequest
-        fields = ['first_name', 'last_name', 'position', 'hospital_name', 'locality', 'locality_id', 'phone_number',
-                  'description']
-        read_only_fields = ['created_at', 'read_at']
-
-
 class PageSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Page
@@ -153,8 +144,21 @@ class ContactInfoSerializer(serializers.HyperlinkedModelSerializer):
         fields = ['text_ru', 'text_ky', 'phone_numbers', 'emails']
 
 
-class ContactMessageSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = ContactMessage
-        fields = ['full_name', 'phone_number', 'email', 'title', 'body']
-        read_only_fields = ['created_at']
+class HelpRequestSerializer(serializers.Serializer):
+    recaptcha = ReCaptchaField()
+    first_name = serializers.CharField(max_length=50)
+    last_name = serializers.CharField(max_length=50)
+    position = serializers.CharField(max_length=50)
+    hospital_name = serializers.CharField(max_length=250)
+    locality_id = serializers.IntegerField(allow_null=False)
+    phone_number = serializers.CharField(max_length=100)
+    description = serializers.CharField(max_length=500)
+
+
+class ContactMessageSerializer(serializers.Serializer):
+    recaptcha = ReCaptchaField()
+    full_name = serializers.CharField(max_length=100)
+    phone_number = serializers.CharField(max_length=50)
+    email = serializers.EmailField(max_length=100)
+    title = serializers.CharField(max_length=100)
+    body = serializers.CharField(max_length=400)
