@@ -2,9 +2,11 @@ import * as Actions from '../actions/requests'
 import * as RegionsActions from '../actions/regions'
 import * as DistrictsActions from '../actions/districts'
 import * as LocalitiesActions from '../actions/localities'
+import * as HelpRequestMap from '../constants/helpRequest'
 
 const initialState = {
 	sending: false,
+	requestStatus: 0,
 	regionFetching: false,
 	districtFetching: false,
 	localityFetching: false,
@@ -24,13 +26,15 @@ export default function requests(state = initialState, action) {
 		case Actions.SUCCESS_CREATE_REQUEST:
 			return {
 				...state,
-				sending: false
+				sending: false,
+				requestStatus: HelpRequestMap.SUCCESS
 			};
 
 		case Actions.FAILURE_CREATE_REQUEST:
 			return {
 				...state,
-				sending: false
+				sending: false,
+				requestStatus: HelpRequestMap.ERROR
 			};
 		case DistrictsActions.FETCH_DISTRICTS:
 			return {
