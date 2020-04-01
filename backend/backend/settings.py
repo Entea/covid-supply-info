@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'django_filters',
     'corsheaders',
     'cacheops',
+    'rest_framework_recaptcha',
 ]
 
 MIDDLEWARE = [
@@ -252,3 +253,4 @@ JET_THEMES = [
     }
 ]
 
+DRF_RECAPTCHA_SECRET_KEY = os.environ.get("RECAPTCHA_SECRET_KEY")
