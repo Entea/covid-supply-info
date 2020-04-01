@@ -409,3 +409,23 @@ header {
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+
+
+.contact{
+  &__phones{
+    margin: 1rem 0;
+    & li{
+      line-height: 1.5;
+      font-size: 22px;
+      display: flex;
+    }
+  }
+  &__whatsapp{
+    margin-top: 6px;
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background: url("/whatsapp.svg");
+    margin-left: 15px;
+  }
+}
