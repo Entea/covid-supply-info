@@ -1,23 +1,15 @@
 import React, {Component} from 'react';
 import Layout from '../components/layout/Layout';
-import { Col, Container, Row } from 'react-bootstrap'
+import ContactsComponent from '../components/contacts';
 
-class Contact extends Component {
+class Contacts extends Component {
     render() {
         return (
             <Layout>
-                <main>
-                    <Container>
-                        <Row style={{ marginTop: 150 }}>
-                            <Col xs={12}>
-                                Page is not ready yet
-                            </Col>
-                        </Row>
-                    </Container>
-                </main>
+                <ContactsComponent/>
             </Layout>
         );
     }
 }
 
-export default Contact
+export default Contacts
