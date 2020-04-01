@@ -1,7 +1,7 @@
 from cacheops import cached_view_as
 from django.utils.decorators import method_decorator
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from rest_framework.filters import SearchFilter
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
@@ -81,17 +81,6 @@ class LocalityViewSet(viewsets.ReadOnlyModelViewSet):
         return super(LocalityViewSet, self).dispatch(*args, **kwargs)
 
 
-class HelpRequestCreateViewSet(viewsets.ModelViewSet):
-    """
-    API create help requests
-    """
-    queryset = HelpRequest.objects.all()
-    serializer_class = HelpRequestSerializer
-    permission_classes = ()
-    authentication_classes = ()
-    http_method_names = ['post', 'head']
-
-
 class PageViewSet(viewsets.ReadOnlyModelViewSet):
     """
     API returns the list of the pages
@@ -103,6 +92,9 @@ class PageViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class HospitalShortInfoListAPIView(ListAPIView):
+    """
+    API create hospital short info
+    """
     queryset = Hospital.objects.all()
     serializer_class = HospitalShortInfoSerializer
     pagination_class = None
@@ -116,6 +108,9 @@ class HospitalShortInfoListAPIView(ListAPIView):
 
 
 class HospitalDetailAPIView(APIView):
+    """
+    API returns hospital details
+    """
     serializer_class = HospitalDetailSerializer
     permission_classes = ()
 
@@ -126,6 +121,9 @@ class HospitalDetailAPIView(APIView):
 
 
 class ContactInfoAPIView(APIView):
+    """
+    API returns contact info
+    """
     serializer_class = ContactInfoSerializer
     permission_classes = ()
 
@@ -134,9 +132,49 @@ class ContactInfoAPIView(APIView):
         return Response(self.serializer_class(contact_info).data)
 
 
-class ContactMessageCreateViewSet(viewsets.ModelViewSet):
-    queryset = ContactMessage.objects.all()
-    serializer_class = ContactMessageSerializer
+class HelpRequestAPIView(APIView):
+    """
+    API creates help requests
+    """
     permission_classes = ()
     authentication_classes = ()
     http_method_names = ['post', 'head']
+
+    @staticmethod
+    def post(request, *args, **kwargs):
+        serializer = HelpRequestSerializer(data=request.data)
+        if serializer.is_valid():
+            HelpRequest.objects.create(
+                first_name=serializer.data['first_name'],
+                last_name=serializer.data['last_name'],
+                locality=Locality.objects.get(pk=serializer.data['locality_id']),
+                position=serializer.data['position'],
+                hospital_name=serializer.data['hospital_name'],
+                phone_number=serializer.data['phone_number'],
+                description=serializer.data['description'],
+            )
+            return Response({'success': True}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ContactMessageAPIView(APIView):
+    """
+    API creates contact messages
+    """
+    permission_classes = ()
+    authentication_classes = ()
+    http_method_names = ['post', 'head']
+
+    @staticmethod
+    def post(request, *args, **kwargs):
+        serializer = ContactMessageSerializer(data=request.data)
+        if serializer.is_valid():
+            ContactMessage.objects.create(
+                full_name=serializer.data['full_name'],
+                phone_number=serializer.data['phone_number'],
+                email=serializer.data['email'],
+                title=serializer.data['title'],
+                body=serializer.data['body'],
+            )
+            return Response({'success': True}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
