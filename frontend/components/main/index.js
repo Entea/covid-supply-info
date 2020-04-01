@@ -114,14 +114,14 @@ class Main extends Component {
         <div className="coordinate">{hospital.full_location ?  hospital.full_location.lat + ', ' +  hospital.full_location.lng : ''}</div>
       </div>
       <ul className="phone">
-        {hospital.phone_numbers.map((item) => <li>{item}</li>)}
+        {hospital.phone_numbers.map((item, index) => <li key={index + 'phone'}>{item.value}</li>)}
       </ul>
       <h1>Статистика по мед.учреждению</h1>
       {hospital.statistics.length === 0 ? <p>Нет данных</p> : null}
       {hospital.statistics.map((item, index) => (
         <div key={index + 's'} className="circle">
           <div className="name">{item.category}</div>
-          <div className="count">{item.actual}/{item.capacity}</div>
+          <div className="count">{item.has_capacity ? item.actual + '/' + item.capacity : item.actual}</div>
         </div>
       ))}
       <h1>Продукция по спецодежде и оборудованию в больнице…</h1>
@@ -141,13 +141,13 @@ class Main extends Component {
               {index + 1}.{item.need_type ? item.need_type.name : ''}
             </td>
             <td>
-              {item.need_type ? item.need_type.reserve_amount : 0}
+              {item.reserve_amount}
             </td>
             <td>
-              {item.need_type ? item.need_type.request_amount : 0}
+              {item.request_amount}
             </td>
             <td>
-              {item.need_type ? item.need_type.request_amount - item.need_type.reserve_amount : 0}
+              {item.request_amount - item.reserve_amount}
             </td>
           </tr>
         ))}
