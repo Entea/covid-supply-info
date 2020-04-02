@@ -151,7 +151,7 @@ header {
   position: relative;
 
   .circle {
-    background: #27AE60;
+    background: #c2c2c2;
     height: 30px;
     width: 30px;
     border-radius: 15px;
@@ -244,7 +244,7 @@ header {
         line-height: 16px;
         color: #000000;
         .circle {
-          background: #27AE60;
+          background: #c2c2c2;
           height: 24px;
           width: 24px;
           border-radius: 12px;
@@ -256,6 +256,9 @@ header {
           display: inline-block;
           margin-left: 24px;
           margin-top: 4px;
+          span {
+            font-size: 9px;
+          }
         }
       }
     }
@@ -302,7 +305,7 @@ header {
       }
     }
     .circle {
-      background: #219653;
+      background: #c2c2c2;
       color: #ffffff;
       font-family: 'Open Sans', sans-serif;
       font-style: normal;
@@ -379,11 +382,14 @@ header {
 }
 
 .circle, .circle-button {
-  .danger {
-    background: #EB5757;
+  &.danger {
+    background: #EB5757 !important;
   }
-  .warning {
-    background: #EBCA57;
+  &.warning {
+    background: #EBCA57 !important;
+  }
+  &.success {
+    background: #27AE60 !important;
   }
 }
 
