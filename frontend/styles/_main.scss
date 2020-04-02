@@ -26,7 +26,13 @@ header {
   color: #333333;
 }
 
-
+.recaptcha-container{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding-bottom: 8px;
+}
 .navbar .nav-link {
   font-style: normal;
   font-weight: 500;

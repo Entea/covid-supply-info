@@ -34,6 +34,7 @@ export default () => {
 		},
 		requests: {
 			sending: false,
+			requestStatus: 0,
 			regionFetching: false,
 			districtFetching: false,
 			localityFetching: false,

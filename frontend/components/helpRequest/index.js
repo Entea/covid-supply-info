@@ -1,5 +1,5 @@
 import React, {Fragment} from 'react';
-import {Button, FormControl, InputGroup, Modal, Form, Toast} from "react-bootstrap";
+import {Button, FormControl, InputGroup, Modal, Form} from "react-bootstrap";
 import {bindActionCreators} from "redux";
 import {fetchRegions as fetchRequestRegionsAction} from "../../actions/creators/regions";
 import {fetchDistricts as fetchRequestDistrictsAction} from "../../actions/creators/districts";
@@ -7,6 +7,11 @@ import {fetchLocalities as fetchRequestLocalitiesAction} from "../../actions/cre
 import {createRequest as createRequestAction} from "../../actions/creators/requests";
 import {connect} from "react-redux";
 import Select from "react-select";
+import Reaptcha from "reaptcha";
+import getConfig from 'next/config';
+import * as HelpRequestMap from '../../constants/helpRequest'
+
+const {publicRuntimeConfig} = getConfig();
 
 const inputStyle = {
     marginLeft: 8,
@@ -25,6 +30,7 @@ const defaultState = {
     hospitalNameError: false,
     phoneNumber: '',
     phoneNumberError: false,
+    descriptionError: false,
     description: '',
     districts: [],
     localities: [],
@@ -33,11 +39,14 @@ const defaultState = {
     localityValue: null,
     localityValueError: false,
     resultModal: false,
-}
+    verified: false,
+    recaptcha: null,
+};
 
 class HelpRequest extends React.Component {
     state = {
-        ...defaultState
+        ...defaultState,
+        statusText: '',
     };
 
     handleInputChange = (e) => {
@@ -45,12 +54,13 @@ class HelpRequest extends React.Component {
             [e.target.name]: e.target.value,
             [e.target.name + 'Error']: false
         })
-    }
+    };
     handleSubmit = (e) => {
         e.preventDefault();
+        e.stopPropagation();
         const {
-            firstName, lastName,
-            hospitalName, phoneNumber, position, localityValue, description
+            firstName, lastName, verified,
+            hospitalName, phoneNumber, position, localityValue, description, recaptcha
         } = this.state;
         this.setState({
             lastNameError: lastName === '',
@@ -58,6 +68,7 @@ class HelpRequest extends React.Component {
             positionError: position === '',
             hospitalNameError: hospitalName === '',
             phoneNumberError: phoneNumber === '',
+            descriptionError: description === '',
             localityValueError: localityValue === null,
         });
         firstName !== '' &&
@@ -65,7 +76,9 @@ class HelpRequest extends React.Component {
         position !== '' &&
         hospitalName !== '' &&
         phoneNumber !== '' &&
+        description !== '' &&
         localityValue !== null &&
+        verified &&
         this.props.createRequestAction({
             first_name: firstName,
             last_name: lastName,
@@ -73,9 +86,26 @@ class HelpRequest extends React.Component {
             hospital_name: hospitalName,
             phone_number: phoneNumber,
             locality_id: localityValue.value,
-            description
-        }).then(() => this.hideModal()).then(() => this.showResultModal(true))
+            description,
+            recaptcha
+        }).then(() => this.setRequestStatusText())
+            .then(() => this.showResultModal(true))
+    };
+
+    setRequestStatusText = () => {
+        let statusText;
+        if (this.props.requestStatus === HelpRequestMap.SUCCESS) {
+            statusText = 'Заявка успешно подана';
+            this.hideModal()
+        } else {
+            statusText = 'Произошла ошибка!';
+        }
+        this.setState({
+            statusText: statusText
+        })
+
     }
+
     hideModal = () => {
         this.setState({
             ...defaultState
@@ -140,14 +170,20 @@ class HelpRequest extends React.Component {
         this.setState({
             resultModal
         })
-    }
+    };
+    onVerify = recaptcha => {
+        this.setState({
+            verified: true,
+            recaptcha
+        });
+    };
 
     render() {
         const {regions} = this.props;
         const {localities, districts} = this.state;
 
         const {
-            visible, firstName, lastName, description,
+            visible, firstName, lastName, description, statusText, descriptionError,
             hospitalName, phoneNumber, position, firstNameError, localityValueError,
             lastNameError, hospitalNameError, phoneNumberError, positionError, resultModal
         } = this.state;
@@ -279,6 +315,7 @@ class HelpRequest extends React.Component {
                             </InputGroup>
                             <InputGroup className="mb-3">
                                 <FormControl
+                                    isInvalid={descriptionError}
                                     onChange={this.handleInputChange}
                                     rows="5"
                                     as='textarea'
@@ -288,10 +325,17 @@ class HelpRequest extends React.Component {
                                     style={inputStyle}
                                 />
                             </InputGroup>
+                            <InputGroup className="recaptcha-container">
+                                <Reaptcha
+                                    sitekey={publicRuntimeConfig.recaptchaSiteKey}
+                                    onVerify={this.onVerify}
+                                />
+                            </InputGroup>
                             <InputGroup>
                                 <Button variant={'info'} onClick={this.handleSubmit}
                                         style={{marginLeft: 8, marginRight: 8, width: '100%'}}>Отправить</Button>
                             </InputGroup>
+
                         </Form>
                     </Modal.Body>
                 </Modal>
@@ -308,7 +352,7 @@ class HelpRequest extends React.Component {
                     centered
                 >
                     <Modal.Body>
-                        <p>Заявка успешно подана</p>
+                        <p>{statusText}</p>
                     </Modal.Body>
                 </Modal>
             </Fragment>
@@ -324,6 +368,7 @@ const mapStateToProps = (state) => {
         districts: state.requests.districts,
         localityFetching: state.requests.localityFetching,
         localities: state.requests.localities,
+        requestStatus: state.requests.requestStatus,
     }
 };
 
