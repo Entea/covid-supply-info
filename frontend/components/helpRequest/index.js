@@ -30,6 +30,7 @@ const defaultState = {
     hospitalNameError: false,
     phoneNumber: '',
     phoneNumberError: false,
+    descriptionError: false,
     description: '',
     districts: [],
     localities: [],
@@ -67,6 +68,7 @@ class HelpRequest extends React.Component {
             positionError: position === '',
             hospitalNameError: hospitalName === '',
             phoneNumberError: phoneNumber === '',
+            descriptionError: description === '',
             localityValueError: localityValue === null,
         });
         firstName !== '' &&
@@ -74,6 +76,7 @@ class HelpRequest extends React.Component {
         position !== '' &&
         hospitalName !== '' &&
         phoneNumber !== '' &&
+        description !== '' &&
         localityValue !== null &&
         verified &&
         this.props.createRequestAction({
@@ -86,13 +89,19 @@ class HelpRequest extends React.Component {
             description,
             recaptcha
         }).then(() => this.setRequestStatusText())
-            .then(() => this.hideModal())
             .then(() => this.showResultModal(true))
     };
 
     setRequestStatusText = () => {
+        let statusText;
+        if (this.props.requestStatus === HelpRequestMap.SUCCESS) {
+            statusText = 'Заявка успешно подана';
+            this.hideModal()
+        } else {
+            statusText = 'Произошла ошибка!';
+        }
         this.setState({
-            statusText: this.props.requestStatus === HelpRequestMap.SUCCESS ? 'Заявка успешно подана' : 'Произошла ошибка!'
+            statusText: statusText
         })
 
     }
@@ -174,7 +183,7 @@ class HelpRequest extends React.Component {
         const {localities, districts} = this.state;
 
         const {
-            visible, firstName, lastName, description, statusText,
+            visible, firstName, lastName, description, statusText, descriptionError,
             hospitalName, phoneNumber, position, firstNameError, localityValueError,
             lastNameError, hospitalNameError, phoneNumberError, positionError, resultModal
         } = this.state;
@@ -306,6 +315,7 @@ class HelpRequest extends React.Component {
                             </InputGroup>
                             <InputGroup className="mb-3">
                                 <FormControl
+                                    isInvalid={descriptionError}
                                     onChange={this.handleInputChange}
                                     rows="5"
                                     as='textarea'
