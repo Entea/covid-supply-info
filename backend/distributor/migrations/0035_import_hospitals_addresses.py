@@ -1,10 +1,7 @@
 import csv
-
-from django.db import migrations, transaction
-
-from distributor.models import Hospital, Statistic, StatisticCategory
-from csv import reader
 import os
+
+from django.db import migrations
 
 
 def clean_row(row):
@@ -15,6 +12,8 @@ def clean_row(row):
 
 
 def import_hospitals_addresses(apps, schema_editor):
+    Hospital = apps.get_model('distributor', 'Hospital')
+
     file_path = os.path.dirname(os.path.realpath(__file__)) + '/files/20200402-hospital-addresses.csv'
     with open(file_path, newline='') as file:
         csv_reader = csv.reader(file, delimiter=',', quotechar="'")

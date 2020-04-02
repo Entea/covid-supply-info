@@ -3,8 +3,6 @@ import os
 
 from django.db import migrations, transaction
 
-from distributor.models import Hospital, Statistic, StatisticCategory
-
 
 def clean_row(row):
     for index, value in enumerate(row):
@@ -21,6 +19,10 @@ def convert_to_int(string):
 
 
 def add_statistics(apps, schema_editor):
+    StatisticCategory = apps.get_model('distributor', 'StatisticCategory')
+    Statistic = apps.get_model('distributor', 'Statistic')
+    Hospital = apps.get_model('distributor', 'Hospital')
+
     beds_statistic_category = StatisticCategory.objects.get(name='Коек всего')
     doctors_statistic_category = StatisticCategory.objects.get(name='Врачи')
     nurses_statistic_category = StatisticCategory.objects.get(name='Средний медперсонал')
