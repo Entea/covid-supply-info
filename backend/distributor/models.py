@@ -136,7 +136,7 @@ class Locality(models.Model):
 
 class Hospital(models.Model):
     name = models.CharField(max_length=200, verbose_name=_('Наименование'), help_text=_('Введите название больницы'))
-    code = models.CharField(max_length=50, verbose_name=_('Код'), help_text=_('Введите код'))
+    code = models.CharField(max_length=50, verbose_name=_('Код'), help_text=_('Введите код'), unique=True)
     address = models.CharField(max_length=500, verbose_name=_('Адрес'), null=True, help_text=_('Введите адрес'))
     location = PointField(help_text="Для создания местоположения", null=True)
     locality = models.ForeignKey(Locality, on_delete=models.CASCADE, verbose_name=_("Местоположение"), null=True)

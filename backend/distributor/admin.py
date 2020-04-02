@@ -130,6 +130,10 @@ class HospitalAdmin(TranslationAdmin):
         'code',
     )
 
+    list_filter = (
+        'locality',
+    )
+
     def get_urls(self):
         urls = super(HospitalAdmin, self).get_urls()
         my_urls = [
