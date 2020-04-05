@@ -53,13 +53,15 @@ class Main extends Component {
   }
 
   needHelpStatus(percent) {
-    switch (percent) {
-      case (39 < percent && percent > 0):
+    switch (true) {
+      case (39 > percent && percent >= 0):
         return 'danger';
-      case (85 < percent && percent > 39):
+      case (85 > percent && percent >= 39):
         return 'warning';
+      case (percent >= 85):
+        return 'success';
       default:
-        return '';
+        return percent;
     }
   }
 
@@ -95,9 +97,9 @@ class Main extends Component {
                     {item.name}
                   </td>
                   <td>
-                    <div className={'circle ' + this.needHelpStatus(item.request_amount)}/>
+                    <div className={'circle ' + this.needHelpStatus(item.indicator)}/>
                     <div className="percentage">
-                      {item.request_amount ? item.request_amount : 0}%
+                      {item.indicator > 0 ? item.indicator + '%' : <span>Нет данных</span>}
                     </div>
                   </td>
                 </tr>))}
@@ -119,7 +121,7 @@ class Main extends Component {
       <h1>Статистика по мед.учреждению</h1>
       {hospital.statistics.length === 0 ? <p>Нет данных</p> : null}
       {hospital.statistics.map((item, index) => (
-        <div key={index + 's'} className="circle">
+        <div key={index + 's'} className={'circle ' + this.needHelpStatus(item.has_capacity ? (item.actual * 100 / item.capacity) : -1)}>
           <div className="name">{item.category}</div>
           <div className="count">{item.has_capacity ? item.actual + '/' + item.capacity : item.actual}</div>
         </div>
@@ -171,7 +173,7 @@ render() {
       lng={item['full_location'].lng}
       name={item.name}
       id={item.id}
-      percent={item.request_amount}
+      percent={item.indicator}
     />));
 
 		return (
