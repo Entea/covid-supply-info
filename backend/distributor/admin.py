@@ -13,7 +13,7 @@ from distributor.models import (
     DonationDetail, Hospital, HospitalPhoneNumber,
     Region, District, Locality,
     Statistic, StatisticCategory, HelpRequest,
-    HospitalNeeds, Page, ContactInfo, ContactInfoPhoneNumber, ContactInfoEmail, ContactMessage)
+    HospitalNeeds, Page, ContactInfo, ContactInfoPhoneNumber, ContactInfoEmail, ContactMessage, Distribution)
 
 
 @admin.register(NeedType)
@@ -283,3 +283,21 @@ class ContactMessageAdmin(admin.ModelAdmin):
 
     def has_view_permission(self, request, obj=None):
         return True
+
+
+@admin.register(Distribution)
+class DistributionAdmin(admin.ModelAdmin):
+    exclude = ('created_at', 'updated_at')
+    list_filter = (
+        ('date_of_distribute', DateRangeFilter),
+    )
+
+    search_fields = ('sender', 'receiver')
+    ordering = ('-created_at',)
+
+    list_display = (
+        'hospital',
+        'sender',
+        'receiver',
+        'date_of_distribute'
+    )
