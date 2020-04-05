@@ -349,7 +349,8 @@ class Distribution(models.Model):
                                  verbose_name=_('Больница'))
     sender = models.TextField(verbose_name=_('Кто выдал?'))
     receiver = models.TextField(verbose_name=_('Кто принял?'), blank=True)
-    date_of_distribute = models.DateField(verbose_name=_('Дата распределения'))
+    distributed_at = models.DateField(verbose_name=_('Дата распределения'))
+    delivered_at = models.DateField(verbose_name=_('Дата доставки'), blank=True, null=True)
     status = models.CharField(max_length=20, choices=DISTRIBUTION_STATUSES, verbose_name=_('Статус'),
                               default=READY_TO_SEND)
     donations = models.ManyToManyField(Donation, verbose_name=_('Пожертвования'))
@@ -360,7 +361,7 @@ class Distribution(models.Model):
     class Meta:
         verbose_name_plural = _('Распределения')
         verbose_name = _('Запись для распределения')
-        ordering = ('-date_of_distribute',)
+        ordering = ('-distributed_at',)
 
     def __str__(self):
         return self.hospital.name
