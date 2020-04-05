@@ -7,15 +7,16 @@ from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from distributor.filters import DistributionFilter
 from distributor.models import (
     Hospital, Donation, Region,
     District, Locality, HelpRequest,
-    Page, ContactInfo, ContactMessage)
+    Page, ContactInfo, ContactMessage, Distribution)
 from distributor.serializers import (
     HospitalSerializer, DonationSerializer, RegionSerializer,
     DistrictSerializer, LocalitySerializer, HelpRequestSerializer,
     PageSerializer, HospitalShortInfoSerializer, HospitalDetailSerializer, ContactInfoSerializer,
-    ContactMessageSerializer)
+    ContactMessageSerializer, DistributionListSerializer)
 from distributor.services import HospitalService
 
 
@@ -178,3 +179,15 @@ class ContactMessageAPIView(APIView):
             )
             return Response({'success': True}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class DistributionListAPIView(ListAPIView):
+    """
+    List API to show distribution objects
+    """
+    permission_classes = ()
+    authentication_classes = ()
+    serializer_class = DistributionListSerializer
+    queryset = Distribution.objects.all()
+    filter_backends = (DjangoFilterBackend,)
+    filter_class = DistributionFilter
