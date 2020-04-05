@@ -7,7 +7,7 @@ from django.db import models
 from django.db.models import Sum
 from django.utils.translation import ugettext as _
 
-from distributor.constants import DISTRIBUTION_STATUSES
+from distributor.constants import DISTRIBUTION_STATUSES, READY_TO_SEND
 
 DEFAULT_INDICATOR = -1
 
@@ -345,19 +345,21 @@ class ContactMessage(models.Model):
 
 
 class Distribution(models.Model):
-    hospital = models.ForeignKey(Hospital, on_delete=models.CASCADE, related_name='distributions')
-    sender = models.TextField(verbose_name='Кто выдал?')
-    receiver = models.TextField(verbose_name='Кто принял?', blank=True)
-    date_of_distribute = models.DateField(verbose_name='Дата распределения')
-    status = models.CharField(max_length=20, choices=DISTRIBUTION_STATUSES, verbose_name='Статус')
-    donations = models.ManyToManyField(Donation, verbose_name='Пожертвования')
+    hospital = models.ForeignKey(Hospital, on_delete=models.CASCADE, related_name='distributions',
+                                 verbose_name=_('Больница'))
+    sender = models.TextField(verbose_name=_('Кто выдал?'))
+    receiver = models.TextField(verbose_name=_('Кто принял?'), blank=True)
+    date_of_distribute = models.DateField(verbose_name=_('Дата распределения'))
+    status = models.CharField(max_length=20, choices=DISTRIBUTION_STATUSES, verbose_name=_('Статус'),
+                              default=READY_TO_SEND)
+    donations = models.ManyToManyField(Donation, verbose_name=_('Пожертвования'))
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        verbose_name_plural = 'Распределения'
-        verbose_name = 'Запись для распределения'
+        verbose_name_plural = _('Распределения')
+        verbose_name = _('Запись для распределения')
         ordering = ('-date_of_distribute',)
 
     def __str__(self):

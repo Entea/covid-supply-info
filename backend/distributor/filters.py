@@ -15,7 +15,7 @@ class MultipleListFilter(Filter):
 
 class DistributionFilter(FilterSet):
     """
-    Available filter route /api/v1/distributions/?hospital=1,2,3
+    Available filter route /api/v1/distributions/?hospitals=1,2,3
     """
     hospitals = MultipleListFilter(field_name='hospital')
 

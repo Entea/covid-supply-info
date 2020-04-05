@@ -169,16 +169,17 @@ class ContactMessageAPIView(APIView):
     @staticmethod
     def post(request, *args, **kwargs):
         serializer = ContactMessageSerializer(data=request.data)
-        if serializer.is_valid():
-            ContactMessage.objects.create(
-                full_name=serializer.data['full_name'],
-                phone_number=serializer.data['phone_number'],
-                email=serializer.data['email'],
-                title=serializer.data['title'],
-                body=serializer.data['body'],
-            )
-            return Response({'success': True}, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer.is_valid(raise_exception=True)
+
+        ContactMessage.objects.create(
+            full_name=serializer.validated_data.get('full_name'),
+            phone_number=serializer.validated_data.get('phone_number'),
+            email=serializer.validated_data.get('email'),
+            title=serializer.validated_data.get('title'),
+            body=serializer.validated_data.get('body'),
+        )
+
+        return Response({'success': True}, status=status.HTTP_201_CREATED)
 
 
 class DistributionListAPIView(ListAPIView):
@@ -188,6 +189,6 @@ class DistributionListAPIView(ListAPIView):
     permission_classes = ()
     authentication_classes = ()
     serializer_class = DistributionListSerializer
-    queryset = Distribution.objects.all()
+    queryset = Distribution.objects.all().prefetch_related('donations')
     filter_backends = (DjangoFilterBackend,)
     filter_class = DistributionFilter
