@@ -289,7 +289,7 @@ class ContactMessageAdmin(admin.ModelAdmin):
 class DistributionAdmin(admin.ModelAdmin):
     exclude = ('created_at', 'updated_at')
     list_filter = (
-        ('date_of_distribute', DateRangeFilter),
+        ('distributed_at', DateRangeFilter),
     )
 
     search_fields = ('sender', 'receiver')
@@ -299,5 +299,5 @@ class DistributionAdmin(admin.ModelAdmin):
         'hospital',
         'sender',
         'receiver',
-        'date_of_distribute'
+        'distributed_at'
     )

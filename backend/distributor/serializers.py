@@ -171,6 +171,6 @@ class DistributionListSerializer(serializers.ModelSerializer):
         model = Distribution
         fields = (
             'id', 'hospital', 'donations',
-            'sender', 'receiver', 'date_of_distribute',
-            'status', 'created_at'
+            'sender', 'receiver', 'distributed_at',
+            'status', 'created_at', 'delivered_at'
         )
