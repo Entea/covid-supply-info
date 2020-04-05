@@ -347,7 +347,7 @@ class ContactMessage(models.Model):
 class Distribution(models.Model):
     hospital = models.ForeignKey(Hospital, on_delete=models.CASCADE, related_name='distributions')
     sender = models.TextField(verbose_name='Кто выдал?')
-    receiver = models.TextField(verbose_name='Кто принял?')
+    receiver = models.TextField(verbose_name='Кто принял?', blank=True)
     date_of_distribute = models.DateField(verbose_name='Дата распределения')
     status = models.CharField(max_length=20, choices=DISTRIBUTION_STATUSES, verbose_name='Статус')
     donations = models.ManyToManyField(Donation, verbose_name='Пожертвования')
@@ -358,6 +358,7 @@ class Distribution(models.Model):
     class Meta:
         verbose_name_plural = 'Распределения'
         verbose_name = 'Запись для распределения'
+        ordering = ('-date_of_distribute',)
 
     def __str__(self):
         return self.hospital.name
