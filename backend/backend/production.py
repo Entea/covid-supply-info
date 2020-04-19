@@ -253,3 +253,7 @@ JET_THEMES = [
         'title': 'Light Gray'
     }
 ]
+
+DRF_RECAPTCHA_SECRET_KEY = os.environ.get("RECAPTCHA_SECRET_KEY")
+
+X_FRAME_OPTIONS = 'SAMEORIGIN'
