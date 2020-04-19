@@ -142,6 +142,7 @@ class Hospital(models.Model):
     address = models.CharField(max_length=500, verbose_name=_('Адрес'), null=True, help_text=_('Введите адрес'))
     location = PointField(help_text="Для создания местоположения", null=True)
     locality = models.ForeignKey(Locality, on_delete=models.CASCADE, verbose_name=_("Местоположение"), null=True)
+    hidden = models.BooleanField(default=False, verbose_name=_('Скрыто'), help_text=_('Скрыть больницу?'))
 
     class Meta:
         verbose_name_plural = _('Больницы')
