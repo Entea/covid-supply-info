@@ -1,7 +1,5 @@
-import React, { Component } from 'react';
-import GoogleMapReact from 'google-map-react';
-import getConfig from 'next/config';
-const { publicRuntimeConfig } = getConfig();
+import React, {Component} from 'react';
+import {YMaps, Map, Placemark} from 'react-yandex-maps';
 
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -12,13 +10,11 @@ import {
 } from '../../actions/creators/hospitals';
 
 class Main extends Component {
-	static defaultProps = {
-		center: {
-			lat: 41.822475,
-			lng: 74.754128
-		},
-		zoom: 7,
-	};
+  static defaultProps = {
+    center: [42.870026, 74.599795],
+    zoom: 12,
+  };
+
   constructor() {
     super();
     this.state = {
@@ -159,33 +155,31 @@ class Main extends Component {
     </div>)
   }
 
-render() {
-  const Mark = ({ name, percent }) => <div className="circle-mark">
-    <div className={'circle ' + this.needHelpStatus(percent)} />
-    <div className="name">{name}</div>
-  </div>;
+  render() {
+    let marks = (this.props.hospitals || [])
+      .filter(item => item['full_location'].lat && item['full_location'].lng)
+      .map((item, index) => {
+        return (
+            <Placemark 
+                key={index + 'm'} 
+                geometry={[item['full_location'].lat, item['full_location'].lng]}
+                options={{hint: item['name']}}
+            />
+        )
+      });
 
-  let marks = (this.props.hospitals || [])
-    .filter(item => item['full_location'].lat && item['full_location'].lng)
-    .map((item, index) => (<Mark
-      key={index + 'm'}
-      lat={item['full_location'].lat}
-      lng={item['full_location'].lng}
-      name={item.name}
-      id={item.id}
-      percent={item.indicator}
-    />));
+    const center = Main.defaultProps.center;
+    const zoom = Main.defaultProps.zoom;
 
-		return (
-			<main>
-				<div style={ { height: '100vh', width: '100%' } }>
-          <GoogleMapReact
-						bootstrapURLKeys={ { key: publicRuntimeConfig.mapKey } }
-						defaultCenter={this.props.center}
-						defaultZoom={this.props.zoom}
-            onChildClick={this.openHospital.bind(this)}>
-            {marks}
-					</GoogleMapReact>
+	return (
+      <main>
+        <div style={ { height: '100vh', width: '100%' } }>
+          <YMaps>
+            <Map defaultState={{center: center, zoom: zoom}} width='100%' height='100%'>
+              {marks}
+            </Map>
+          </YMaps>
+
           <div ref={this.setWrapperRef} className={ this.state.openRightBlock ? 'open right-block' : 'right-block'}>
             <a className="close" onClick={() => this.closeRightBlock()}>
               <img src="x.svg" alt="close"/>
@@ -193,9 +187,9 @@ render() {
             {this.state.rightBlockTemplate}
           </div>
        </div>
-			</main>
-		);
-	}
+      </main>
+    );
+  }
 }
 
 const mapStateToProps = (state) => {
