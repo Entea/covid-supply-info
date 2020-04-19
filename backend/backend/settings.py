@@ -20,12 +20,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'id2!=m#1+zn$u@cs=f)7*e90kb8#-@wo7wbb(1c$smd3@se8bu'
+SECRET_KEY = os.environ.get('SECRET_KEY', default='id2!=m#1+zn$u@cs=f)7*e90kb8#-@wo7wbb(1c$smd3@se8bu')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', default='off') == 'on'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'antivirus.el.kg']
 
 # Application definition
 
@@ -41,13 +41,13 @@ INSTALLED_APPS = [
     'django.contrib.gis',
     'distributor',
     'rangefilter',
-    'mapwidgets',
     'rest_framework',
     'django_extensions',
     'django_filters',
     'corsheaders',
     'cacheops',
     'rest_framework_recaptcha',
+    'leaflet'
 ]
 
 MIDDLEWARE = [
@@ -154,24 +154,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
-
+STATIC_ROOT = os.environ.get('STATIC_ROOT', default=os.path.join(BASE_DIR, "assets"))
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
-
-STATIC_ROOT = os.path.join(BASE_DIR, "assets")
-
-GOOGLE_MAP_API_KEY = os.environ.get("MAP_API_KEY")
-
-MAP_WIDGETS = {
-    "GooglePointFieldWidget": (
-        ("zoom", 15),
-        ("mapCenterLocation", [42.8746, 74.5698]),
-        ("markerFitZoom", 15),
-        ("GooglePlaceAutocompleteOptions", {'componentRestrictions': {'country': 'kg'}})
-    ),
-    "GOOGLE_MAP_API_KEY": GOOGLE_MAP_API_KEY,
-}
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
@@ -217,42 +203,36 @@ CACHEOPS = {
 
 # JET Admin configurations
 
-JET_DEFAULT_THEME = 'green'
+JET_DEFAULT_THEME = 'light-gray'
 JET_SIDE_MENU_COMPACT = True
-
-JET_THEMES = [
-    {
-        'theme': 'default',  # theme folder name
-        'color': '#47bac1',  # color of the theme's button in user menu
-        'title': 'Default'  # theme title
-    },
-    {
-        'theme': 'green',
-        'color': '#44b78b',
-        'title': 'Green'
-    },
-    {
-        'theme': 'light-green',
-        'color': '#2faa60',
-        'title': 'Light Green'
-    },
-    {
-        'theme': 'light-violet',
-        'color': '#a464c4',
-        'title': 'Light Violet'
-    },
-    {
-        'theme': 'light-blue',
-        'color': '#5EADDE',
-        'title': 'Light Blue'
-    },
-    {
-        'theme': 'light-gray',
-        'color': '#222',
-        'title': 'Light Gray'
-    }
-]
 
 DRF_RECAPTCHA_SECRET_KEY = os.environ.get("RECAPTCHA_SECRET_KEY")
 
 X_FRAME_OPTIONS = 'SAMEORIGIN'
+
+LEAFLET_CONFIG = {
+    'DEFAULT_CENTER': (42.870026,74.599795),
+    'DEFAULT_ZOOM': 12,
+    'MIN_ZOOM': 3,
+    'MAX_ZOOM': 18,
+}
+
+if os.environ.get('ENABLE_LOGGING', default='off') == 'on':
+    LOGGING = {
+        'version': 1,
+        'disable_existing_loggers': False,
+        'handlers': {
+            'file': {
+                'level': 'WARNING',
+                'class': 'logging.FileHandler',
+                'filename': '/var/log/django/error.log',
+            },
+        },
+        'loggers': {
+            'django': {
+                'handlers': ['file'],
+                'level': 'DEBUG',
+                'propagate': True,
+            },
+        },
+    }

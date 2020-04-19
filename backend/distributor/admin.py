@@ -1,9 +1,8 @@
 from django.contrib import admin, messages
-from django.contrib.gis.db import models
 from django.shortcuts import redirect
 from django.urls import path, reverse_lazy
 from django.utils.timezone import now
-from mapwidgets.widgets import GooglePointFieldWidget
+from leaflet.admin import LeafletGeoAdmin
 from modeltranslation.admin import TranslationAdmin, TranslationTabularInline
 from rangefilter.filter import DateRangeFilter
 from django.utils.translation import ugettext as _
@@ -109,12 +108,8 @@ class NeedsInline(admin.TabularInline):
 
 
 @admin.register(Hospital)
-class HospitalAdmin(TranslationAdmin):
+class HospitalAdmin(TranslationAdmin, LeafletGeoAdmin):
     change_list_template = 'admin/hospital_change_list.html'
-
-    formfield_overrides = {
-        models.PointField: {"widget": GooglePointFieldWidget}
-    }
 
     inlines = (HospitalPhoneNumberInline, NeedsInline, StatisticInline)
 
