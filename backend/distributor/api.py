@@ -23,7 +23,7 @@ class HospitalViewSet(viewsets.ReadOnlyModelViewSet):
     """
     API returns the list of the hospitals
     """
-    queryset = Hospital.objects.all()
+    queryset = Hospital.objects.filter(hidden=False)
     serializer_class = HospitalSerializer
     filter_backends = (DjangoFilterBackend, SearchFilter)
     search_fields = ('name',)
@@ -95,7 +95,7 @@ class HospitalShortInfoListAPIView(ListAPIView):
     """
     API create hospital short info
     """
-    queryset = Hospital.objects.all()
+    queryset = Hospital.objects.filter(hidden=False)
     serializer_class = HospitalShortInfoSerializer
     pagination_class = None
     filter_backends = (DjangoFilterBackend, SearchFilter)

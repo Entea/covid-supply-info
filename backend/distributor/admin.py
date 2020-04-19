@@ -131,6 +131,7 @@ class HospitalAdmin(TranslationAdmin):
     )
 
     list_filter = (
+        'hidden',
         'locality',
     )
 
