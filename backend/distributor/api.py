@@ -189,6 +189,6 @@ class DistributionListAPIView(ListAPIView):
     permission_classes = ()
     authentication_classes = ()
     serializer_class = DistributionListSerializer
-    queryset = Distribution.objects.all().prefetch_related('donations')
+    queryset = Distribution.objects.all()
     filter_backends = (DjangoFilterBackend,)
     filter_class = DistributionFilter
