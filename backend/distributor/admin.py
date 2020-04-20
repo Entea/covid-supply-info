@@ -13,7 +13,8 @@ from distributor.models import (
     DonationDetail, Hospital, HospitalPhoneNumber,
     Region, District, Locality,
     Statistic, StatisticCategory, HelpRequest,
-    HospitalNeeds, Page, ContactInfo, ContactInfoPhoneNumber, ContactInfoEmail, ContactMessage, Distribution)
+    HospitalNeeds, Page, ContactInfo, ContactInfoPhoneNumber, ContactInfoEmail, ContactMessage, Distribution,
+    DistributionDetail)
 
 
 @admin.register(NeedType)
@@ -286,8 +287,17 @@ class ContactMessageAdmin(admin.ModelAdmin):
         return True
 
 
+class DistributionDetailInline(admin.TabularInline):
+    model = DistributionDetail
+
+    def has_module_permission(self, request):
+        return False
+
+
 @admin.register(Distribution)
 class DistributionAdmin(admin.ModelAdmin):
+    inlines = (DistributionDetailInline,)
+
     exclude = ('created_at', 'updated_at')
     list_filter = (
         ('distributed_at', DateRangeFilter),
@@ -302,3 +312,8 @@ class DistributionAdmin(admin.ModelAdmin):
         'receiver',
         'distributed_at'
     )
+
+
+@admin.register(DistributionDetail)
+class DistributionDetailAdmin(admin.ModelAdmin):
+    exclude = ('created_at', 'updated_at')
