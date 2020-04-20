@@ -50,11 +50,13 @@ class Donation(models.Model):
     ORGANIZATION = 'ORGANIZATION'
     PERSON = 'PERSONAL'
     DONOR = 'DONOR'
+    GOVERNMENT = 'GOVERNMENT'
 
     DONATOR_TYPES = (
         (ORGANIZATION, _('ORGANIZATION')),
         (PERSON, _('PERSONAL')),
         (DONOR, _('DONOR')),
+        (GOVERNMENT, _('GOVERNMENT')),
     )
     donator_type = models.CharField(verbose_name=_('Тип пожертвования'), choices=DONATOR_TYPES, max_length=12,
                                     default=ORGANIZATION, help_text=_('Выберите тип пожертвования'))
@@ -86,8 +88,8 @@ class DonationDetail(models.Model):
     amount = models.PositiveIntegerField(verbose_name=_('Количество'), help_text=_('Введите количество'))
     donation = models.ForeignKey(Donation, on_delete=models.PROTECT, verbose_name=_('Пожертвование)'),
                                  related_name='details', help_text=_('Выберите ранее созданное пожертвование'))
-    price_per_piece = models.DecimalField(max_digits=12, decimal_places=2, verbose_name=_("Цена за одну единицу (KGS)"),
-                                          help_text=_('Цена в сомах'))
+    total_cost = models.DecimalField(max_digits=20, decimal_places=2, verbose_name=_("Общая стоимость"),
+                                     help_text=_('Цена в сомах'), default=0.0)
 
     class Meta:
         verbose_name_plural = _('Детали пожертвований')
@@ -142,6 +144,7 @@ class Hospital(models.Model):
     address = models.CharField(max_length=500, verbose_name=_('Адрес'), null=True, help_text=_('Введите адрес'))
     location = PointField(help_text="Для создания местоположения", null=True)
     locality = models.ForeignKey(Locality, on_delete=models.CASCADE, verbose_name=_("Местоположение"), null=True)
+    hidden = models.BooleanField(default=False, verbose_name=_('Скрыто'), help_text=_('Скрыть больницу?'))
 
     class Meta:
         verbose_name_plural = _('Больницы')

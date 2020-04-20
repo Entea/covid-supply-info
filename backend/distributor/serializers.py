@@ -87,7 +87,7 @@ class DonationDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = DonationDetail
-        fields = ['id', 'amount', 'need_type', 'price_per_piece']
+        fields = ['id', 'amount', 'need_type', 'total_cost']
 
 
 class DonationSerializer(serializers.HyperlinkedModelSerializer):

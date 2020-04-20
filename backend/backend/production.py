@@ -46,9 +46,11 @@ INSTALLED_APPS = [
     'django_extensions',
     'django_filters',
     'cacheops',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -253,3 +255,19 @@ JET_THEMES = [
         'title': 'Light Gray'
     }
 ]
+
+DRF_RECAPTCHA_SECRET_KEY = os.environ.get("RECAPTCHA_SECRET_KEY")
+
+X_FRAME_OPTIONS = 'SAMEORIGIN'
+
+# Cors configurations
+
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_CREDENTIALS = False
+
+CORS_ALLOW_METHODS = (
+    'GET',
+    'OPTIONS',
+    'POST',
+)
+
