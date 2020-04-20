@@ -4,7 +4,7 @@ from django.shortcuts import redirect
 from django.urls import path, reverse_lazy
 from django.utils.timezone import now
 from mapwidgets.widgets import GooglePointFieldWidget
-from modeltranslation.admin import TranslationAdmin, TranslationTabularInline
+from modeltranslation.admin import TranslationAdmin
 from rangefilter.filter import DateRangeFilter
 from django.utils.translation import ugettext as _
 

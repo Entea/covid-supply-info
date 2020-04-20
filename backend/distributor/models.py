@@ -375,14 +375,14 @@ class DistributionDetail(models.Model):
     amount = models.PositiveIntegerField(verbose_name=_('Количество'), help_text=_('Введите количество'))
     distribution = models.ForeignKey(Distribution,
                                      on_delete=models.CASCADE,
-                                     verbose_name=_('Распределение'))
+                                     verbose_name=_('Распределение'), related_name='distribution_details')
     donation = models.ForeignKey(Donation,
                                  on_delete=models.PROTECT,
                                  verbose_name=_('Пожертвование)'),
-                                 related_name='distribution_details',
+                                 related_name='donation_details',
                                  help_text=_('Выберите ранее созданное пожертвование'))
-    price_per_piece = models.DecimalField(max_digits=12, decimal_places=2, verbose_name=_("Цена за одну единицу (KGS)"),
-                                          help_text=_('Цена в сомах'))
+    total_cost = models.DecimalField(max_digits=20, decimal_places=2, verbose_name=_("Общая стоимость"),
+                                     help_text=_('Цена в сомах'), default=0.0)
 
     class Meta:
         verbose_name_plural = _('Детали распределений')

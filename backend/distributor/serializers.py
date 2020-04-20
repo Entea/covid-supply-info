@@ -163,25 +163,24 @@ class ContactMessageSerializer(serializers.Serializer):
     body = serializers.CharField(max_length=400)
 
 
+class DistributionDetailSerializer(serializers.ModelSerializer):
+    donation = DonationSerializer()
+    need_type = NeedTypeSerializer()
+
+    class Meta:
+        model = DistributionDetail
+        fields = ('id', 'donation',
+                  'need_type', 'total_cost')
+
+
 class DistributionListSerializer(serializers.ModelSerializer):
     hospital = HospitalShortInfoSerializer()
+    details = DistributionDetailSerializer(many=True, source='distribution_details')
 
     class Meta:
         model = Distribution
         fields = (
-            'id', 'hospital',
+            'id', 'hospital', 'details',
             'sender', 'receiver', 'distributed_at',
             'status', 'created_at', 'delivered_at'
         )
-
-
-class DistributionDetailSerializer(serializers.ModelSerializer):
-    distribution = DistributionListSerializer(many=False)
-    donation = DonationSerializer(many=False)
-    need_type = NeedTypeSerializer()
-
-    class Meta:
-        class Meta:
-            model = DistributionDetail
-            fields = ('id', 'distribution', 'donation',
-                      'need_type', 'price_per_piece')
