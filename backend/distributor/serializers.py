@@ -6,7 +6,7 @@ from distributor.models import (
     DonationDetail, NeedType, Measure,
     Region, District, Locality,
     Statistic, HospitalNeeds,
-    Page, ContactInfo, ContactInfoPhoneNumber, ContactInfoEmail, Distribution)
+    Page, ContactInfo, ContactInfoPhoneNumber, ContactInfoEmail, Distribution, DistributionDetail)
 
 
 class HospitalPhoneNumberSerializer(serializers.ModelSerializer):
@@ -164,13 +164,24 @@ class ContactMessageSerializer(serializers.Serializer):
 
 
 class DistributionListSerializer(serializers.ModelSerializer):
-    donations = DonationSerializer(many=True)
     hospital = HospitalShortInfoSerializer()
 
     class Meta:
         model = Distribution
         fields = (
-            'id', 'hospital', 'donations',
+            'id', 'hospital',
             'sender', 'receiver', 'distributed_at',
             'status', 'created_at', 'delivered_at'
         )
+
+
+class DistributionDetailSerializer(serializers.ModelSerializer):
+    distribution = DistributionListSerializer(many=False)
+    donation = DonationSerializer(many=False)
+    need_type = NeedTypeSerializer()
+
+    class Meta:
+        class Meta:
+            model = DistributionDetail
+            fields = ('id', 'distribution', 'donation',
+                      'need_type', 'price_per_piece')

@@ -353,7 +353,6 @@ class Distribution(models.Model):
     delivered_at = models.DateField(verbose_name=_('Дата доставки'), blank=True, null=True)
     status = models.CharField(max_length=20, choices=DISTRIBUTION_STATUSES, verbose_name=_('Статус'),
                               default=READY_TO_SEND)
-    donations = models.ManyToManyField(Donation, verbose_name=_('Пожертвования'))
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -365,3 +364,26 @@ class Distribution(models.Model):
 
     def __str__(self):
         return self.hospital.name
+
+
+class DistributionDetail(models.Model):
+    need_type = models.ForeignKey(NeedType, on_delete=models.PROTECT, verbose_name=_('Тип нужды'),
+                                  help_text=_('Выберите тип нужды'))
+    amount = models.PositiveIntegerField(verbose_name=_('Количество'), help_text=_('Введите количество'))
+    distribution = models.ForeignKey(Distribution,
+                                     on_delete=models.CASCADE,
+                                     verbose_name=_('Распределение'))
+    donation = models.ForeignKey(Donation,
+                                 on_delete=models.PROTECT,
+                                 verbose_name=_('Пожертвование)'),
+                                 related_name='distribution_details',
+                                 help_text=_('Выберите ранее созданное пожертвование'))
+    price_per_piece = models.DecimalField(max_digits=12, decimal_places=2, verbose_name=_("Цена за одну единицу (KGS)"),
+                                          help_text=_('Цена в сомах'))
+
+    class Meta:
+        verbose_name_plural = _('Детали распределений')
+        verbose_name = _('Детали распределния')
+
+    def __str__(self):
+        return "{} {}".format(self.need_type, self.amount)
