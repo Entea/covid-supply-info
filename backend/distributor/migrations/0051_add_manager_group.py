@@ -7,18 +7,31 @@ def add_group(apps, schema_editor):
         'add_hospital',
         'change_hospital',
         'view_hospital',
+
         'add_hospitalphonenumber',
         'change_hospitalphonenumber',
         'delete_hospitalphonenumber',
         'view_hospitalphonenumber',
+
         'add_hospitalneeds',
         'change_hospitalneeds',
         'delete_hospitalneeds',
         'view_hospitalneeds',
+
         'add_statistic',
         'change_statistic',
         'delete_statistic',
         'view_statistic',
+
+        'add_distributiondetail',
+        'change_distributiondetail',
+        'delete_distributiondetail',
+        'view_distributiondetail',
+
+        'add_distribution',
+        'change_distribution',
+        'delete_distribution',
+        'view_distribution',
     ]
     group, created = apps.get_model('auth', 'Group').objects.get_or_create(name="Hospital Managers")
     if created:

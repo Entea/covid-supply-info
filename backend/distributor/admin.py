@@ -353,6 +353,15 @@ class DistributionAdmin(admin.ModelAdmin):
         'distributed_at'
     )
 
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == "hospital":
+            # Отображаем только нескрытые больнички
+            kwargs["queryset"] = Hospital.objects.filter(hidden=False)
+            if request.user.hospitals.count() > 0:
+                # Для старших медсестер отображаем только привязанные больницы
+                kwargs["queryset"] = request.user.hospitals
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
 
 @admin.register(DistributionDetail)
 class DistributionDetailAdmin(admin.ModelAdmin):
