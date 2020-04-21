@@ -1,5 +1,4 @@
 from rest_framework import serializers
-from rest_framework import serializers
 from rest_framework_recaptcha.fields import ReCaptchaField
 
 from distributor.models import (
@@ -7,7 +6,7 @@ from distributor.models import (
     DonationDetail, NeedType, Measure,
     Region, District, Locality,
     Statistic, HospitalNeeds,
-    Page, ContactInfo, ContactInfoPhoneNumber, ContactInfoEmail)
+    Page, ContactInfo, ContactInfoPhoneNumber, ContactInfoEmail, Distribution, DistributionDetail)
 
 
 class HospitalPhoneNumberSerializer(serializers.ModelSerializer):
@@ -162,3 +161,26 @@ class ContactMessageSerializer(serializers.Serializer):
     email = serializers.EmailField(max_length=100)
     title = serializers.CharField(max_length=100)
     body = serializers.CharField(max_length=400)
+
+
+class DistributionDetailSerializer(serializers.ModelSerializer):
+    donation = DonationSerializer()
+    need_type = NeedTypeSerializer()
+
+    class Meta:
+        model = DistributionDetail
+        fields = ('id', 'donation',
+                  'need_type', 'total_cost')
+
+
+class DistributionListSerializer(serializers.ModelSerializer):
+    hospital = HospitalShortInfoSerializer()
+    details = DistributionDetailSerializer(many=True, source='distribution_details')
+
+    class Meta:
+        model = Distribution
+        fields = (
+            'id', 'hospital', 'details',
+            'sender', 'receiver', 'distributed_at',
+            'status', 'created_at', 'delivered_at'
+        )

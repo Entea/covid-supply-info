@@ -4,7 +4,7 @@ from django.shortcuts import redirect
 from django.urls import path, reverse_lazy
 from django.utils.timezone import now
 from mapwidgets.widgets import GooglePointFieldWidget
-from modeltranslation.admin import TranslationAdmin, TranslationTabularInline
+from modeltranslation.admin import TranslationAdmin
 from rangefilter.filter import DateRangeFilter
 from django.utils.translation import ugettext as _
 
@@ -13,7 +13,8 @@ from distributor.models import (
     DonationDetail, Hospital, HospitalPhoneNumber,
     Region, District, Locality,
     Statistic, StatisticCategory, HelpRequest,
-    HospitalNeeds, Page, ContactInfo, ContactInfoPhoneNumber, ContactInfoEmail, ContactMessage)
+    HospitalNeeds, Page, ContactInfo, ContactInfoPhoneNumber, ContactInfoEmail, ContactMessage, Distribution,
+    DistributionDetail)
 
 
 @admin.register(NeedType)
@@ -284,3 +285,35 @@ class ContactMessageAdmin(admin.ModelAdmin):
 
     def has_view_permission(self, request, obj=None):
         return True
+
+
+class DistributionDetailInline(admin.TabularInline):
+    model = DistributionDetail
+
+    def has_module_permission(self, request):
+        return False
+
+
+@admin.register(Distribution)
+class DistributionAdmin(admin.ModelAdmin):
+    inlines = (DistributionDetailInline,)
+
+    exclude = ('created_at', 'updated_at')
+    list_filter = (
+        ('distributed_at', DateRangeFilter),
+    )
+
+    search_fields = ('sender', 'receiver')
+    ordering = ('-created_at',)
+
+    list_display = (
+        'hospital',
+        'sender',
+        'receiver',
+        'distributed_at'
+    )
+
+
+@admin.register(DistributionDetail)
+class DistributionDetailAdmin(admin.ModelAdmin):
+    exclude = ('created_at', 'updated_at')
