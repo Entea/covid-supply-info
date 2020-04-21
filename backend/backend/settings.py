@@ -217,7 +217,7 @@ CACHEOPS = {
 
 # JET Admin configurations
 
-JET_DEFAULT_THEME = 'green'
+JET_DEFAULT_THEME = 'light-gray'
 JET_SIDE_MENU_COMPACT = True
 
 JET_THEMES = [
@@ -254,3 +254,5 @@ JET_THEMES = [
 ]
 
 DRF_RECAPTCHA_SECRET_KEY = os.environ.get("RECAPTCHA_SECRET_KEY")
+
+X_FRAME_OPTIONS = 'SAMEORIGIN'

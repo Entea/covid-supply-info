@@ -48,7 +48,7 @@ class Donations extends Component {
 													<td>{item.description}</td>
 													<td>{item.details.map(detail => (
 														<Fragment>
-															<span>{detail.need_type.name} - {detail.amount} {detail.need_type.measure.name}</span>
+															<span>{detail.need_type.name} - {detail.amount} {detail.need_type.measure.name} - {detail.amount} сом</span>
 															<br/>
 														</Fragment>
 													))}</td>

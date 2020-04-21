@@ -3,17 +3,18 @@ from django.contrib.gis.db import models
 from django.shortcuts import redirect
 from django.urls import path, reverse_lazy
 from django.utils.timezone import now
-from mapwidgets.widgets import GooglePointFieldWidget
-from modeltranslation.admin import TranslationAdmin, TranslationTabularInline
-from rangefilter.filter import DateRangeFilter
 from django.utils.translation import ugettext as _
+from mapwidgets.widgets import GooglePointFieldWidget
+from modeltranslation.admin import TranslationAdmin
+from rangefilter.filter import DateRangeFilter
 
 from distributor.models import (
     Measure, NeedType, Donation,
     DonationDetail, Hospital, HospitalPhoneNumber,
     Region, District, Locality,
     Statistic, StatisticCategory, HelpRequest,
-    HospitalNeeds, Page, ContactInfo, ContactInfoPhoneNumber, ContactInfoEmail, ContactMessage)
+    HospitalNeeds, Page, ContactInfo, ContactInfoPhoneNumber, ContactInfoEmail, ContactMessage, Distribution,
+    DistributionDetail)
 
 
 @admin.register(NeedType)
@@ -131,8 +132,49 @@ class HospitalAdmin(TranslationAdmin):
     )
 
     list_filter = (
+        'hidden',
         'locality',
     )
+
+    fieldsets_super_user = [
+        (None, {'fields': ['name_ru',
+                           'name_ky',
+                           'code',
+                           'address',
+                           'location',
+                           'locality',
+                           'search_locality_id',
+                           'search_district_id',
+                           'search_region_id']}),
+        (_('Дополнительные поля'), {
+            'fields': ['managers', 'hidden'],
+            'classes': ['collapse']
+        }),
+    ]
+
+    fieldsets_user = [
+        (None, {'fields': ['name_ru',
+                           'name_ky',
+                           'code',
+                           'address',
+                           'location',
+                           'locality',
+                           'search_locality_id',
+                           'search_district_id',
+                           'search_region_id']}),
+    ]
+
+    def get_form(self, request, obj=None, **kwargs):
+        if request.user.is_superuser:
+            self.fieldsets = self.fieldsets_super_user
+        else:
+            self.fieldsets = self.fieldsets_user
+        return super(HospitalAdmin, self).get_form(request, obj, **kwargs)
+
+    def get_queryset(self, request):
+        if request.user.is_superuser:
+            return super(HospitalAdmin, self).get_queryset(request)
+        return request.user.hospitals
 
     def get_urls(self):
         urls = super(HospitalAdmin, self).get_urls()
@@ -283,3 +325,44 @@ class ContactMessageAdmin(admin.ModelAdmin):
 
     def has_view_permission(self, request, obj=None):
         return True
+
+
+class DistributionDetailInline(admin.TabularInline):
+    model = DistributionDetail
+
+    def has_module_permission(self, request):
+        return False
+
+
+@admin.register(Distribution)
+class DistributionAdmin(admin.ModelAdmin):
+    inlines = (DistributionDetailInline,)
+
+    exclude = ('created_at', 'updated_at')
+    list_filter = (
+        ('distributed_at', DateRangeFilter),
+    )
+
+    search_fields = ('sender', 'receiver')
+    ordering = ('-created_at',)
+
+    list_display = (
+        'hospital',
+        'sender',
+        'receiver',
+        'distributed_at'
+    )
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == "hospital":
+            # Отображаем только нескрытые больнички
+            kwargs["queryset"] = Hospital.objects.filter(hidden=False)
+            if request.user.hospitals.count() > 0:
+                # Для старших медсестер отображаем только привязанные больницы
+                kwargs["queryset"] = request.user.hospitals
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
+
+@admin.register(DistributionDetail)
+class DistributionDetailAdmin(admin.ModelAdmin):
+    exclude = ('created_at', 'updated_at')
