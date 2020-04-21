@@ -3,10 +3,10 @@ from django.contrib.gis.db import models
 from django.shortcuts import redirect
 from django.urls import path, reverse_lazy
 from django.utils.timezone import now
+from django.utils.translation import ugettext as _
 from mapwidgets.widgets import GooglePointFieldWidget
 from modeltranslation.admin import TranslationAdmin
 from rangefilter.filter import DateRangeFilter
-from django.utils.translation import ugettext as _
 
 from distributor.models import (
     Measure, NeedType, Donation,
@@ -135,6 +135,46 @@ class HospitalAdmin(TranslationAdmin):
         'hidden',
         'locality',
     )
+
+    fieldsets_super_user = [
+        (None, {'fields': ['name_ru',
+                           'name_ky',
+                           'code',
+                           'address',
+                           'location',
+                           'locality',
+                           'search_locality_id',
+                           'search_district_id',
+                           'search_region_id']}),
+        (_('Дополнительные поля'), {
+            'fields': ['managers', 'hidden'],
+            'classes': ['collapse']
+        }),
+    ]
+
+    fieldsets_user = [
+        (None, {'fields': ['name_ru',
+                           'name_ky',
+                           'code',
+                           'address',
+                           'location',
+                           'locality',
+                           'search_locality_id',
+                           'search_district_id',
+                           'search_region_id']}),
+    ]
+
+    def get_form(self, request, obj=None, **kwargs):
+        if request.user.is_superuser:
+            self.fieldsets = self.fieldsets_super_user
+        else:
+            self.fieldsets = self.fieldsets_user
+        return super(HospitalAdmin, self).get_form(request, obj, **kwargs)
+
+    def get_queryset(self, request):
+        if request.user.is_superuser:
+            return super(HospitalAdmin, self).get_queryset(request)
+        return request.user.hospitals
 
     def get_urls(self):
         urls = super(HospitalAdmin, self).get_urls()
@@ -312,6 +352,15 @@ class DistributionAdmin(admin.ModelAdmin):
         'receiver',
         'distributed_at'
     )
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == "hospital":
+            # Отображаем только нескрытые больнички
+            kwargs["queryset"] = Hospital.objects.filter(hidden=False)
+            if request.user.hospitals.count() > 0:
+                # Для старших медсестер отображаем только привязанные больницы
+                kwargs["queryset"] = request.user.hospitals
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
 @admin.register(DistributionDetail)

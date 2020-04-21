@@ -217,7 +217,7 @@ CACHEOPS = {
 
 # JET Admin configurations
 
-JET_DEFAULT_THEME = 'green'
+JET_DEFAULT_THEME = 'light-gray'
 JET_SIDE_MENU_COMPACT = True
 
 JET_THEMES = [

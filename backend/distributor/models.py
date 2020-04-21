@@ -145,6 +145,7 @@ class Hospital(models.Model):
     location = PointField(help_text="Для создания местоположения", null=True)
     locality = models.ForeignKey(Locality, on_delete=models.CASCADE, verbose_name=_("Местоположение"), null=True)
     hidden = models.BooleanField(default=False, verbose_name=_('Скрыто'), help_text=_('Скрыть больницу?'))
+    managers = models.ManyToManyField(User, related_name='hospitals', blank=True)
 
     class Meta:
         verbose_name_plural = _('Больницы')
