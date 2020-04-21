@@ -8,7 +8,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('distributor', '0040_merge_20200419_1223'),
+        ('distributor', '0049_auto_20200420_1937'),
     ]
 
     operations = [

@@ -30,7 +30,7 @@ def add_group(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('distributor', '0041_auto_20200420_1852'),
+        ('distributor', '0050_auto_20200420_1852'),
     ]
 
     operations = [
