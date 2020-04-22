@@ -6,7 +6,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       distributor-db:
-        image: postgres:10.8
+        image: mdillon/postgis:9.5
         env:
           POSTGRES_USER: master
           POSTGRES_PASSWORD: 123456
@@ -34,7 +34,7 @@ jobs:
         working-directory: backend
 
       - name: Prepare dotenv
-        run: cp .env.dev .env
+        run: cp .env.github .env
         working-directory: backend
 
       - name: Run migrations
