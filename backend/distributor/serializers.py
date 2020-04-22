@@ -95,7 +95,15 @@ class DonationSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Donation
-        fields = ['id', 'donator_name', 'donator_type', 'description', 'created_at', 'details']
+        fields = ['id',
+                  'donator_name',
+                  'donator_type',
+                  'total_price',
+                  'total_donation',
+                  'description',
+                  'created_at',
+                  'details'
+                  ]
 
 
 class RegionSerializer(serializers.HyperlinkedModelSerializer):
