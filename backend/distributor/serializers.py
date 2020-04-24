@@ -172,23 +172,22 @@ class ContactMessageSerializer(serializers.Serializer):
 
 
 class DistributionDetailSerializer(serializers.ModelSerializer):
-    donation = DonationSerializer()
     need_type = NeedTypeSerializer()
 
     class Meta:
         model = DistributionDetail
-        fields = ('id', 'donation',
-                  'need_type', 'total_cost')
+        fields = ('id', 'need_type', 'total_cost')
 
 
 class DistributionListSerializer(serializers.ModelSerializer):
     hospital = HospitalShortInfoSerializer()
+    donation = DonationSerializer()
     details = DistributionDetailSerializer(many=True, source='distribution_details')
 
     class Meta:
         model = Distribution
         fields = (
-            'id', 'hospital', 'details',
+            'id', 'hospital', 'donation', 'details',
             'sender', 'receiver', 'distributed_at',
             'status', 'created_at', 'delivered_at'
         )
