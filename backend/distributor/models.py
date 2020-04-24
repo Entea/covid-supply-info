@@ -361,6 +361,12 @@ class ContactMessage(models.Model):
 class Distribution(models.Model):
     hospital = models.ForeignKey(Hospital, on_delete=models.CASCADE, related_name='distributions',
                                  verbose_name=_('Больница'))
+    donation = models.ForeignKey(Donation,
+                                 on_delete=models.PROTECT,
+                                 verbose_name=_('Пожертвование)'),
+                                 related_name='donation_details',
+                                 help_text=_('Выберите ранее созданное пожертвование'))
+
     sender = models.TextField(verbose_name=_('Кто выдал?'))
     receiver = models.TextField(verbose_name=_('Кто принял?'), blank=True)
     distributed_at = models.DateField(verbose_name=_('Дата распределения'))
@@ -387,11 +393,6 @@ class DistributionDetail(models.Model):
     distribution = models.ForeignKey(Distribution,
                                      on_delete=models.CASCADE,
                                      verbose_name=_('Распределение'), related_name='distribution_details')
-    donation = models.ForeignKey(Donation,
-                                 on_delete=models.PROTECT,
-                                 verbose_name=_('Пожертвование)'),
-                                 related_name='donation_details',
-                                 help_text=_('Выберите ранее созданное пожертвование'))
     total_cost = models.DecimalField(max_digits=20, decimal_places=2, verbose_name=_("Общая стоимость"),
                                      help_text=_('Цена в сомах'), default=0.0)
 
