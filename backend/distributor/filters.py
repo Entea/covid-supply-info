@@ -22,11 +22,10 @@ class MultipleListFilter(Filter):
 
 class DistributionFilter(FilterSet):
     """
-    Available filter route /api/v1/distributions/?hospitals=1,2,3
+    Available filter route /api/v1/distributions/?donation=1,2,3
     """
-    hospitals = MultipleListFilter(field_name='hospital')
     donations = MultipleListFilter(field_name='donation')
 
     class Meta:
         model = Distribution
-        fields = ('hospitals','donations',)
+        fields = ('donations',)

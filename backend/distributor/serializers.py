@@ -176,18 +176,17 @@ class DistributionDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = DistributionDetail
-        fields = ('id', 'need_type', 'total_cost')
+        fields = ('id', 'need_type', 'total_cost', 'amount')
 
 
 class DistributionListSerializer(serializers.ModelSerializer):
     hospital = HospitalShortInfoSerializer()
-    donation = DonationSerializer()
     details = DistributionDetailSerializer(many=True, source='distribution_details')
 
     class Meta:
         model = Distribution
         fields = (
-            'id', 'hospital', 'donation', 'details',
+            'id', 'hospital', 'details',
             'sender', 'receiver', 'distributed_at',
             'status', 'created_at', 'delivered_at'
         )
