@@ -343,6 +343,7 @@ class DistributionAdmin(admin.ModelAdmin):
 
     list_display = (
         'hospital',
+        'donation',
         'sender',
         'receiver',
         'distributed_at'
