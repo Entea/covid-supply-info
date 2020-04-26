@@ -218,7 +218,7 @@ class Main extends Component {
                          className={this.state.openRightBlock ? 'open right-block' : 'right-block'}>
                         <a className="close" onClick={() => this.closeRightBlock()}>
                             <img src="x.svg" alt="close"/>
-                        </a>ss
+                        </a>
                         {this.state.rightBlockTemplate}
                     </div>
                 </div>
