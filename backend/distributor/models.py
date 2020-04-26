@@ -277,6 +277,7 @@ class HospitalNeeds(models.Model):
     class Meta:
         verbose_name_plural = _('Потребности больниц')
         verbose_name = _('Потребность')
+        ordering = ['need_type__name']
 
     def __str__(self):
         return "{} {}".format(self.reserve_amount, self.request_amount)
