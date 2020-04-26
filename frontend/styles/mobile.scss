@@ -31,7 +31,8 @@
     border: none;
   }
   .map-box {
-    height: calc(100% - 140px);
+    height: calc(100vh - 140px);
+    width: 100%;
   }
   .right-block {
     background: #FFFFFF;
@@ -58,6 +59,7 @@
     position: fixed;
     top: 0;
     left: 0;
+    overflow-y: scroll;
     .h4 {
       font-family: 'Open Sans', sans-serif;
       font-style: normal;
@@ -156,7 +158,7 @@
 
   .about {
     margin-top: 56px;
-    
+
     &__block_header {
       margin-bottom: 0rem;
     }

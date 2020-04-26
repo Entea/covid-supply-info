@@ -181,7 +181,7 @@ class Main extends Component {
 
         return (
             <main>
-                <div style={{height: '100vh', width: '100%'}}>
+                <div className="map-box">
                     <YMaps>
                         <Map defaultState={mapState} width='100%' height='100%'>
                             <Clusterer
