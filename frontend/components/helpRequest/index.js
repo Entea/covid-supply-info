@@ -339,10 +339,7 @@ class HelpRequest extends React.Component {
                         </Form>
                     </Modal.Body>
                 </Modal>
-                <li className="nav-item float-right">
-                    <Button variant={'primary'} onClick={this.showModal}>ПОДАТЬ ЗАЯВКУ</Button>
-                </li>
-
+                <Button className="help-button" variant={'primary'} onClick={this.showModal}>ПОДАТЬ ЗАЯВКУ</Button>
                 <Modal
                     onHide={() => this.showResultModal(false)}
                     animation={true}

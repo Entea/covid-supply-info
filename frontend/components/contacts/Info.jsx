@@ -10,8 +10,7 @@ const Info = (props) => {
 
     return (
         <Fragment>
-            <h1 className='h2'>Контакты</h1>
-            <br/><br/>
+            <h1 className='h2 mb-2'>Контакты</h1>
             <p>
                 {data.text_ru}:
             </p>

@@ -11,7 +11,6 @@
     "axios": "^0.19.2",
     "bootstrap": "^4.4.1",
     "dotenv": "^8.2.0",
-    "google-map-react": "^1.1.7",
     "i18next": "^19.3.4",
     "next": "9.3.1",
     "node-sass": "^4.13.1",
@@ -22,9 +21,9 @@
     "react-i18next": "^11.3.4",
     "react-redux": "^7.2.0",
     "react-select": "^3.1.0",
-    "reaptcha": "^1.7.2",
+    "react-yandex-maps": "^4.3.0",
+    "reaptcha": "1.7.2",
     "redux": "^4.0.5",
-    "redux-thunk": "^2.3.0",
-    "reaptcha": "1.7.2"
+    "redux-thunk": "^2.3.0"
   }
 }
