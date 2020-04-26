@@ -134,6 +134,7 @@ class Header extends Component {
             <div className="menu-box">
 							<Nav className="mr-auto">
 								<Nav.Link href="/" className="map">Карта с больницами</Nav.Link>
+								<Nav.Link href="/about" className="map">О нас</Nav.Link>
 								<Nav.Link href="/donations" className="list">Список пожертований</Nav.Link>
 								<Nav.Link href="/contact" className="contacts">Контакты</Nav.Link>
 								<HelpRequest/>
@@ -197,15 +198,14 @@ class Header extends Component {
 					</form>
 					<div className="collapse navbar-collapse" id="navbarCollapse">
 						<ul className="navbar-nav mr-auto">
+							<li className="nav-item active">
+								<Link activeClassName="active" href="/">
+									<a className="nav-link">Карта</a>
+								</Link>
+							</li>
 							<li className="nav-item">
 								<Link activeClassName="active" href="/about">
 									<a className="nav-link">О нас</a>
-								</Link>
-							</li>
-							<li className="nav-item active">
-
-								<Link activeClassName="active" href="/">
-									<a className="nav-link">Карта</a>
 								</Link>
 							</li>
 							<li className="nav-item">

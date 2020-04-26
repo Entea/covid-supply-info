@@ -21,7 +21,7 @@ class About extends Component {
 
         return (
             <main className='about'>
-                <Row style={{ marginTop: 126 }}>
+                <Row>
                     <Col xs>
                         <Block filled={true}>
                             <BlockHeader>WWW.TIREK.KG</BlockHeader>
