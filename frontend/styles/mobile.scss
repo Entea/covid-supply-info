@@ -153,4 +153,16 @@
       margin: 0 auto;
     }
   }
+
+  .about {
+    margin-top: 56px;
+    
+    &__block_header {
+      margin-bottom: 0rem;
+    }
+
+    &__block_content {
+      padding-left: 20px;
+    }
+  }
 }
