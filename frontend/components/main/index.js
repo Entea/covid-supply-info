@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {YMaps, Map, Placemark} from 'react-yandex-maps';
+import {YMaps, Map, Placemark, Clusterer} from 'react-yandex-maps';
 
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
@@ -70,9 +70,6 @@ class Main extends Component {
         this.openHospital(hospital.id);
     };
 
-    // closeRightBlock() {
-    //     this.setState({openRightBlock: false, rightBlockTemplate: null});
-    // }
     closeRightBlock() {
         this.setState({openRightBlock: false});
         this.openHospitals();
@@ -187,22 +184,28 @@ class Main extends Component {
                 <div style={{height: '100vh', width: '100%'}}>
                     <YMaps>
                         <Map defaultState={mapState} width='100%' height='100%'>
-                            {hospitals.map((hospital, index) => (
-                                <Placemark
-                                    modules={["geoObject.addon.hint"]}
-                                    key={index}
-                                    geometry={[hospital.lat, hospital.lng]}
-                                    onClick={this.onPlacemarkClick(hospital)}
-                                    properties={{
-                                        item: index,
-                                        hintContent: hospital.name,
-                                    }}
-                                    options={{
-                                        preset: "islands#blueMedicalCircleIcon",
-                                        iconColor: this.placeMarkerColor(hospital.indicator),
-                                    }}
-                                />
-                            ))}
+                            <Clusterer
+                                options={{
+                                    preset: "islands#invertedDarkBlueClusterIcons",
+                                }}
+                            >
+                                {hospitals.map((hospital, index) => (
+                                    <Placemark
+                                        modules={["geoObject.addon.hint"]}
+                                        key={index}
+                                        geometry={[hospital.lat, hospital.lng]}
+                                        onClick={this.onPlacemarkClick(hospital)}
+                                        properties={{
+                                            item: index,
+                                            hintContent: hospital.name,
+                                        }}
+                                        options={{
+                                            preset: "islands#blueMedicalCircleIcon",
+                                            iconColor: this.placeMarkerColor(hospital.indicator),
+                                        }}
+                                    />
+                                ))}
+                            </Clusterer>
                         </Map>
                     </YMaps>
 
