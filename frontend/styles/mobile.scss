@@ -1,0 +1,168 @@
+.only-mobile {
+  display: none;
+}
+.menu-left, .search-menu {
+  display: none;
+}
+
+@media only screen and (max-width: 600px) {
+
+  .only-mobile {
+    display: flex;
+  }
+  .hide-mobile {
+    display: none;
+  }
+  .navbar-brand {
+    line-height: 40px;
+    height: 40px;
+    margin: 0;
+    padding: 0;
+    .logo {
+      margin: 0;
+    }
+    span {
+      display: inline-block;
+      vertical-align: top;
+      margin-left: 5px;
+    }
+  }
+  .navbar-toggler {
+    border: none;
+  }
+  .map-box {
+    height: calc(100% - 140px);
+  }
+  .right-block {
+    background: #FFFFFF;
+    box-shadow: 0px -2px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 0;
+    width: 100%;
+    height: 100%;
+    bottom: 0;
+    top: auto;
+    right: auto;
+    left: 0;
+    opacity: 1;
+    visibility: visible;
+    position: static;
+    overflow-y: unset;
+    .hospital-box h1 {
+      width: 100%;
+    }
+  }
+  .modal-content {
+    width: 100%;
+    background: #ffffff;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    .h4 {
+      font-family: 'Open Sans', sans-serif;
+      font-style: normal;
+      font-weight: 600;
+      font-size: 14px;
+      line-height: 19px;
+    }
+  }
+  #menu {
+    .menu-box {
+      padding: 22px 17px;
+      width: 264px;
+      height: 100%;
+      background: #0A609D;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 100;
+      .help-button {
+        margin: 100% auto 0 auto;
+      }
+    }
+    a {
+      color: #ffffff;
+      font-style: normal;
+      font-weight: normal;
+      font-size: 14px;
+      line-height: 17px;
+      text-align: left;
+      padding: 10px 0 10px 30px;
+      margin: 0;
+      &.map {
+        background: url('/mdi_map.svg') left 6px no-repeat;
+      }
+      &.list {
+        background: url('/mdi_contact_phone.svg') left 5px no-repeat;
+      }
+      &.contacts {
+        background: url('/mdi_import_contacts.svg') left 5px no-repeat;
+      }
+      img {
+        margin-right: 11px;
+        display: inline;
+      }
+    }
+    .open {
+      display: block;
+    }
+    .shadow {
+      background: rgba(0, 0, 0, 0.14);
+      backdrop-filter: blur(15px);
+      width: 100%;
+      height: 100%;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 99;
+    }
+  }
+  .donations-list {
+    overflow-x: scroll;
+  }
+  .contact-box {
+    margin-top: 50px;
+    .h2 {
+      font-size: 20px;
+      margin-top: 20px
+    }
+  }
+  .search-menu {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: #ffffff;
+    padding: 16px 10px;
+    &.open {
+      display: block;
+    }
+    .filters-box {
+      margin-left: 0;
+      margin-top: 10px;
+      .dropdown {
+        margin-bottom: 10px;
+      }
+    }
+  }
+  .button-help-map {
+    position: relative;
+    top: -100px;
+    .help-button {
+      margin: 0 auto;
+    }
+  }
+
+  .about {
+    margin-top: 56px;
+    
+    &__block_header {
+      margin-bottom: 0rem;
+    }
+
+    &__block_content {
+      padding-left: 20px;
+    }
+  }
+}

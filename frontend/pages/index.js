@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import Layout from '../components/layout/Layout';
-import MainComponent from '../components/main'
+import dynamic from 'next/dynamic'
+
+const MainComponent = dynamic(() => import('../components/main'), {ssr: false});
 
 class Home extends Component {
     render() {
