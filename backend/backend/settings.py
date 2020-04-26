@@ -236,3 +236,5 @@ if os.environ.get('ENABLE_LOGGING', default='off') == 'on':
             },
         },
     }
+
+ALLOWED_HOSTS = ['localhost']
