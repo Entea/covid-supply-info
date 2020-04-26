@@ -28,7 +28,8 @@ class Donations extends Component {
 							}
 							{
 								!fetching && results.length > 0 ?
-									<Table bordered hover size="sm">
+									<div className="donations-list">
+									<Table bordered hover size="sm" >
 										<thead>
 										<tr>
 											<th>#</th>
@@ -57,6 +58,7 @@ class Donations extends Component {
 										}
 										</tbody>
 									</Table>
+                  </div>
 									:
 									<Alert variant='danger'>
 										Нет данных

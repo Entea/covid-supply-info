@@ -6,9 +6,10 @@ from distributor.models import Hospital
 
 
 def update_hospital_search_fields(apps, schema_editor):
-    hospitals = Hospital.objects.all()
-    for hospital in hospitals:
-        hospital.save()
+    print('1')
+#hospitals = Hospital.objects.all()
+#for hospital in hospitals:
+#   hospital.save()
 
 
 class Migration(migrations.Migration):

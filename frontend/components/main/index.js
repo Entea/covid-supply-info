@@ -5,6 +5,7 @@ const { publicRuntimeConfig } = getConfig();
 
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+import HelpRequest from "../helpRequest";
 
 import {
   fetchHospitals as fetchHospitalsAction,
@@ -23,7 +24,8 @@ class Main extends Component {
     super();
     this.state = {
       openRightBlock: true,
-      rightBlockTemplate: null
+      rightBlockTemplate: null,
+      rightBlockStatus: ''
     }
     this.closeRightBlock.bind(this);
     this.getHospitalsInfo.bind(this);
@@ -66,19 +68,20 @@ class Main extends Component {
   }
 
   closeRightBlock() {
-    this.setState({openRightBlock: false, rightBlockTemplate: null});
+    this.setState({openRightBlock: false});
+    this.openHospitals();
   }
 
   openHospital(m, props) {
     this.props.fetchHospitalAction(props.id).then(() => {
-      this.state.rightBlockTemplate = this.getHospitalInfo();
-      this.setState({openRightBlock: true})
+      const rightBlockTemplate = this.getHospitalInfo();
+      this.setState({openRightBlock: true, rightBlockTemplate, rightBlockStatus: 'hospitalInfo'})
     });
   }
 
   openHospitals() {
-    this.state.rightBlockTemplate = this.getHospitalsInfo();
-    this.setState({openRightBlock: true})
+    const rightBlockTemplate = this.getHospitalsInfo();
+    this.setState({openRightBlock: true, rightBlockTemplate, rightBlockStatus: 'hospitalListInfo'})
   }
 
   getHospitalsInfo() {
@@ -160,6 +163,7 @@ class Main extends Component {
   }
 
 render() {
+  const {rightBlockStatus} = this.state;
   const Mark = ({ name, percent }) => <div className="circle-mark">
     <div className={'circle ' + this.needHelpStatus(percent)} />
     <div className="name">{name}</div>
@@ -179,13 +183,19 @@ render() {
 		return (
 			<main>
 				<div style={ { height: '100vh', width: '100%' } }>
-          <GoogleMapReact
-						bootstrapURLKeys={ { key: publicRuntimeConfig.mapKey } }
-						defaultCenter={this.props.center}
-						defaultZoom={this.props.zoom}
-            onChildClick={this.openHospital.bind(this)}>
-            {marks}
-					</GoogleMapReact>
+          <div className="map-box">
+            <GoogleMapReact
+              bootstrapURLKeys={ { key: publicRuntimeConfig.mapKey } }
+              defaultCenter={this.props.center}
+              defaultZoom={this.props.zoom}
+              onChildClick={this.openHospital.bind(this)}>
+              {marks}
+            </GoogleMapReact>
+            {rightBlockStatus !== 'hospitalInfo' ?
+              <div className="only-mobile button-help-map">
+                <HelpRequest />
+              </div> : null}
+          </div>
           <div ref={this.setWrapperRef} className={ this.state.openRightBlock ? 'open right-block' : 'right-block'}>
             <a className="close" onClick={() => this.closeRightBlock()}>
               <img src="x.svg" alt="close"/>
