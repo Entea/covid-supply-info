@@ -61,6 +61,10 @@ class Donation(models.Model):
     donator_type = models.CharField(verbose_name=_('Тип пожертвования'), choices=DONATOR_TYPES, max_length=12,
                                     default=ORGANIZATION, help_text=_('Выберите тип пожертвования'))
     donator_name = models.CharField(max_length=200, verbose_name=_('Имя мецената'), help_text=_('Введите имя мецената'))
+
+    total_price = models.DecimalField(max_digits=20, decimal_places=2, verbose_name=_("Общая сумма пожертвования"),
+                                      help_text=_('В сомах'), null=True, blank=True)
+
     description = models.TextField(max_length=1000, verbose_name=_("Описание пожертвования"),
                                    help_text=_('Введите описание пожертвования'))
 
@@ -78,6 +82,12 @@ class Donation(models.Model):
         verbose_name_plural = _('Пожертвования')
         verbose_name = _('Пожертвование')
 
+    @property
+    def total_donation(self):
+        if self.total_price:
+            return self.total_price
+        return self.details.aggregate(amount=Sum('total_cost'))['amount']
+
     def __str__(self):
         return self.donator_name
 
@@ -89,7 +99,7 @@ class DonationDetail(models.Model):
     donation = models.ForeignKey(Donation, on_delete=models.PROTECT, verbose_name=_('Пожертвование)'),
                                  related_name='details', help_text=_('Выберите ранее созданное пожертвование'))
     total_cost = models.DecimalField(max_digits=20, decimal_places=2, verbose_name=_("Общая стоимость"),
-                                     help_text=_('Цена в сомах'), default=0.0)
+                                     help_text=_('Цена в сомах'), null=True, blank=True)
 
     class Meta:
         verbose_name_plural = _('Детали пожертвований')
@@ -267,6 +277,7 @@ class HospitalNeeds(models.Model):
     class Meta:
         verbose_name_plural = _('Потребности больниц')
         verbose_name = _('Потребность')
+        ordering = ['need_type__name']
 
     def __str__(self):
         return "{} {}".format(self.reserve_amount, self.request_amount)
@@ -351,6 +362,12 @@ class ContactMessage(models.Model):
 class Distribution(models.Model):
     hospital = models.ForeignKey(Hospital, on_delete=models.CASCADE, related_name='distributions',
                                  verbose_name=_('Больница'))
+    donation = models.ForeignKey(Donation,
+                                 on_delete=models.PROTECT,
+                                 verbose_name=_('Пожертвование)'),
+                                 related_name='donation_details',
+                                 help_text=_('Выберите ранее созданное пожертвование'))
+
     sender = models.TextField(verbose_name=_('Кто выдал?'))
     receiver = models.TextField(verbose_name=_('Кто принял?'), blank=True)
     distributed_at = models.DateField(verbose_name=_('Дата распределения'))
@@ -377,11 +394,6 @@ class DistributionDetail(models.Model):
     distribution = models.ForeignKey(Distribution,
                                      on_delete=models.CASCADE,
                                      verbose_name=_('Распределение'), related_name='distribution_details')
-    donation = models.ForeignKey(Donation,
-                                 on_delete=models.PROTECT,
-                                 verbose_name=_('Пожертвование)'),
-                                 related_name='donation_details',
-                                 help_text=_('Выберите ранее созданное пожертвование'))
     total_cost = models.DecimalField(max_digits=20, decimal_places=2, verbose_name=_("Общая стоимость"),
                                      help_text=_('Цена в сомах'), default=0.0)
 

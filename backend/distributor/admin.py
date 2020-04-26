@@ -104,6 +104,7 @@ class StatisticInline(admin.TabularInline):
 
 class NeedsInline(admin.TabularInline):
     model = HospitalNeeds
+    ordering = ('need_type__name',)
 
     def has_module_permission(self, request):
         return False
@@ -348,6 +349,7 @@ class DistributionAdmin(admin.ModelAdmin):
 
     list_display = (
         'hospital',
+        'donation',
         'sender',
         'receiver',
         'distributed_at'
