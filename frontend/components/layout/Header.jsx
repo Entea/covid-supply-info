@@ -183,7 +183,7 @@ class Header extends Component {
           </div>
         </Navbar>
 				<nav className="navbar navbar-expand-md center hide-mobile">
-					<img src='logo.svg' className="logo" alt="logo"/>
+					<img src='/logo.svg' className="logo" alt="logo"/>
 					<a className="navbar-brand" href="/">HELPMAP</a>
 					<button className="navbar-toggler" type="button" data-toggle="collapse"
 							data-target="#navbarCollapse"

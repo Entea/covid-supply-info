@@ -6,6 +6,7 @@ import Distribution from './distribution'
 import {Alert, Col, Container, Row, Spinner} from 'react-bootstrap'
 import {fetchDistributions} from '../../actions/creators/distributions'
 import {fetchDonation} from '../../actions/creators/donations'
+import Link from "next/link";
 
 
 class DistributionsComponent extends Component {
@@ -20,6 +21,11 @@ class DistributionsComponent extends Component {
             <main>
                 <Container>
                     <Row style={{marginTop: 150}}>
+                        <Col>
+                            <Link href='/donations'><a>&lt;&lt; Назад к списку</a></Link>
+                        </Col>
+                    </Row>
+                    <Row>
                         <Col>
                             <h2 className='h2'>Информация о пожертвовании</h2>
                             {

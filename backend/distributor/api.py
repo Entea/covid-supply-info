@@ -35,7 +35,8 @@ class DonationViewSet(viewsets.ReadOnlyModelViewSet):
     """
     API returns the list of the donations
     """
-    queryset = Donation.objects.all()
+    queryset = Donation.objects.all().order_by('-created_at')
+    pagination_class = None
     serializer_class = DonationSerializer
 
 
