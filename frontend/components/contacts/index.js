@@ -22,7 +22,7 @@ class Contacts extends Component {
         return (
             <main className='contact'>
                 <Container>
-                    <Row style={{marginTop: 150}}>
+                    <Row className="contact-box">
                         <Col xl={6} lg={6} md={6} sm={12} xs={12}>
                             <Info data={data}/>
                         </Col>

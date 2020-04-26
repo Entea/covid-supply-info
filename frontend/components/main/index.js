@@ -3,6 +3,7 @@ import {YMaps, Map, Placemark} from 'react-yandex-maps';
 
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
+import HelpRequest from "../helpRequest";
 
 import {
     fetchHospitals as fetchHospitalsAction,
@@ -21,7 +22,8 @@ class Main extends Component {
         super();
         this.state = {
             openRightBlock: true,
-            rightBlockTemplate: null
+            rightBlockTemplate: null,
+            rightBlockStatus: ''
         };
         this.closeRightBlock.bind(this);
         this.getHospitalsInfo.bind(this);
@@ -68,20 +70,24 @@ class Main extends Component {
         this.openHospital(hospital.id);
     };
 
+    // closeRightBlock() {
+    //     this.setState({openRightBlock: false, rightBlockTemplate: null});
+    // }
     closeRightBlock() {
-        this.setState({openRightBlock: false, rightBlockTemplate: null});
+        this.setState({openRightBlock: false});
+        this.openHospitals();
     }
 
     openHospital(hospitalId) {
         this.props.fetchHospitalAction(hospitalId).then(() => {
-            this.state.rightBlockTemplate = this.getHospitalInfo();
-            this.setState({openRightBlock: true})
+            const rightBlockTemplate = this.getHospitalInfo();
+            this.setState({openRightBlock: true, rightBlockTemplate, rightBlockStatus: 'hospitalInfo'});
         });
     }
 
     openHospitals() {
-        this.state.rightBlockTemplate = this.getHospitalsInfo();
-        this.setState({openRightBlock: true})
+        const rightBlockTemplate = this.getHospitalsInfo();
+        this.setState({openRightBlock: true, rightBlockTemplate, rightBlockStatus: 'hospitalListInfo'})
     }
 
     getHospitalsInfo() {
@@ -112,6 +118,7 @@ class Main extends Component {
 
     getHospitalInfo() {
         const {hospital} = this.props;
+
         return (<div className="hospital-box">
             <h1>{hospital.name}</h1>
             <div className="address">
@@ -167,6 +174,8 @@ class Main extends Component {
     }
 
     render() {
+        const {rightBlockStatus} = this.state;
+
         let hospitals = (this.props.hospitals || [])
             .map(item => {
                 return {...item, lat: item['full_location'].lat, lng: item['full_location'].lng}
@@ -197,11 +206,16 @@ class Main extends Component {
                         </Map>
                     </YMaps>
 
+                    {rightBlockStatus !== 'hospitalInfo' ?
+                        <div className="only-mobile button-help-map">
+                            <HelpRequest/>
+                        </div> : null}
+
                     <div ref={this.setWrapperRef}
                          className={this.state.openRightBlock ? 'open right-block' : 'right-block'}>
                         <a className="close" onClick={() => this.closeRightBlock()}>
                             <img src="x.svg" alt="close"/>
-                        </a>
+                        </a>ss
                         {this.state.rightBlockTemplate}
                     </div>
                 </div>
