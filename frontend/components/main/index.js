@@ -26,28 +26,16 @@ class Main extends Component {
         this.closeRightBlock.bind(this);
         this.getHospitalsInfo.bind(this);
         this.setWrapperRef = this.setWrapperRef.bind(this);
-        this.handleClickOutside = this.handleClickOutside.bind(this);
     }
 
     componentDidMount() {
         this.props.fetchHospitalsAction().then(() => {
             this.openHospitals()
         });
-        document.addEventListener('mousedown', this.handleClickOutside);
-    }
-
-    componentWillUnmount() {
-        document.removeEventListener('mousedown', this.handleClickOutside);
     }
 
     setWrapperRef(node) {
         this.wrapperRef = node;
-    }
-
-    handleClickOutside(event) {
-        if (this.wrapperRef && !this.wrapperRef.contains(event.target) && this.state.openRightBlock) {
-            this.closeRightBlock();
-        }
     }
 
     needHelpStatus(percent) {
