@@ -17,7 +17,7 @@ class Donations extends Component {
                 <Container>
                     <Row style={{marginTop: 150}}>
                         <Col xs={12}>
-                            <h3 className='h3'>Пожертвования</h3>
+                            <h3 className='h3'>Список пожертвований</h3>
                         </Col>
                         <Col xs={12}>
                             {

@@ -142,7 +142,7 @@ class Main extends Component {
                     <th>Название</th>
                     <th>Наличие</th>
                     <th>Потребности</th>
-                    <th>Не хватает</th>
+                    <th>Требуется</th>
                 </tr>
                 </thead>
                 <tbody>
