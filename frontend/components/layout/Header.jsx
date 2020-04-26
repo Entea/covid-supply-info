@@ -42,7 +42,7 @@ class Header extends Component {
 		const districtId = districtValue ? districtValue.value : null;
 		const localityId = localityValue ? localityValue.value : null;
 		this.props.fetchHospitalsAction(regionId, districtId, localityId, search);
-    this.setState({searchMenu: false})
+        this.setState({searchMenu: false})
 	};
 
 	onRegionChange(region) {
@@ -121,12 +121,12 @@ class Header extends Component {
 			<header className="fixed-top">
         <Navbar className="center only-mobile" expand="lg">
           <Navbar.Toggle aria-controls="menu" >
-            <img src="mdi_menu.svg" alt="menu"/>
+            <img src="/mdi_menu.svg" alt="menu"/>
 					</Navbar.Toggle>
           <Navbar.Brand href="/">
-            <img src='logo.svg' className="logo" alt="logo"/>
-						<span>HELPMAP</span>
-					</Navbar.Brand>
+            <img src='/logo.svg' className="logo" alt="logo"/>
+            <span>HELPMAP</span>
+        </Navbar.Brand>
           <a href="#" onClick={this.toggleSearchMenu.bind(this)}>
             <img src="mdi_search.svg" alt="search"/>
           </a>
@@ -184,7 +184,7 @@ class Header extends Component {
           </div>
         </Navbar>
 				<nav className="navbar navbar-expand-md center hide-mobile">
-					<img src='logo.svg' className="logo" alt="logo"/>
+					<img src='/logo.svg' className="logo" alt="logo"/>
 					<a className="navbar-brand" href="/">HELPMAP</a>
 					<button className="navbar-toggler" type="button" data-toggle="collapse"
 							data-target="#navbarCollapse"
@@ -210,7 +210,7 @@ class Header extends Component {
 							</li>
 							<li className="nav-item">
 								<Link activeClassName="active" href="/donations">
-									<a className="nav-link">Список пожертований</a>
+									<a className="nav-link">Пожертвования</a>
 								</Link>
 
 							</li>
