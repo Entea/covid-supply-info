@@ -126,6 +126,11 @@ class Header extends Component {
 					</form>
 					<div className="collapse navbar-collapse" id="navbarCollapse">
 						<ul className="navbar-nav mr-auto">
+							<li className="nav-item">
+								<Link activeClassName="active" href="/about">
+									<a className="nav-link">О нас</a>
+								</Link>
+							</li>
 							<li className="nav-item active">
 								
 								<Link activeClassName="active" href="/">
