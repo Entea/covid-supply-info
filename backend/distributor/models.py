@@ -272,6 +272,7 @@ class HospitalNeeds(models.Model):
     need_type = models.ForeignKey(NeedType, on_delete=models.PROTECT, verbose_name=_('Тип нужды'))
     reserve_amount = models.IntegerField(verbose_name=_('В наличии'))
     request_amount = models.IntegerField(verbose_name=_('Требуемое количество'))
+    request_amount_month = models.IntegerField(verbose_name=_('Требуемое количество в месяц'))
     created_at = models.DateTimeField(verbose_name=_('Дата создания'), auto_now_add=True, blank=True, editable=False)
 
     class Meta:
@@ -280,7 +281,7 @@ class HospitalNeeds(models.Model):
         ordering = ['need_type__name']
 
     def __str__(self):
-        return "{} {}".format(self.reserve_amount, self.request_amount)
+        return "{} {} {}".format(self.reserve_amount, self.request_amount, self.request_amount_month)
 
 
 class Page(models.Model):
