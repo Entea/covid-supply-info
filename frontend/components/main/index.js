@@ -221,6 +221,7 @@ class Main extends Component {
                         <a className="close" onClick={() => this.closeRightBlock()}>
                             <img src="x.svg" alt="close"/>
                         </a>
+                        <div className="only-mobile curtain"></div>
                         {this.state.rightBlockTemplate}
                     </div>
                 </div>
