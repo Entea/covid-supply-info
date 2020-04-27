@@ -182,33 +182,35 @@ class Main extends Component {
         return (
             <main>
                 <div className="map-box">
-                    <YMaps>
-                        <Map defaultState={mapState} width='100%' height='100%'>
-                            <Clusterer
-                                options={{
-                                    preset: "islands#invertedDarkBlueClusterIcons",
-                                }}
-                            >
-                                {hospitals.map((hospital, index) => (
-                                    <Placemark
-                                        modules={["geoObject.addon.hint"]}
-                                        key={index}
-                                        geometry={[hospital.lat, hospital.lng]}
-                                        onClick={this.onPlacemarkClick(hospital)}
-                                        properties={{
-                                            item: index,
-                                            hintContent: hospital.name,
-                                        }}
-                                        options={{
-                                            preset: "islands#blueMedicalCircleIcon",
-                                            iconColor: this.placeMarkerColor(hospital.indicator),
-                                        }}
-                                    />
-                                ))}
-                            </Clusterer>
-                        </Map>
-                    </YMaps>
-
+                    <div className="map">
+                        <div className="loader"></div>
+                        <YMaps>
+                            <Map defaultState={mapState} width='100%' height='100%'>
+                                <Clusterer
+                                    options={{
+                                        preset: "islands#invertedDarkBlueClusterIcons",
+                                    }}
+                                >
+                                    {hospitals.map((hospital, index) => (
+                                        <Placemark
+                                            modules={["geoObject.addon.hint"]}
+                                            key={index}
+                                            geometry={[hospital.lat, hospital.lng]}
+                                            onClick={this.onPlacemarkClick(hospital)}
+                                            properties={{
+                                                item: index,
+                                                hintContent: hospital.name,
+                                            }}
+                                            options={{
+                                                preset: "islands#blueMedicalCircleIcon",
+                                                iconColor: this.placeMarkerColor(hospital.indicator),
+                                            }}
+                                        />
+                                    ))}
+                                </Clusterer>
+                            </Map>
+                        </YMaps>
+                    </div>
                     {rightBlockStatus !== 'hospitalInfo' ?
                         <div className="only-mobile button-help-map">
                             <HelpRequest/>

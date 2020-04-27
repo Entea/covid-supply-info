@@ -33,8 +33,14 @@
   .map-box {
     height: calc(100vh - 140px);
     width: 100%;
+    .map {
+      height: calc(100vh - 140px);
+      min-height: calc(100vh - 140px);
+      width: 100%;
+    }
   }
   .right-block {
+    margin-top: -32px;
     background: #FFFFFF;
     box-shadow: 0px -2px 4px rgba(0, 0, 0, 0.25);
     border-radius: 0;
@@ -70,7 +76,7 @@
   }
   #menu {
     .menu-box {
-      padding: 22px 17px;
+      padding: 16px 17px;
       width: 264px;
       height: 100%;
       background: #0A609D;
@@ -78,8 +84,15 @@
       top: 0;
       left: 0;
       z-index: 100;
+      .navbar-nav {
+        margin-top: 0;
+      }
       .help-button {
-        margin: 100% auto 0 auto;
+        position: absolute;
+        bottom: 16px;
+        margin: 0;
+        width: 230px;
+        padding: 0;
       }
     }
     a {
@@ -96,6 +109,9 @@
       }
       &.list {
         background: url('/mdi_contact_phone.svg') left 5px no-repeat;
+      }
+      &.about {
+        background: url('/info.svg') left 5px no-repeat;
       }
       &.contacts {
         background: url('/mdi_import_contacts.svg') left 5px no-repeat;
@@ -152,6 +168,7 @@
     position: relative;
     top: -100px;
     .help-button {
+      width: 240px;
       margin: 0 auto;
     }
   }
