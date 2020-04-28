@@ -210,12 +210,11 @@ class Main extends Component {
                                 </Clusterer>
                             </Map>
                         </YMaps>
-                    </div>
-                    {rightBlockStatus !== 'hospitalInfo' ?
+                      {rightBlockStatus !== 'hospitalInfo' ?
                         <div className="only-mobile button-help-map">
-                            <HelpRequest/>
+                          <HelpRequest/>
                         </div> : null}
-
+                    </div>
                     <div ref={this.setWrapperRef}
                          className={this.state.openRightBlock ? 'open right-block' : 'right-block'}>
                         <a className="close" onClick={() => this.closeRightBlock()}>
