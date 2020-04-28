@@ -235,6 +235,19 @@ class Statistic(models.Model):
     has_capacity = models.BooleanField(verbose_name=_('Показывать поле "Требуемое количество" '), default=False,
                                        help_text=_('Отметьте галочкой чтобы показать поле'))
 
+    def clean(self):
+        if self.has_capacity and not self.capacity:
+            raise ValidationError("Поле 'Требуемое количество' не может быть пустым")
+
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        if not self.has_capacity:
+            self.capacity = None
+
+        super(Statistic, self).save_base(force_insert=force_insert,
+                                         force_update=force_update,
+                                         using=using,
+                                         update_fields=update_fields)
+
     class Meta:
         verbose_name_plural = _('Статистики')
         verbose_name = _('Статистика')
@@ -244,7 +257,7 @@ class Statistic(models.Model):
 
     @property
     def need_help(self):
-        return True if self.has_capacity and self.actual > self.capacity else False
+        return True if self.has_capacity and self.capacity and self.actual > self.capacity else False
 
 
 class HelpRequest(models.Model):
