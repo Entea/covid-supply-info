@@ -158,7 +158,7 @@ class Main extends Component {
                             {item.request_amount}
                         </td>
                         <td>
-                            {item.request_amount - item.reserve_amount}
+                            {this.getMissingAmount(item)}
                         </td>
                     </tr>
                 ))}
@@ -168,6 +168,13 @@ class Main extends Component {
                 </tbody>
             </table>
         </div>)
+    }
+
+    getMissingAmount(item) {
+        if (item.request_amount > item.reserve_amount) {
+            return item.request_amount - item.reserve_amount;
+        }
+        return "";
     }
 
     render() {
@@ -210,10 +217,10 @@ class Main extends Component {
                                 </Clusterer>
                             </Map>
                         </YMaps>
-                      {rightBlockStatus !== 'hospitalInfo' ?
-                        <div className="only-mobile button-help-map">
-                          <HelpRequest/>
-                        </div> : null}
+                        {rightBlockStatus !== 'hospitalInfo' ?
+                            <div className="only-mobile button-help-map">
+                                <HelpRequest/>
+                            </div> : null}
                     </div>
                     <div ref={this.setWrapperRef}
                          className={this.state.openRightBlock ? 'open right-block' : 'right-block'}>
