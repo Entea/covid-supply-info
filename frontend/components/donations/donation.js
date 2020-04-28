@@ -23,6 +23,14 @@ const Donation = (props) => {
         )
     });
 
+    const map = {
+        ORGANIZATION: 'Организация',
+        PERSONAL: 'Частное лицо',
+        DONOR: 'Донор',
+        GOVERNMENT: 'Государство',
+    }
+
+
     return (
         <Card>
             <Card.Body>
@@ -30,7 +38,7 @@ const Donation = (props) => {
                     {item.donator_name}
                 </Card.Title>
                 <Card.Subtitle>
-                    Тип: {item.donator_type}<br/>
+                    Тип: {map[item.donator_type] || 'Неизвестно'}<br/>
                     {item.description}
                 </Card.Subtitle>
 
