@@ -127,8 +127,8 @@ class Header extends Component {
             <img src='/logo.svg' className="logo" alt="logo"/>
             <span>HELPMAP</span>
         </Navbar.Brand>
-          <a href="#" onClick={this.toggleSearchMenu.bind(this)}>
-            <img src="mdi_search.svg" alt="search"/>
+            <a href="#" onClick={this.toggleSearchMenu.bind(this)}>
+            {/*<img src="/mdi_search.svg" alt="search"/> */}
           </a>
           <Navbar.Collapse id="menu">
             <div className="menu-box">
@@ -142,6 +142,7 @@ class Header extends Component {
             </div>
 						<Navbar.Toggle className="shadow" aria-controls="menu" />
           </Navbar.Collapse>
+            {/*
           <div className={searchMenu ? 'search-menu open' : 'search-menu close'} >
             <a href="#" className="close" onClick={this.toggleSearchMenu.bind(this)}>
               <img src="x.svg" alt="close"/>
@@ -182,6 +183,7 @@ class Header extends Component {
                        options={localityOptions}/>}
             </div>
           </div>
+          */}
         </Navbar>
 				<nav className="navbar navbar-expand-md center hide-mobile">
 					<img src='/logo.svg' className="logo" alt="logo"/>
@@ -225,7 +227,7 @@ class Header extends Component {
 						</ul>
 					</div>
 				</nav>
-				<div className="center hide-mobile">
+                {/*<div className="center hide-mobile">
 					<div className="row">
 						<div className="filters-box">
 							{<Select instanceId={'region-id'}
@@ -258,7 +260,7 @@ class Header extends Component {
 									 options={localityOptions}/>}
 						</div>
 					</div>
-				</div>
+				</div>*/}
 			</header>
 		);
 	}
