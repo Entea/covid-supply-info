@@ -320,7 +320,7 @@ class HelpRequest extends React.Component {
                                     rows="5"
                                     as='textarea'
                                     value={description}
-                                    placeholder="Какая вам нужна помощь ?"
+                                    placeholder="Ваши комментарии"
                                     name="description"
                                     style={inputStyle}
                                 />

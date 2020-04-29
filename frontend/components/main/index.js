@@ -135,14 +135,14 @@ class Main extends Component {
                     <div className="count">{item.has_capacity ? item.actual + '/' + item.capacity : item.actual}</div>
                 </div>
             ))}
-            <h1>Продукция по спецодежде и оборудованию в больнице…</h1>
+            <h1>Продукция по спецодежде и оборудованию…</h1>
             <table>
                 <thead>
                 <tr>
                     <th>Название</th>
                     <th>Наличие</th>
                     <th>Потребности</th>
-                    <th>Не хватает</th>
+                    <th>Требуется</th>
                 </tr>
                 </thead>
                 <tbody>

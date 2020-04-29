@@ -124,8 +124,8 @@ class Header extends Component {
             <img src="/mdi_menu.svg" alt="menu"/>
 					</Navbar.Toggle>
           <Navbar.Brand href="/">
-            <img src='/logo.svg' className="logo" alt="logo"/>
-            <span>HELPMAP</span>
+            <img src='/tirek_logo.png' className="logo" alt="logo"/>
+            <span>ТИРЕК</span>
         </Navbar.Brand>
           <a href="#" onClick={this.toggleSearchMenu.bind(this)}>
             <img src="mdi_search.svg" alt="search"/>
@@ -184,8 +184,8 @@ class Header extends Component {
           </div>
         </Navbar>
 				<nav className="navbar navbar-expand-md center hide-mobile">
-					<img src='/logo.svg' className="logo" alt="logo"/>
-					<a className="navbar-brand" href="/">HELPMAP</a>
+					<img src='/tirek_logo.png' className="logo" alt="logo"/>
+					<a className="navbar-brand" href="/">ТИРЕК</a>
 					<button className="navbar-toggler" type="button" data-toggle="collapse"
 							data-target="#navbarCollapse"
 							aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
@@ -198,14 +198,14 @@ class Header extends Component {
 					</form>
 					<div className="collapse navbar-collapse" id="navbarCollapse">
 						<ul className="navbar-nav mr-auto">
+                            <li className="nav-item">
+								<Link activeClassName="active" href="/about">
+									<a className="nav-link">О нас</a>
+								</Link>
+							</li>
 							<li className="nav-item active">
 								<Link activeClassName="active" href="/">
 									<a className="nav-link">Карта</a>
-								</Link>
-							</li>
-							<li className="nav-item">
-								<Link activeClassName="active" href="/about">
-									<a className="nav-link">О нас</a>
 								</Link>
 							</li>
 							<li className="nav-item">
@@ -214,11 +214,11 @@ class Header extends Component {
 								</Link>
 
 							</li>
-							<li className="nav-item">
-								<Link activeClassName="active" href="/contact">
-									<a className="nav-link">Контакты</a>
-								</Link>
-							</li>
+							{/*<li className="nav-item">*/}
+							{/*	<Link activeClassName="active" href="/contact">*/}
+							{/*		<a className="nav-link">Контакты</a>*/}
+							{/*	</Link>*/}
+							{/*</li>*/}
               <li className="nav-item float-right">
                 <HelpRequest/>
               </li>
