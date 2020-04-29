@@ -18,7 +18,7 @@ class Layout extends React.Component {
         return (
             <div className='layout'>
                 <Head>
-                    <title>{'COVID 19'}</title>
+                    <title>{'Тирек'}</title>
                     <link rel="icon" href="/favicon.ico"/>
                 </Head>
                 <Header onFilterChange={this.updateFilterValues.bind(this)}/>
