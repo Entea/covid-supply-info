@@ -105,7 +105,7 @@ class Main extends Component {
                     <td>
                         <div className={'circle ' + this.needHelpStatus(item.indicator)}/>
                         <div className="percentage">
-                            {item.indicator > 0 ? item.indicator + '%' : <span>Нет данных</span>}
+                            {item.indicator > 0 ? item.indicator + '%' : <span>{'-'}</span>}
                         </div>
                     </td>
                 </tr>))}
