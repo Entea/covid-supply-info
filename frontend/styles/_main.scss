@@ -498,6 +498,7 @@ header {
   transform: translateZ(0);
   -webkit-animation: load6 1.7s infinite ease, round 1.7s infinite ease;
   animation: load6 1.7s infinite ease, round 1.7s infinite ease;
+  z-index: 10000000;
 }
 @-webkit-keyframes load6 {
   0% {
