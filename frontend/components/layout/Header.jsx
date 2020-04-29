@@ -135,7 +135,7 @@ class Header extends Component {
 							<Nav className="mr-auto">
 								<Nav.Link href="/" className="map">Карта с больницами</Nav.Link>
 								<Nav.Link href="/about" className="about">О нас</Nav.Link>
-								<Nav.Link href="/donations" className="list">Пожертования</Nav.Link>
+								<Nav.Link href="/donations" className="list">Пожертвования</Nav.Link>
 								{/*<Nav.Link href="/contact" className="contacts">Контакты</Nav.Link>*/}
 								<HelpRequest/>
 							</Nav>
