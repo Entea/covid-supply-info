@@ -12,8 +12,10 @@ class Donations extends Component {
 
     render() {
         const {fetching, results} = this.props;
+
         return (
             <main>
+
                 <Container>
                     <Row style={{marginTop: 150}}>
                         <Col xs={12}>
@@ -21,22 +23,21 @@ class Donations extends Component {
                         </Col>
                         <Col xs={12}>
                             {
-                                fetching && <Spinner animation="border" role="status">
-                                    <span className="sr-only">Loading...</span>
-                                </Spinner>
+                                fetching && <div className="loader"></div>
                             }
                             {
-                                !fetching && results.length > 0 ?
-                                    results.map(item =>
-                                        <div key={item.id}>
-                                            <Donation donation={item}/>
-                                            <br/>
-                                        </div>
-                                    )
-                                    :
-                                    <Alert variant='danger'>
-                                        Нет данных
-                                    </Alert>
+                                !fetching && results.length > 0 &&
+                                results.map(item =>
+                                    <div key={item.id}>
+                                        <Donation donation={item}/>
+                                        <br/>
+                                    </div>
+                                )
+                            }
+                            {
+                                !fetching && !results.length && <Alert variant='danger'>
+                                    Нет данных
+                                </Alert>
                             }
                         </Col>
                     </Row>
@@ -47,14 +48,14 @@ class Donations extends Component {
 }
 
 const mapStateToProps = (state) => {
-	return {
-		fetching: state.donations.fetching,
-		results: state.donations.results
-	}
+    return {
+        fetching: state.donations.fetching,
+        results: state.donations.results
+    }
 };
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-	fetchDonationsAction,
+    fetchDonationsAction,
 }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(Donations)
