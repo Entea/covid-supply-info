@@ -17,14 +17,12 @@ class Donations extends Component {
             <main>
 
                 <Container>
+                    {fetching && <div className="loader"/>}
                     <Row style={{marginTop: 150}}>
                         <Col xs={12}>
                             <h3 className='h3'>Список пожертвований</h3>
                         </Col>
                         <Col xs={12}>
-                            {
-                                fetching && <div className="loader"></div>
-                            }
                             {
                                 !fetching && results.length > 0 &&
                                 results.map(item =>

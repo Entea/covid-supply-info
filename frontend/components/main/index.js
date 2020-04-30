@@ -180,6 +180,8 @@ class Main extends Component {
     render() {
         const {rightBlockStatus} = this.state;
 
+        const {fetching} = this.props;
+
         let hospitals = (this.props.hospitals || [])
             .map(item => {
                 return {...item, lat: item['full_location'].lat, lng: item['full_location'].lng}
@@ -190,7 +192,7 @@ class Main extends Component {
             <main>
                 <div className="map-box">
                     <div className="map">
-                        <div className="loader"></div>
+                        {fetching && <div className="loader"/>}
                         <YMaps>
                             <Map defaultState={mapState} width='100%' height='100%'>
                                 <Clusterer
@@ -239,7 +241,8 @@ class Main extends Component {
 const mapStateToProps = (state) => {
     return {
         hospitals: state.hospitals.results,
-        hospital: state.hospitals.single
+        hospital: state.hospitals.single,
+        fetching: state.hospitals.fetching,
     }
 };
 
