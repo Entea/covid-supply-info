@@ -5,6 +5,7 @@ const nextConfig = {
 		apiUrl: process.env.API_URL,
 		recaptchaSiteKey: process.env.RECAPTCHA_SITE_KEY,
 		recaptchaSecretKey: process.env.RECAPTCHA_SECRET_KEY,
+		gaKey: process.env.GA_KEY,
 	},
 };
 
