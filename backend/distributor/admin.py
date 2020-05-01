@@ -354,8 +354,11 @@ class DistributionAdmin(admin.ModelAdmin):
         if db_field.name == "hospital":
             # Отображаем только нескрытые больнички
             kwargs["queryset"] = Hospital.objects.filter(hidden=False)
-            if request.user.hospitals.count() > 0:
-                # Для старших медсестер отображаем только привязанные больницы
+            # Редакторы могу распределять по всем больничкам
+            if request.user.groups.filter(name='Editor').exists():
+                kwargs["queryset"] = Hospital.objects.all()
+            # Для старших медсестер отображаем только привязанные больницы
+            elif request.user.hospitals.count() > 0:
                 kwargs["queryset"] = request.user.hospitals
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
