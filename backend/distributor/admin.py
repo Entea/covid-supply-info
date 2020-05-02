@@ -196,7 +196,7 @@ class HospitalAdmin(TranslationAdmin, LeafletGeoAdmin):
             "js/statistic.js",
         )
         css = {
-            'all': ("css/statistic.css",)
+            'all': ("css/statistic.css", "css/location.css",)
         }
 
 
