@@ -2,11 +2,12 @@ from django.contrib import admin, messages
 from django.shortcuts import redirect
 from django.urls import path, reverse_lazy
 from django.utils.timezone import now
-from leaflet.admin import LeafletGeoAdmin
-from modeltranslation.admin import TranslationAdmin, TranslationTabularInline
-from rangefilter.filter import DateRangeFilter
 from django.utils.translation import ugettext as _
+from leaflet.admin import LeafletGeoAdmin
+from modeltranslation.admin import TranslationAdmin
+from rangefilter.filter import DateRangeFilter
 
+from distributor.admin_filter import LocalityFilter, DistrictFilter, RegionFilter
 from distributor.models import (
     Measure, NeedType, Donation,
     DonationDetail, Hospital, HospitalPhoneNumber,
@@ -129,7 +130,9 @@ class HospitalAdmin(TranslationAdmin, LeafletGeoAdmin):
 
     list_filter = (
         'hidden',
-        'locality',
+        LocalityFilter,
+        DistrictFilter,
+        RegionFilter,
     )
 
     fieldsets_super_user = [
