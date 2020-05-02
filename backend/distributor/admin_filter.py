@@ -40,7 +40,7 @@ class DistrictFilter(admin.SimpleListFilter):
         region_id = request.GET.get('region_id')
         if not region_id:
             return None
-        return map(lambda region: (region.pk, region.name), District.objects.filter(region=region_id))
+        return map(lambda district: (district.pk, district.name), District.objects.filter(region=region_id))
 
     def queryset(self, request, queryset):
         district_id = request.GET.get('district_id')
@@ -71,7 +71,7 @@ class LocalityFilter(admin.SimpleListFilter):
         district_id = request.GET.get('district_id')
         if not district_id:
             return None
-        return map(lambda district: (district.pk, district.name), Locality.objects.filter(district=district_id))
+        return map(lambda locality: (locality.pk, locality.name), Locality.objects.filter(district=district_id))
 
     def queryset(self, request, queryset):
         locality_id = request.GET.get(self.parameter_name)
