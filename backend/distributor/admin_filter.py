@@ -15,7 +15,7 @@ class RegionFilter(admin.SimpleListFilter):
         region_id = request.GET.get('region_id')
         if not region_id:
             return queryset.all()
-        return queryset.filter(locality__district__region=region_id)
+        return queryset.filter(search_region_id=region_id)
 
     def choices(self, changelist):
         yield {
@@ -46,7 +46,7 @@ class DistrictFilter(admin.SimpleListFilter):
         district_id = request.GET.get('district_id')
         if not district_id:
             return None
-        return queryset.filter(locality__district=district_id)
+        return queryset.filter(search_district_id=district_id)
 
     def choices(self, changelist):
         yield {
@@ -77,4 +77,4 @@ class LocalityFilter(admin.SimpleListFilter):
         locality_id = request.GET.get(self.parameter_name)
         if not locality_id:
             return None
-        return queryset.filter(locality=locality_id)
+        return queryset.filter(search_locality_id=locality_id)
