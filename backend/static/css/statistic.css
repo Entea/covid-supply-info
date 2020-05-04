@@ -1,3 +1,7 @@
 .disabled {
     display: none;
 }
+
+.model-hospital #content-main ul.object-tools > li {
+    display: inline-block !important;
+}
