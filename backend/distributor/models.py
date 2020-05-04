@@ -198,7 +198,7 @@ class Hospital(models.Model):
         ttl_request = stat['total_request']
         ttl_reserve = stat['total_reserve']
 
-        if not ttl_request or not ttl_reserve:
+        if not ttl_request and not ttl_reserve:
             return DEFAULT_INDICATOR
 
         return round(Decimal(100.0 * ttl_reserve / (ttl_request + ttl_reserve)), 2)

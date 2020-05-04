@@ -141,7 +141,6 @@ class Main extends Component {
                 <tr>
                     <th>Название</th>
                     <th>Наличие</th>
-                    <th>Потребности</th>
                     <th>Требуется</th>
                 </tr>
                 </thead>
@@ -157,9 +156,6 @@ class Main extends Component {
                         <td>
                             {item.request_amount}
                         </td>
-                        <td>
-                            {this.getMissingAmount(item)}
-                        </td>
                     </tr>
                 ))}
                 {hospital.needs.length === 0 ? <tr>
@@ -168,13 +164,6 @@ class Main extends Component {
                 </tbody>
             </table>
         </div>)
-    }
-
-    getMissingAmount(item) {
-        if (item.request_amount > item.reserve_amount) {
-            return item.request_amount - item.reserve_amount;
-        }
-        return "";
     }
 
     render() {
