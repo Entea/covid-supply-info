@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from cacheops import cached
 from django.contrib.auth.models import User
 from django.contrib.gis.db.models import PointField
@@ -196,7 +198,10 @@ class Hospital(models.Model):
         ttl_request = stat['total_request']
         ttl_reserve = stat['total_reserve']
 
-        return DEFAULT_INDICATOR if not ttl_request or not ttl_reserve else int(round(ttl_reserve * 100 / ttl_request))
+        if not ttl_request or not ttl_reserve:
+            return DEFAULT_INDICATOR
+
+        return round(Decimal(100.0 * ttl_reserve / (ttl_request + ttl_reserve)), 2)
 
 
 class HospitalPhoneNumber(models.Model):
