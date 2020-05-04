@@ -178,7 +178,7 @@ class Hospital(models.Model):
                                         update_fields=update_fields)
 
     def __str__(self):
-        return '{} {}'.format(self.name, self.locality)
+        return '{} {} {}'.format(self.code, self.name, self.locality)
 
     @property
     def full_location(self):
