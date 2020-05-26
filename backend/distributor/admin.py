@@ -173,6 +173,10 @@ class HospitalAdmin(TranslationAdmin, LeafletGeoAdmin):
     def get_queryset(self, request):
         if request.user.is_superuser:
             return super(HospitalAdmin, self).get_queryset(request)
+        if request.user.groups.filter(name='Editor').exists():
+            return super(HospitalAdmin, self).get_queryset(request)
+        if request.user.groups.filter(name='Contributor').exists():
+            return super(HospitalAdmin, self).get_queryset(request)
         return request.user.hospitals
 
     def get_urls(self):
