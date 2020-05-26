@@ -357,8 +357,11 @@ class DistributionAdmin(admin.ModelAdmin):
         if db_field.name == "hospital":
             # Отображаем только нескрытые больнички
             kwargs["queryset"] = Hospital.objects.filter(hidden=False)
-            # Редакторы могу распределять по всем больничкам
+            # Редакторы могут распределять по всем больничкам
             if request.user.groups.filter(name='Editor').exists():
+                kwargs["queryset"] = Hospital.objects.all()
+            # Контрибуторы могут распределять по всем больничкам
+            if request.user.groups.filter(name='Contributor').exists():
                 kwargs["queryset"] = Hospital.objects.all()
             # Для старших медсестер отображаем только привязанные больницы
             elif request.user.hospitals.count() > 0:
