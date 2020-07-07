@@ -124,19 +124,19 @@ class Header extends Component {
             <img src="/mdi_menu.svg" alt="menu"/>
 					</Navbar.Toggle>
           <Navbar.Brand href="/">
-            <img src='/logo.svg' className="logo" alt="logo"/>
-            <span>HELPMAP</span>
+            <img src='/tirek_logo.png' className="logo" alt="logo"/>
+            <span>ТИРЕК</span>
         </Navbar.Brand>
           <a href="#" onClick={this.toggleSearchMenu.bind(this)}>
-            <img src="mdi_search.svg" alt="search"/>
+            {/*<img src="mdi_search.svg" alt="search"/>*/}
           </a>
           <Navbar.Collapse id="menu">
             <div className="menu-box">
 							<Nav className="mr-auto">
 								<Nav.Link href="/" className="map">Карта с больницами</Nav.Link>
-								<Nav.Link href="/about" className="map">О нас</Nav.Link>
-								<Nav.Link href="/donations" className="list">Список пожертований</Nav.Link>
-								<Nav.Link href="/contact" className="contacts">Контакты</Nav.Link>
+								<Nav.Link href="/about" className="about">О нас</Nav.Link>
+								<Nav.Link href="/donations" className="list">Пожертвования</Nav.Link>
+								{/*<Nav.Link href="/contact" className="contacts">Контакты</Nav.Link>*/}
 								<HelpRequest/>
 							</Nav>
             </div>
@@ -146,11 +146,11 @@ class Header extends Component {
             <a href="#" className="close" onClick={this.toggleSearchMenu.bind(this)}>
               <img src="x.svg" alt="close"/>
             </a>
-            <form className="form-inline search-box" onSubmit={this.updateFilterValues}>
-              <input name='search' className="form-control mr-sm-2 input-search" type="text" placeholder="Поиск больницы"
-                     aria-label="Search" onChange={this.onChange}/>
-              <button className="search-btn" type="submit"><img src='mdi_search.svg' alt=""/></button>
-            </form>
+            {/*<form className="form-inline search-box" onSubmit={this.updateFilterValues}>*/}
+            {/*  <input name='search' className="form-control mr-sm-2 input-search" type="text" placeholder="Поиск больницы"*/}
+            {/*         aria-label="Search" onChange={this.onChange}/>*/}
+            {/*  <button className="search-btn" type="submit"><img src='mdi_search.svg' alt=""/></button>*/}
+            {/*</form>*/}
             <div className="filters-box">
               {<Select instanceId={'region-id'}
                        isClearable
@@ -184,80 +184,82 @@ class Header extends Component {
           </div>
         </Navbar>
 				<nav className="navbar navbar-expand-md center hide-mobile">
-					<img src='/logo.svg' className="logo" alt="logo"/>
-					<a className="navbar-brand" href="/">HELPMAP</a>
+					<img src='/tirek_logo.png' className="logo" alt="logo"/>
+					<a className="navbar-brand" href="/">ТИРЕК</a>
 					<button className="navbar-toggler" type="button" data-toggle="collapse"
 							data-target="#navbarCollapse"
 							aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
 						<span className="navbar-toggler-icon"/>
 					</button>
-					<form className="form-inline search-box" onSubmit={this.updateFilterValues}>
-						<input name='search' className="form-control mr-sm-2 input-search" type="text" placeholder="Поиск больницы"
-							   aria-label="Search" onChange={this.onChange}/>
-						<button className="search-btn" type="submit"><img src='mdi_search.svg' alt=""/></button>
-					</form>
+					{/*<form className="form-inline search-box" onSubmit={this.updateFilterValues}>*/}
+					{/*	<input name='search' className="form-control mr-sm-2 input-search" type="text" placeholder="Поиск больницы"*/}
+					{/*		   aria-label="Search" onChange={this.onChange}/>*/}
+					{/*	<button className="search-btn" type="submit"><img src='mdi_search.svg' alt=""/></button>*/}
+					{/*</form>*/}
 					<div className="collapse navbar-collapse" id="navbarCollapse">
 						<ul className="navbar-nav mr-auto">
+                            <li className="nav-item">
+								<Link activeClassName="active" href="/about">
+									<a className="nav-link">О нас</a>
+								</Link>
+							</li>
 							<li className="nav-item active">
 								<Link activeClassName="active" href="/">
 									<a className="nav-link">Карта</a>
 								</Link>
 							</li>
 							<li className="nav-item">
-								<Link activeClassName="active" href="/about">
-									<a className="nav-link">О нас</a>
-								</Link>
-							</li>
-							<li className="nav-item">
 								<Link activeClassName="active" href="/donations">
 									<a className="nav-link">Пожертвования</a>
 								</Link>
+							</li>
+							{/*<li className="nav-item">*/}
+							{/*	<Link activeClassName="active" href="/contact">*/}
+							{/*		<a className="nav-link">Контакты</a>*/}
+							{/*	</Link>*/}
+							{/*</li>*/}
 
+						</ul>
+						<ul className="navbar-nav mr-auto">
+							<li className="nav-item float-right">
+								<HelpRequest/>
 							</li>
-							<li className="nav-item">
-								<Link activeClassName="active" href="/contact">
-									<a className="nav-link">Контакты</a>
-								</Link>
-							</li>
-              <li className="nav-item float-right">
-                <HelpRequest/>
-              </li>
 						</ul>
 					</div>
 				</nav>
 				<div className="center hide-mobile">
-					<div className="row">
-						<div className="filters-box">
-							{<Select instanceId={'region-id'}
-									 isClearable
-									 isLoading={this.props.regionFetching}
-									 placeholder={'Область'}
-									 className={'dropdown'}
-									 onChange={this.onRegionChange.bind(this)}
-									 noOptionsMessage={this.onRegionOptionsMessage.bind(this)}
-									 options={regionOptions}/>}
+					{/*<div className="row">*/}
+					{/*	<div className="filters-box">*/}
+					{/*		{<Select instanceId={'region-id'}*/}
+					{/*				 isClearable*/}
+					{/*				 isLoading={this.props.regionFetching}*/}
+					{/*				 placeholder={'Область'}*/}
+					{/*				 className={'dropdown'}*/}
+					{/*				 onChange={this.onRegionChange.bind(this)}*/}
+					{/*				 noOptionsMessage={this.onRegionOptionsMessage.bind(this)}*/}
+					{/*				 options={regionOptions}/>}*/}
 
-							{<Select instanceId={'district-id'}
-									 isClearable
-									 isLoading={this.props.districtFetching}
-									 placeholder={'Район'}
-									 value={this.state.districtValue}
-									 className={'dropdown'}
-									 onChange={this.onDistrictChange.bind(this)}
-									 noOptionsMessage={this.onDistrictOptionsMessage.bind(this)}
-									 options={districtOptions}/>}
+					{/*		{<Select instanceId={'district-id'}*/}
+					{/*				 isClearable*/}
+					{/*				 isLoading={this.props.districtFetching}*/}
+					{/*				 placeholder={'Район'}*/}
+					{/*				 value={this.state.districtValue}*/}
+					{/*				 className={'dropdown'}*/}
+					{/*				 onChange={this.onDistrictChange.bind(this)}*/}
+					{/*				 noOptionsMessage={this.onDistrictOptionsMessage.bind(this)}*/}
+					{/*				 options={districtOptions}/>}*/}
 
-							{<Select instanceId={'locality-id'}
-									 isClearable
-									 isLoading={this.props.localityFetching}
-									 placeholder={'Населенный пункт'}
-									 noOptionsMessage={this.onLocalityOptionsMessage.bind(this)}
-									 value={this.state.localityValue}
-									 className={'dropdown'}
-									 onChange={this.onLocalityChange.bind(this)}
-									 options={localityOptions}/>}
-						</div>
-					</div>
+					{/*		{<Select instanceId={'locality-id'}*/}
+					{/*				 isClearable*/}
+					{/*				 isLoading={this.props.localityFetching}*/}
+					{/*				 placeholder={'Населенный пункт'}*/}
+					{/*				 noOptionsMessage={this.onLocalityOptionsMessage.bind(this)}*/}
+					{/*				 value={this.state.localityValue}*/}
+					{/*				 className={'dropdown'}*/}
+					{/*				 onChange={this.onLocalityChange.bind(this)}*/}
+					{/*				 options={localityOptions}/>}*/}
+					{/*	</div>*/}
+					{/*</div>*/}
 				</div>
 			</header>
 		);

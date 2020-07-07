@@ -105,7 +105,7 @@ class Main extends Component {
                     <td>
                         <div className={'circle ' + this.needHelpStatus(item.indicator)}/>
                         <div className="percentage">
-                            {item.indicator > 0 ? item.indicator + '%' : <span>Нет данных</span>}
+                            {item.indicator > 0 ? item.indicator + '%' : <span>{'---'}</span>}
                         </div>
                     </td>
                 </tr>))}
@@ -135,14 +135,13 @@ class Main extends Component {
                     <div className="count">{item.has_capacity ? item.actual + '/' + item.capacity : item.actual}</div>
                 </div>
             ))}
-            <h1>Продукция по спецодежде и оборудованию в больнице…</h1>
+            <h1>Продукция по спецодежде и оборудованию…</h1>
             <table>
                 <thead>
                 <tr>
                     <th>Название</th>
                     <th>Наличие</th>
-                    <th>Потребности</th>
-                    <th>Не хватает</th>
+                    <th>Требуется</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -157,9 +156,6 @@ class Main extends Component {
                         <td>
                             {item.request_amount}
                         </td>
-                        <td>
-                            {item.request_amount - item.reserve_amount}
-                        </td>
                     </tr>
                 ))}
                 {hospital.needs.length === 0 ? <tr>
@@ -173,6 +169,8 @@ class Main extends Component {
     render() {
         const {rightBlockStatus} = this.state;
 
+        const {fetching} = this.props;
+
         let hospitals = (this.props.hospitals || [])
             .map(item => {
                 return {...item, lat: item['full_location'].lat, lng: item['full_location'].lng}
@@ -181,44 +179,46 @@ class Main extends Component {
 
         return (
             <main>
-                <div style={{height: '100vh', width: '100%'}}>
-                    <YMaps>
-                        <Map defaultState={mapState} width='100%' height='100%'>
-                            <Clusterer
-                                options={{
-                                    preset: "islands#invertedDarkBlueClusterIcons",
-                                }}
-                            >
-                                {hospitals.map((hospital, index) => (
-                                    <Placemark
-                                        modules={["geoObject.addon.hint"]}
-                                        key={index}
-                                        geometry={[hospital.lat, hospital.lng]}
-                                        onClick={this.onPlacemarkClick(hospital)}
-                                        properties={{
-                                            item: index,
-                                            hintContent: hospital.name,
-                                        }}
-                                        options={{
-                                            preset: "islands#blueMedicalCircleIcon",
-                                            iconColor: this.placeMarkerColor(hospital.indicator),
-                                        }}
-                                    />
-                                ))}
-                            </Clusterer>
-                        </Map>
-                    </YMaps>
-
-                    {rightBlockStatus !== 'hospitalInfo' ?
-                        <div className="only-mobile button-help-map">
-                            <HelpRequest/>
-                        </div> : null}
-
+                <div className="map-box">
+                    <div className="map">
+                        {fetching && <div className="loader"/>}
+                        <YMaps>
+                            <Map defaultState={mapState} width='100%' height='100%'>
+                                <Clusterer
+                                    options={{
+                                        preset: "islands#invertedDarkBlueClusterIcons",
+                                    }}
+                                >
+                                    {hospitals.map((hospital, index) => (
+                                        <Placemark
+                                            modules={["geoObject.addon.hint"]}
+                                            key={index}
+                                            geometry={[hospital.lat, hospital.lng]}
+                                            onClick={this.onPlacemarkClick(hospital)}
+                                            properties={{
+                                                item: index,
+                                                hintContent: hospital.name,
+                                            }}
+                                            options={{
+                                                preset: "islands#blueMedicalCircleIcon",
+                                                iconColor: this.placeMarkerColor(hospital.indicator),
+                                            }}
+                                        />
+                                    ))}
+                                </Clusterer>
+                            </Map>
+                        </YMaps>
+                        {rightBlockStatus !== 'hospitalInfo' ?
+                            <div className="only-mobile button-help-map">
+                                <HelpRequest/>
+                            </div> : null}
+                    </div>
                     <div ref={this.setWrapperRef}
                          className={this.state.openRightBlock ? 'open right-block' : 'right-block'}>
                         <a className="close" onClick={() => this.closeRightBlock()}>
                             <img src="x.svg" alt="close"/>
-                        </a>ss
+                        </a>
+                        <div className="only-mobile curtain"></div>
                         {this.state.rightBlockTemplate}
                     </div>
                 </div>
@@ -230,7 +230,8 @@ class Main extends Component {
 const mapStateToProps = (state) => {
     return {
         hospitals: state.hospitals.results,
-        hospital: state.hospitals.single
+        hospital: state.hospitals.single,
+        fetching: state.hospitals.fetching,
     }
 };
 

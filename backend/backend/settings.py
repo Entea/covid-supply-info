@@ -25,7 +25,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', default='id2!=m#1+zn$u@cs=f)7*e90kb8#-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', default='off') == 'on'
 
-ALLOWED_HOSTS = ['127.0.0.1', 'antivirus.el.kg']
+ALLOWED_HOSTS = ['127.0.0.1', 'antivirus.el.kg', 'localhost']
 
 # Application definition
 
@@ -236,5 +236,3 @@ if os.environ.get('ENABLE_LOGGING', default='off') == 'on':
             },
         },
     }
-
-ALLOWED_HOSTS = ['localhost']

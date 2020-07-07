@@ -2,11 +2,12 @@ from django.contrib import admin, messages
 from django.shortcuts import redirect
 from django.urls import path, reverse_lazy
 from django.utils.timezone import now
-from leaflet.admin import LeafletGeoAdmin
-from modeltranslation.admin import TranslationAdmin, TranslationTabularInline
-from rangefilter.filter import DateRangeFilter
 from django.utils.translation import ugettext as _
+from leaflet.admin import LeafletGeoAdmin
+from modeltranslation.admin import TranslationAdmin
+from rangefilter.filter import DateRangeFilter
 
+from distributor.admin_filter import LocalityFilter, DistrictFilter, RegionFilter
 from distributor.models import (
     Measure, NeedType, Donation,
     DonationDetail, Hospital, HospitalPhoneNumber,
@@ -129,7 +130,9 @@ class HospitalAdmin(TranslationAdmin, LeafletGeoAdmin):
 
     list_filter = (
         'hidden',
-        'locality',
+        LocalityFilter,
+        DistrictFilter,
+        RegionFilter,
     )
 
     fieldsets_super_user = [
@@ -170,6 +173,10 @@ class HospitalAdmin(TranslationAdmin, LeafletGeoAdmin):
     def get_queryset(self, request):
         if request.user.is_superuser:
             return super(HospitalAdmin, self).get_queryset(request)
+        if request.user.groups.filter(name='Editor').exists():
+            return super(HospitalAdmin, self).get_queryset(request)
+        if request.user.groups.filter(name='Contributor').exists():
+            return super(HospitalAdmin, self).get_queryset(request)
         return request.user.hospitals
 
     def get_urls(self):
@@ -196,7 +203,7 @@ class HospitalAdmin(TranslationAdmin, LeafletGeoAdmin):
             "js/statistic.js",
         )
         css = {
-            'all': ("css/statistic.css",)
+            'all': ("css/statistic.css", "css/location.css",)
         }
 
 
@@ -354,8 +361,14 @@ class DistributionAdmin(admin.ModelAdmin):
         if db_field.name == "hospital":
             # Отображаем только нескрытые больнички
             kwargs["queryset"] = Hospital.objects.filter(hidden=False)
-            if request.user.hospitals.count() > 0:
-                # Для старших медсестер отображаем только привязанные больницы
+            # Редакторы могут распределять по всем больничкам
+            if request.user.groups.filter(name='Editor').exists():
+                kwargs["queryset"] = Hospital.objects.all()
+            # Контрибуторы могут распределять по всем больничкам
+            if request.user.groups.filter(name='Contributor').exists():
+                kwargs["queryset"] = Hospital.objects.all()
+            # Для старших медсестер отображаем только привязанные больницы
+            elif request.user.hospitals.count() > 0:
                 kwargs["queryset"] = request.user.hospitals
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 

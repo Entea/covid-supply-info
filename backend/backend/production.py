@@ -25,7 +25,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['127.0.0.1', 'antivirus.el.kg']
+ALLOWED_HOSTS = ['127.0.0.1', 'antivirus.el.kg', 'admin.tirek.kg']
 
 # Application definition
 
@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'django_filters',
     'cacheops',
     'corsheaders',
+    'leaflet'
 ]
 
 MIDDLEWARE = [

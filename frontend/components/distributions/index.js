@@ -29,36 +29,29 @@ class DistributionsComponent extends Component {
                         <Col>
                             <h2 className='h2'>Информация о пожертвовании</h2>
                             {
-                                donationFetching ? (
-                                    <Spinner animation="border" role="status">
-                                        <span className="sr-only">Loading...</span>
-                                    </Spinner>
-                                ) : <Donation hideLink={true} donation={donation}/>
-
+                                donationFetching ? (<div className="loader"></div>) :
+                                    <Donation hideLink={true} donation={donation}/>
                             }
                         </Col>
                     </Row>
+
 
                     <Row style={{marginTop: 20}}>
                         <Col>
                             <h2 className='h2'>Информация по распределению</h2>
                             {
-                                fetching && <Spinner animation="border" role="status">
-                                    <span className="sr-only">Loading...</span>
-                                </Spinner>
+                                !fetching && results.length > 0 &&
+                                results.map(item => (
+                                    <div key={item.id}>
+                                        <Distribution item={item}/>
+                                        <br/>
+                                    </div>
+                                ))
                             }
                             {
-                                !fetching && results.length > 0 ?
-                                    results.map(item => (
-                                        <div key={item.id}>
-                                            <Distribution item={item}/>
-                                            <br/>
-                                        </div>
-                                    ))
-                                    :
-                                    <Alert variant='danger'>
-                                        Нет данных
-                                    </Alert>
+                                !fetching && !results.length && <Alert variant='danger'>
+                                    Нет данных
+                                </Alert>
                             }
                         </Col>
                     </Row>

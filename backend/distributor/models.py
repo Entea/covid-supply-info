@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from cacheops import cached
 from django.contrib.auth.models import User
 from django.contrib.gis.db.models import PointField
@@ -178,7 +180,7 @@ class Hospital(models.Model):
                                         update_fields=update_fields)
 
     def __str__(self):
-        return '{} {}'.format(self.name, self.locality)
+        return '{} {} {}'.format(self.code, self.name, self.locality)
 
     @property
     def full_location(self):
@@ -196,7 +198,10 @@ class Hospital(models.Model):
         ttl_request = stat['total_request']
         ttl_reserve = stat['total_reserve']
 
-        return DEFAULT_INDICATOR if not ttl_request or not ttl_reserve else int(round(ttl_reserve * 100 / ttl_request))
+        if not ttl_request and not ttl_reserve:
+            return DEFAULT_INDICATOR
+
+        return round(Decimal(100.0 * ttl_reserve / (ttl_request + ttl_reserve)), 2)
 
 
 class HospitalPhoneNumber(models.Model):
@@ -235,6 +240,19 @@ class Statistic(models.Model):
     has_capacity = models.BooleanField(verbose_name=_('Показывать поле "Требуемое количество" '), default=False,
                                        help_text=_('Отметьте галочкой чтобы показать поле'))
 
+    def clean(self):
+        if self.has_capacity and not self.capacity:
+            raise ValidationError("Поле 'Требуемое количество' не может быть пустым")
+
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        if not self.has_capacity:
+            self.capacity = None
+
+        super(Statistic, self).save_base(force_insert=force_insert,
+                                         force_update=force_update,
+                                         using=using,
+                                         update_fields=update_fields)
+
     class Meta:
         verbose_name_plural = _('Статистики')
         verbose_name = _('Статистика')
@@ -244,7 +262,7 @@ class Statistic(models.Model):
 
     @property
     def need_help(self):
-        return True if self.has_capacity and self.actual > self.capacity else False
+        return True if self.has_capacity and self.capacity and self.actual > self.capacity else False
 
 
 class HelpRequest(models.Model):

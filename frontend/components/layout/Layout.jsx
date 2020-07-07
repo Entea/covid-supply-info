@@ -1,11 +1,20 @@
 import React from 'react';
 import Head from 'next/head';
 import Header from './Header';
+import { initGA, logPageView } from '../../utils/ga'
 
 class Layout extends React.Component {
 
     constructor(props) {
         super(props);
+    }
+
+    componentDidMount () {
+        if (!window.GA_INITIALIZED) {
+            initGA()
+            window.GA_INITIALIZED = true
+        }
+        logPageView()
     }
 
     updateFilterValues(regionId, districtId, localityId) {
@@ -18,7 +27,7 @@ class Layout extends React.Component {
         return (
             <div className='layout'>
                 <Head>
-                    <title>{'COVID 19'}</title>
+                    <title>{'Тирек'}</title>
                     <link rel="icon" href="/favicon.ico"/>
                 </Head>
                 <Header onFilterChange={this.updateFilterValues.bind(this)}/>
