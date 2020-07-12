@@ -4,7 +4,6 @@ import getConfig from 'next/config';
 const {publicRuntimeConfig} = getConfig();
 
 export const initGA = () => {
-    console.log(publicRuntimeConfig)
     if (publicRuntimeConfig.gaKey) {
         ReactGA.initialize(publicRuntimeConfig.gaKey)
     } else {
@@ -14,6 +13,7 @@ export const initGA = () => {
 
 export const logPageView = () => {
     if (publicRuntimeConfig.gaKey) {
+        console.log('Got a page view');
         ReactGA.set({page: window.location.pathname})
         ReactGA.pageview(window.location.pathname)
     }
