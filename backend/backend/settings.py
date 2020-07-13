@@ -42,12 +42,14 @@ INSTALLED_APPS = [
     'distributor',
     'rangefilter',
     'rest_framework',
+    'rest_framework.authtoken',
     'django_extensions',
     'django_filters',
     'corsheaders',
     'cacheops',
     'rest_framework_recaptcha',
-    'leaflet'
+    'leaflet',
+    'rest_auth'
 ]
 
 MIDDLEWARE = [
@@ -236,3 +238,7 @@ if os.environ.get('ENABLE_LOGGING', default='off') == 'on':
             },
         },
     }
+
+REST_AUTH_SERIALIZERS = {
+    'TOKEN_SERIALIZER': 'users.serializers.TokenSerializer',
+}
