@@ -49,7 +49,8 @@ INSTALLED_APPS = [
     'cacheops',
     'rest_framework_recaptcha',
     'leaflet',
-    'rest_auth'
+    'rest_auth',
+    'users'
 ]
 
 MIDDLEWARE = [

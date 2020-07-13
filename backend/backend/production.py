@@ -49,7 +49,8 @@ INSTALLED_APPS = [
     'cacheops',
     'corsheaders',
     'leaflet',
-    'rest_auth'
+    'rest_auth',
+    'users'
 ]
 
 MIDDLEWARE = [
