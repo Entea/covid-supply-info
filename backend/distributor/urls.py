@@ -5,7 +5,7 @@ from distributor.api import (
     HospitalViewSet, DonationViewSet,
     RegionViewSet, DistrictViewSet, LocalityViewSet,
     PageViewSet, HospitalShortInfoListAPIView, HospitalDetailAPIView, ContactInfoAPIView,
-    ContactMessageAPIView, HelpRequestAPIView, DistributionListAPIView)
+    ContactMessageAPIView, HelpRequestAPIView, DistributionListAPIView, ManagerHospitalsListAPIView)
 
 router = routers.DefaultRouter()
 router.register(r'hospitals', HospitalViewSet)
@@ -22,6 +22,7 @@ urlpatterns = [
     path('contact-messages/', ContactMessageAPIView.as_view(), name='contact_message'),
     path('help-requests/', HelpRequestAPIView.as_view(), name='help_request'),
     path('distributions/', DistributionListAPIView.as_view(), name='distributions'),
+    path('managers/hospitals/', ManagerHospitalsListAPIView.as_view(), name='managers_hospital'),
 ]
 
 urlpatterns += router.urls

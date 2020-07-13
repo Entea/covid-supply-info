@@ -2,8 +2,10 @@ from cacheops import cached_view_as
 from django.utils.decorators import method_decorator
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, status
+from rest_framework.authentication import TokenAuthentication
 from rest_framework.filters import SearchFilter
 from rest_framework.generics import ListAPIView
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -193,3 +195,12 @@ class DistributionListAPIView(ListAPIView):
     queryset = Distribution.objects.all()
     filter_backends = (DjangoFilterBackend,)
     filter_class = DistributionFilter
+
+
+class ManagerHospitalsListAPIView(ListAPIView):
+    permission_classes = (IsAuthenticated,)
+    authentication_classes = (TokenAuthentication,)
+    serializer_class = HospitalShortInfoSerializer
+
+    def get_queryset(self):
+        return HospitalService.get_managers_hospitals(user=self.request.user)
