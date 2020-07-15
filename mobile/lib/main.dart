@@ -1,20 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:tirek_mobile/services/authentication.dart';
-import 'package:tirek_mobile/pages/root_page.dart';
+import 'package:tirek_mobile/services/AuthenticationService.dart';
+import 'package:tirek_mobile/pages/RootPage.dart';
+import 'package:tirek_mobile/services/TokenService.dart';
 
 void main() {
-  runApp(new MyApp());
+  runApp(new TirekApplication());
 }
 
-class MyApp extends StatelessWidget {
+class TirekApplication extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
-        title: 'Flutter login demo',
+        title: 'Tirek Application',
         debugShowCheckedModeBanner: false,
         theme: new ThemeData(
           primarySwatch: Colors.teal,
         ),
-        home: new RootPage(auth: new Auth()));
+        home: new RootPage(
+            tokenService: new TokenService(),
+            authenticationService: new TirekAuthenticationService()));
   }
 }
