@@ -1,27 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:tirek_mobile/services/authentication.dart';
+import 'package:tirek_mobile/exception/TirekException.dart';
+import 'package:tirek_mobile/services/AuthenticationService.dart';
+import 'package:tirek_mobile/services/TokenService.dart';
 
-class LoginSignupPage extends StatefulWidget {
-  LoginSignupPage({this.auth, this.loginCallback});
+class LoginPage extends StatefulWidget {
+  LoginPage(
+      {this.authenticationService, this.tokenService, this.loginCallback});
 
-  final BaseAuth auth;
+  final AuthenticationService authenticationService;
+  final TokenService tokenService;
   final VoidCallback loginCallback;
 
   @override
-  State<StatefulWidget> createState() => new _LoginSignupPageState();
+  State<StatefulWidget> createState() => new _LoginPageState();
 }
 
-class _LoginSignupPageState extends State<LoginSignupPage> {
+class _LoginPageState extends State<LoginPage> {
   final _formKey = new GlobalKey<FormState>();
 
-  String _email;
+  String _username;
   String _password;
   String _errorMessage;
 
-    bool _isLoginForm;
   bool _isLoading;
 
-  // Check if form is valid before perform login or signup
   bool validateAndSave() {
     final form = _formKey.currentState;
     if (form.validate()) {
@@ -31,39 +33,39 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
     return false;
   }
 
-  // Perform login or signup
   void validateAndSubmit() async {
     setState(() {
       _errorMessage = "";
       _isLoading = true;
     });
+
     if (validateAndSave()) {
-      String userId = "";
       try {
-        if (_isLoginForm) {
-          userId = await widget.auth.signIn(_email, _password);
-          print('Signed in: $userId');
-        } else {
-          userId = await widget.auth.signUp(_email, _password);
-          //widget.auth.sendEmailVerification();
-          //_showVerifyEmailSentDialog();
-          print('Signed up user: $userId');
-        }
+        final authenticationResponse =
+            await widget.authenticationService.login(_username, _password);
+
+        await widget.tokenService.save(authenticationResponse.token);
+
         setState(() {
           _isLoading = false;
         });
-
-        if (userId.length > 0 && userId != null && _isLoginForm) {
-          widget.loginCallback();
-        }
-      } catch (e) {
-        print('Error: $e');
+      } on BadRequestException {
         setState(() {
           _isLoading = false;
-          _errorMessage = e.message;
+          _errorMessage = "Неправильное имя пользователя или пароль";
+          _formKey.currentState.reset();
+        });
+      } on TirekException {
+        setState(() {
+          _isLoading = false;
+          _errorMessage = "Произошла ошибка при подключении";
           _formKey.currentState.reset();
         });
       }
+    } else {
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
@@ -71,7 +73,6 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
   void initState() {
     _errorMessage = "";
     _isLoading = false;
-    _isLoginForm = true;
     super.initState();
   }
 
@@ -80,18 +81,11 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
     _errorMessage = "";
   }
 
-  void toggleFormMode() {
-    resetForm();
-    setState(() {
-      _isLoginForm = !_isLoginForm;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
         appBar: new AppBar(
-          title: new Text('Вход Tirek'),
+          title: new Text('Tirek'),
         ),
         body: Stack(
           children: <Widget>[
@@ -110,29 +104,6 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
       width: 0.0,
     );
   }
-
-//  void _showVerifyEmailSentDialog() {
-//    showDialog(
-//      context: context,
-//      builder: (BuildContext context) {
-//        // return object of type Dialog
-//        return AlertDialog(
-//          title: new Text("Verify your account"),
-//          content:
-//              new Text("Link to verify account has been sent to your email"),
-//          actions: <Widget>[
-//            new FlatButton(
-//              child: new Text("Dismiss"),
-//              onPressed: () {
-//                toggleFormMode();
-//                Navigator.of(context).pop();
-//              },
-//            ),
-//          ],
-//        );
-//      },
-//    );
-//  }
 
   Widget _showForm() {
     return new Container(
@@ -153,15 +124,18 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
   }
 
   Widget showErrorMessage() {
-    if (_errorMessage.length > 0 && _errorMessage != null) {
-      return new Text(
-        _errorMessage,
-        style: TextStyle(
-            fontSize: 13.0,
-            color: Colors.red,
-            height: 1.0,
-            fontWeight: FontWeight.w300),
-      );
+    if (_errorMessage != null && _errorMessage.length > 0) {
+      return new Container(
+          padding: EdgeInsets.all(16.0),
+          child: new Text(
+            _errorMessage,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                fontSize: 13.0,
+                color: Colors.red,
+                height: 1.0,
+                fontWeight: FontWeight.w300),
+          ));
     } else {
       return new Container(
         height: 0.0,
@@ -177,7 +151,7 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
         child: CircleAvatar(
           backgroundColor: Colors.transparent,
           radius: 48.0,
-          child: Image.asset('assets/tirek_logo.png'),
+          child: Image.asset('assets/tirek-logo.png'),
         ),
       ),
     );
@@ -191,13 +165,13 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
         keyboardType: TextInputType.emailAddress,
         autofocus: false,
         decoration: new InputDecoration(
-            hintText: 'Login',
+            hintText: 'Имя пользователя',
             icon: new Icon(
               Icons.account_box,
               color: Colors.grey,
             )),
-        validator: (value) => value.isEmpty ? 'Login can\'t be empty' : null,
-        onSaved: (value) => _email = value.trim(),
+        validator: (value) => value.isEmpty ? 'Это поле обязательно' : null,
+        onSaved: (value) => _username = value.trim(),
       ),
     );
   }
@@ -210,17 +184,16 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
         obscureText: true,
         autofocus: false,
         decoration: new InputDecoration(
-            hintText: 'Password',
+            hintText: 'Пароль',
             icon: new Icon(
               Icons.lock,
               color: Colors.grey,
             )),
-        validator: (value) => value.isEmpty ? 'Password can\'t be empty' : null,
+        validator: (value) => value.isEmpty ? 'Это поле обязательно' : null,
         onSaved: (value) => _password = value.trim(),
       ),
     );
   }
-
 
   Widget showPrimaryButton() {
     return new Padding(
@@ -231,8 +204,7 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
             elevation: 5.0,
             shape: new RoundedRectangleBorder(
                 borderRadius: new BorderRadius.circular(30.0),
-                side: BorderSide(color: Colors.blue)
-            ),
+                side: BorderSide(color: Colors.blue)),
             color: Colors.lightBlue[400],
             child: new Text('Вход',
                 style: new TextStyle(fontSize: 20.0, color: Colors.white)),
