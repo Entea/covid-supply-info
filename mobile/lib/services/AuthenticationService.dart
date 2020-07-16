@@ -13,7 +13,7 @@ class TirekAuthenticationService implements AuthenticationService {
     final body = json.encode({"username": username, "password": password});
 
     final Map<String, String> headers = {
-      'Content-Type': 'application/json',
+      'Content-Type': 'application/json; charset=utf-8',
       'Accept': 'application/json',
     };
 
