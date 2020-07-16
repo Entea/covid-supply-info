@@ -22,6 +22,7 @@ class _HomePageState extends State<HomePage> {
     _errorMessage = "";
     _isLoading = false;
     super.initState();
+    getData();
   }
 
   void getData() async {
@@ -35,9 +36,6 @@ class _HomePageState extends State<HomePage> {
         _isLoading = false;
         _errorMessage = "Произошла ошибка при подключении";
       });
-    } finally {
-      print(_errorMessage);
-      print(_data);
     }
   }
 
@@ -62,17 +60,15 @@ class _HomePageState extends State<HomePage> {
         ),
         body: TabBarView(
           children: [
-            new ListView(
-              children: <Widget>[
-                ListTile(
-                  title: new Text('ОШСКИЙ МЕДИЦИНСКИЙ КОЛ...'),
-                  subtitle: new Text('КОД 9040'),
-                ),
-                ListTile(
-                  title: new Text('ОШСКИЙ МЕДИЦИНСКИЙ КОЛ...'),
-                  subtitle: new Text('КОД 9040'),
-                )
-              ],
+            new ListView.builder(
+              itemCount: _data.hospitals.length,
+                itemBuilder: (BuildContext ctxt, int index) {
+                  return new ListTile(
+                    title: new Text(_data.hospitals[index].name),
+                    subtitle: new Text('КОД ' + _data.hospitals[index].code),
+                    trailing: Icon(Icons.add),
+                  );
+                }
             ),
             new ListView(
               padding: const EdgeInsets.only(top: 10, bottom: 15),
