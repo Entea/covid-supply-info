@@ -13,7 +13,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  HospitalResponse _data;
+  List _data = [];
   String _errorMessage;
   bool _isLoading;
 
@@ -29,7 +29,7 @@ class _HomePageState extends State<HomePage> {
     try {
       final response = await widget.hospitalService.get();
       setState(() {
-        _data = response;
+        _data = response.hospitals;
       });
     } on TirekException {
       setState(() {
@@ -61,11 +61,11 @@ class _HomePageState extends State<HomePage> {
         body: TabBarView(
           children: [
             new ListView.builder(
-              itemCount: _data.hospitals.length,
+              itemCount: _data.length,
                 itemBuilder: (BuildContext ctxt, int index) {
                   return new ListTile(
-                    title: new Text(_data.hospitals[index].name),
-                    subtitle: new Text('КОД ' + _data.hospitals[index].code),
+                    title: new Text(_data[index].name),
+                    subtitle: new Text('КОД ' + _data[index].code),
                     trailing: Icon(Icons.add),
                   );
                 }
