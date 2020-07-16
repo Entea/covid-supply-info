@@ -54,10 +54,6 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         drawer: new Drawer(),
-        floatingActionButton: FloatingActionButton(
-          onPressed: getData,
-          child: Icon(Icons.add),
-        ),
         body: TabBarView(
           children: [
             new ListView.builder(

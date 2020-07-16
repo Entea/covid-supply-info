@@ -12,16 +12,18 @@ void main() {
 class TirekApplication extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    TokenService tokenService = new TokenService();
+
     return new MaterialApp(
         title: 'Tirek Application',
         initialRoute: '/',
         routes: {
           '/': (context) => new RootPage(
-              tokenService: new TokenService(),
+              tokenService: tokenService,
               authenticationService: new TirekAuthenticationService()
           ),
           '/home': (context) => new HomePage(
-            hospitalService: new TirekHospitalService(new TokenService()),
+            hospitalService: new TirekHospitalService(tokenService),
           )
         },
         debugShowCheckedModeBanner: false,
