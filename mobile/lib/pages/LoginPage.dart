@@ -46,6 +46,8 @@ class _LoginPageState extends State<LoginPage> {
 
         await widget.tokenService.save(authenticationResponse.token);
 
+        Navigator.pushNamed(context, '/home');
+
         setState(() {
           _isLoading = false;
         });
