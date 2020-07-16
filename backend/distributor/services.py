@@ -1,9 +1,13 @@
 import os
 
 import requests
+from django.contrib.auth import get_user_model
+from django.db.models import QuerySet
 from rest_framework.exceptions import NotFound
 
 from distributor.models import Hospital
+
+User = get_user_model()
 
 
 class HospitalService:
@@ -15,6 +19,10 @@ class HospitalService:
             return Hospital.objects.get(**filters)
         except Hospital.DoesNotExist:
             raise NotFound('Hospital not found')
+
+    @classmethod
+    def get_managers_hospitals(cls, user: User) -> QuerySet:
+        return Hospital.objects.filter(managers__in=[user])
 
 
 class GooglePlaceAPI:

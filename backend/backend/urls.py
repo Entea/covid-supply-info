@@ -20,6 +20,7 @@ from rest_framework.documentation import include_docs_urls
 
 v1 = ([
           path('', include('distributor.urls')),
+          path('', include('users.urls')),
       ], 'v1')
 
 urlpatterns = [
@@ -27,5 +28,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/', include(v1)),
     url(r'^api-auth/', include('rest_framework.urls')),
-    url(r'^docs/', include_docs_urls(title='API Docs', public=False))
+    url(r'^docs/', include_docs_urls(title='API Docs', public=False)),
 ]

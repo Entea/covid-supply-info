@@ -43,11 +43,14 @@ INSTALLED_APPS = [
     'rangefilter',
     'mapwidgets',
     'rest_framework',
+    'rest_framework.authtoken',
     'django_extensions',
     'django_filters',
     'cacheops',
     'corsheaders',
-    'leaflet'
+    'leaflet',
+    'rest_auth',
+    'users'
 ]
 
 MIDDLEWARE = [
@@ -272,3 +275,6 @@ CORS_ALLOW_METHODS = (
     'POST',
 )
 
+REST_AUTH_SERIALIZERS = {
+    'TOKEN_SERIALIZER': 'users.serializers.TokenSerializer',
+}
