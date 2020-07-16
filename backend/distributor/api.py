@@ -4,7 +4,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, status
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.filters import SearchFilter
-from rest_framework.generics import ListAPIView
+from rest_framework.generics import ListAPIView, ListCreateAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -18,8 +18,10 @@ from distributor.serializers import (
     HospitalSerializer, DonationSerializer, RegionSerializer,
     DistrictSerializer, LocalitySerializer, HelpRequestSerializer,
     PageSerializer, HospitalShortInfoSerializer, HospitalDetailSerializer, ContactInfoSerializer,
-    ContactMessageSerializer, DistributionListSerializer)
-from distributor.services import HospitalService
+    ContactMessageSerializer, DistributionListSerializer, DistributionShortListSerializer, NeedsSerializer,
+    NeedsCreateSerializer, NeedTypeSerializer, NeedTypeCreateSerializer, MeasureTypeSerializer, MeasureCreateSerializer)
+from distributor.services import HospitalService, DistributionService, HospitalNeedsService, NeedTypeService, \
+    MeasureService
 
 
 class HospitalViewSet(viewsets.ReadOnlyModelViewSet):
@@ -204,3 +206,91 @@ class ManagerHospitalsListAPIView(ListAPIView):
 
     def get_queryset(self):
         return HospitalService.get_managers_hospitals(user=self.request.user)
+
+
+class ManagerDistributionListAPIView(ListAPIView):
+    permission_classes = (IsAuthenticated,)
+    authentication_classes = (TokenAuthentication,)
+    serializer_class = DistributionShortListSerializer
+
+    def get_queryset(self):
+        return DistributionService.get_manager_hospitals_distributions(user=self.request.user)
+
+
+class DistributionDetailAPIView(APIView):
+    permission_classes = (IsAuthenticated,)
+    authentication_classes = (TokenAuthentication,)
+    serializer_class = DistributionListSerializer
+
+    def get(self, request, pk):
+        distribution = DistributionService.get(pk=pk)
+
+        return Response(self.serializer_class(distribution, many=False).data, status=status.HTTP_200_OK)
+
+
+class HospitalNeedsListCreateAPIView(ListCreateAPIView):
+    permission_classes = (IsAuthenticated,)
+    authentication_classes = (TokenAuthentication,)
+    serializer_class = NeedsSerializer
+
+    def get_queryset(self):
+        return HospitalNeedsService.get_manager_hospitals_needs(user=self.request.user)
+
+    def create(self, request, *args, **kwargs):
+        serializer = NeedsCreateSerializer(data=request.data)
+
+        if not serializer.is_valid():
+            return Response(data={
+                'message': 'Invalid input',
+                'errors': serializer.errors
+            }, status=status.HTTP_406_NOT_ACCEPTABLE)
+
+        hospital_need = HospitalNeedsService.create(**serializer.validated_data)
+
+        return Response(self.serializer_class(hospital_need, many=False).data, status=status.HTTP_201_CREATED)
+
+
+class NeedTypesListCreateAPIView(ListCreateAPIView):
+    permission_classes = (IsAuthenticated,)
+    authentication_classes = (TokenAuthentication,)
+    serializer_class = NeedTypeSerializer
+    queryset = NeedTypeService.filter()
+
+    def create(self, request, *args, **kwargs):
+        serializer = NeedTypeCreateSerializer(data=request.data)
+
+        if not serializer.is_valid():
+            return Response(data={
+                'message': 'Invalid input',
+                'errors': serializer.errors
+            }, status=status.HTTP_406_NOT_ACCEPTABLE)
+
+        need_type = NeedTypeService.create(
+            user=request.user,
+            name=serializer.validated_data.get('name'),
+            measure_id=serializer.validated_data.get('measure_id')
+        )
+
+        return Response(self.serializer_class(need_type, many=False).data, status=status.HTTP_201_CREATED)
+
+
+class MeasureListCreateAPIView(ListCreateAPIView):
+    permission_classes = (IsAuthenticated,)
+    authentication_classes = (TokenAuthentication,)
+    serializer_class = MeasureTypeSerializer
+    queryset = MeasureService.filter()
+
+    def create(self, request, *args, **kwargs):
+        serializer = MeasureCreateSerializer(data=request.data)
+
+        if not serializer.is_valid():
+            return Response(data={
+                'message': 'Invalid input',
+                'errors': serializer.errors
+            }, status=status.HTTP_406_NOT_ACCEPTABLE)
+
+        measure = MeasureService.create(
+            name=serializer.validated_data.get('name')
+        )
+
+        return Response(self.serializer_class(measure, many=False).data, status=status.HTTP_201_CREATED)

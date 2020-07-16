@@ -5,7 +5,9 @@ from distributor.api import (
     HospitalViewSet, DonationViewSet,
     RegionViewSet, DistrictViewSet, LocalityViewSet,
     PageViewSet, HospitalShortInfoListAPIView, HospitalDetailAPIView, ContactInfoAPIView,
-    ContactMessageAPIView, HelpRequestAPIView, DistributionListAPIView, ManagerHospitalsListAPIView)
+    ContactMessageAPIView, HelpRequestAPIView, DistributionListAPIView, ManagerHospitalsListAPIView,
+    ManagerDistributionListAPIView, DistributionDetailAPIView, HospitalNeedsListCreateAPIView,
+    NeedTypesListCreateAPIView, MeasureListCreateAPIView)
 
 router = routers.DefaultRouter()
 router.register(r'hospitals', HospitalViewSet)
@@ -22,7 +24,12 @@ urlpatterns = [
     path('contact-messages/', ContactMessageAPIView.as_view(), name='contact_message'),
     path('help-requests/', HelpRequestAPIView.as_view(), name='help_request'),
     path('distributions/', DistributionListAPIView.as_view(), name='distributions'),
+    path('distributions/<int:pk>/', DistributionDetailAPIView.as_view(), name='distributions_detail'),
     path('managers/hospitals/', ManagerHospitalsListAPIView.as_view(), name='managers_hospital'),
+    path('managers/distributions/', ManagerDistributionListAPIView.as_view(), name='managers_distributions'),
+    path('hospital_needs/', HospitalNeedsListCreateAPIView.as_view(), name='hospital_needs'),
+    path('need_types/', NeedTypesListCreateAPIView.as_view(), name='need_types'),
+    path('measures/', MeasureListCreateAPIView.as_view(), name='measures'),
 ]
 
 urlpatterns += router.urls
