@@ -1,13 +1,46 @@
 import 'package:flutter/material.dart';
-import 'package:tirek_mobile/services/AuthenticationService.dart';
-import 'package:tirek_mobile/services/TokenService.dart';
+import 'package:tirek_mobile/exception/TirekException.dart';
+import 'package:tirek_mobile/models/response/HospitalResponse.dart';
+import 'package:tirek_mobile/services/HospitalService.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage();
+  HomePage({this.hospitalService});
+
+  final HospitalService hospitalService;
+
+  @override
   State<StatefulWidget> createState() => new _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
+  HospitalResponse _data;
+  String _errorMessage;
+  bool _isLoading;
+
+  @override
+  void initState() {
+    _errorMessage = "";
+    _isLoading = false;
+    super.initState();
+  }
+
+  void getData() async {
+    try {
+      final response = await widget.hospitalService.get();
+      setState(() {
+        _data = response;
+      });
+    } on TirekException {
+      setState(() {
+        _isLoading = false;
+        _errorMessage = "Произошла ошибка при подключении";
+      });
+    } finally {
+      print(_errorMessage);
+      print(_data);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -24,8 +57,7 @@ class _HomePageState extends State<HomePage> {
         ),
         drawer: new Drawer(),
         floatingActionButton: FloatingActionButton(
-          onPressed: () {
-          },
+          onPressed: getData,
           child: Icon(Icons.add),
         ),
         body: TabBarView(
@@ -43,18 +75,17 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
             new ListView(
-              padding: const EdgeInsets.only(
-                  top: 10,
-                  bottom: 15
-              ),
+              padding: const EdgeInsets.only(top: 10, bottom: 15),
               children: <Widget>[
                 ListTile(
                   title: new Text('Ошская Медицинский Колледж'),
-                  subtitle: new Text('Народный штаб Биз Барбыз. Сообщество Кыргызстанцев в США в лице Айзада Марат...'),
+                  subtitle: new Text(
+                      'Народный штаб Биз Барбыз. Сообщество Кыргызстанцев в США в лице Айзада Марат...'),
                 ),
                 ListTile(
                   title: new Text('Ошская Медицинский Колледж'),
-                  subtitle: new Text('Народный штаб Биз Барбыз. Сообщество Кыргызстанцев в США в лице Айзада Марат...'),
+                  subtitle: new Text(
+                      'Народный штаб Биз Барбыз. Сообщество Кыргызстанцев в США в лице Айзада Марат...'),
                 )
               ],
             ),
