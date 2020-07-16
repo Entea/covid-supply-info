@@ -19,9 +19,13 @@ from distributor.serializers import (
     DistrictSerializer, LocalitySerializer, HelpRequestSerializer,
     PageSerializer, HospitalShortInfoSerializer, HospitalDetailSerializer, ContactInfoSerializer,
     ContactMessageSerializer, DistributionListSerializer, DistributionShortListSerializer, NeedsSerializer,
-    NeedsCreateSerializer, NeedTypeSerializer, NeedTypeCreateSerializer, MeasureTypeSerializer, MeasureCreateSerializer)
-from distributor.services import HospitalService, DistributionService, HospitalNeedsService, NeedTypeService, \
-    MeasureService
+    NeedsCreateSerializer, NeedTypeSerializer, NeedTypeCreateSerializer,
+    MeasureTypeSerializer, MeasureCreateSerializer
+)
+from .services import (
+    HospitalService, DistributionService, HospitalNeedsService,
+    NeedTypeService, MeasureService
+)
 
 
 class HospitalViewSet(viewsets.ReadOnlyModelViewSet):
