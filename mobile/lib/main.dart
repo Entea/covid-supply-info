@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tirek_mobile/services/AuthenticationService.dart';
 import 'package:tirek_mobile/pages/RootPage.dart';
+import 'package:tirek_mobile/pages/HomePage.dart';
 import 'package:tirek_mobile/services/TokenService.dart';
 
 void main() {
@@ -12,12 +13,16 @@ class TirekApplication extends StatelessWidget {
   Widget build(BuildContext context) {
     return new MaterialApp(
         title: 'Tirek Application',
+        initialRoute: '/home',
+        routes: {
+          '/': (context) => new RootPage(
+              tokenService: new TokenService(),
+              authenticationService: new TirekAuthenticationService()),
+          '/home': (context) => new HomePage()
+        },
         debugShowCheckedModeBanner: false,
         theme: new ThemeData(
-          primarySwatch: Colors.teal,
-        ),
-        home: new RootPage(
-            tokenService: new TokenService(),
-            authenticationService: new TirekAuthenticationService()));
+          primarySwatch: Colors.blue,
+        ));
   }
 }
