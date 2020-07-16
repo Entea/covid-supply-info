@@ -19,11 +19,20 @@ class ApiHelper {
     }
   }
 
+  static Future<dynamic> get(String path, Map<String, String> headers) async {
+    try {
+      final response = await http.get(baseUrl + path, headers: headers);
+
+      return _returnResponse(response);
+    } on SocketException {
+      throw FetchDataException('Нет подключения к интернету');
+    }
+  }
+
   static dynamic _returnResponse(http.Response response) async {
     switch (response.statusCode) {
       case 200:
-        var responseJson = json.decode(response.body.toString());
-        print(responseJson);
+        var responseJson = json.decode(utf8.decode(response.bodyBytes));
         return responseJson;
       case 400:
         throw BadRequestException(response.body.toString());
