@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tirek_mobile/pages/LoginPage.dart';
 import 'package:tirek_mobile/services/AuthenticationService.dart';
-import 'package:tirek_mobile/services/TokenService.dart';
+import 'package:tirek_mobile/services/SharedPreferencesService.dart';
 
 enum AuthStatus {
   NOT_DETERMINED,
@@ -10,9 +10,9 @@ enum AuthStatus {
 }
 
 class RootPage extends StatefulWidget {
-  RootPage({this.tokenService, this.authenticationService});
+  RootPage({this.sharedPreferencesService, this.authenticationService});
 
-  final TokenService tokenService;
+  final SharedPreferencesService sharedPreferencesService;
   final AuthenticationService authenticationService;
 
   @override
@@ -66,7 +66,7 @@ class _RootPageState extends State<RootPage> {
   Widget build(BuildContext context) {
     return new LoginPage(
       authenticationService: widget.authenticationService,
-      tokenService: widget.tokenService,
+      sharedPreferencesService: widget.sharedPreferencesService,
       loginCallback: loginCallback,
     );
   }
