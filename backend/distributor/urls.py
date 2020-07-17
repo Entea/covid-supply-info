@@ -27,8 +27,8 @@ urlpatterns = [
     path('distributions/<int:pk>/', DistributionDetailAPIView.as_view(), name='distributions_detail'),
     path('managers/hospitals/', ManagerHospitalsListAPIView.as_view(), name='managers_hospital'),
     path('managers/distributions/', ManagerDistributionListAPIView.as_view(), name='managers_distributions'),
-    path('hospital_needs/', HospitalNeedsListCreateAPIView.as_view(), name='hospital_needs'),
-    path('need_types/', NeedTypesListCreateAPIView.as_view(), name='need_types'),
+    path('hospital-needs/', HospitalNeedsListCreateAPIView.as_view(), name='hospital_needs'),
+    path('need-types/', NeedTypesListCreateAPIView.as_view(), name='need_types'),
     path('measures/', MeasureListCreateAPIView.as_view(), name='measures'),
 ]
 
