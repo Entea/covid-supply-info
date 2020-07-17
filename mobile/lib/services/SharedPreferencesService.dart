@@ -7,6 +7,8 @@ abstract class SharedPreferencesService {
 
   Future<AuthenticationResponse> getCurrentUserInfo();
 
+  isLoggedIn();
+
   removeCurrentUserInfo();
 }
 
@@ -29,6 +31,13 @@ class TirekSharedPreferencesService implements SharedPreferencesService {
     final fullName = prefs.getString('userFullName');
 
     return AuthenticationResponse(token, User(userId, fullName));
+  }
+
+  @override
+  isLoggedIn() async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+    return token == null;
   }
 
   @override

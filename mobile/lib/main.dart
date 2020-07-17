@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tirek_mobile/services/AuthenticationService.dart';
 import 'package:tirek_mobile/pages/RootPage.dart';
 import 'package:tirek_mobile/pages/HomePage.dart';
@@ -15,17 +16,32 @@ class TirekApplication extends StatelessWidget {
   Widget build(BuildContext context) {
     SharedPreferencesService sharedPreferencesService = new TirekSharedPreferencesService();
 
+    Widget rootPage = new RootPage(
+        sharedPreferencesService: sharedPreferencesService,
+        authenticationService: new TirekAuthenticationService());
+
+    Widget homePage = new HomePage(
+      hospitalService: new TirekHospitalService(sharedPreferencesService),
+      logoutService: new TirekLogoutService(sharedPreferencesService),
+      sharedPreferencesService: sharedPreferencesService,
+    );
+
+    Widget _defaultPage = rootPage;
+
+    void setDefaultPage() async {
+      final isLoggedIn = await sharedPreferencesService.isLoggedIn();
+      _defaultPage = isLoggedIn ? homePage : rootPage;
+    }
+
+    setDefaultPage();
+
+
     return new MaterialApp(
         title: 'Tirek Application',
-        initialRoute: '/',
+        home: _defaultPage,
         routes: {
-          '/': (context) => new RootPage(
-              sharedPreferencesService: sharedPreferencesService,
-              authenticationService: new TirekAuthenticationService()),
-          '/home': (context) => new HomePage(
-                hospitalService: new TirekHospitalService(sharedPreferencesService),
-                logoutService: new TirekLogoutService(sharedPreferencesService),
-              )
+          '/login': (context) => rootPage,
+          '/home': (context) => homePage
         },
         debugShowCheckedModeBanner: false,
         theme: new ThemeData(
