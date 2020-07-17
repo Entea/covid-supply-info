@@ -19,6 +19,6 @@ class LogoutView(APIView):
     def logout(self, request):
         TokenService.logout(user=request.user)
 
-        response = Response({"detail": _("Successfully logged out.")},
+        response = Response({"message": _("Successfully logged out.")},
                             status=status.HTTP_200_OK)
         return response
