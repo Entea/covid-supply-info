@@ -49,7 +49,7 @@ class _LoginPageState extends State<LoginPage> {
 
         await widget.sharedPreferencesService.saveAuthenticationResponse(authenticationResponse);
 
-        Navigator.pushNamed(context, '/home');
+        Navigator.pushNamedAndRemoveUntil(context, '/home', (r) => false);
 
         setState(() {
           _isLoading = false;

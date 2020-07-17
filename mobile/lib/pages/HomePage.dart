@@ -41,7 +41,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void logout() async {
-    Navigator.pushNamed(context, '/');
+    Navigator.pushNamedAndRemoveUntil(context, '/', (r) => false);
 
     try {
       await widget.logoutService.logout();
