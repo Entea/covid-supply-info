@@ -190,3 +190,39 @@ class DistributionListSerializer(serializers.ModelSerializer):
             'sender', 'receiver', 'distributed_at',
             'status', 'created_at', 'delivered_at'
         )
+
+
+class DistributionShortListSerializer(DistributionListSerializer):
+    class Meta:
+        model = Distribution
+        fields = (
+            'id', 'hospital',
+            'sender', 'receiver', 'distributed_at',
+            'status', 'created_at', 'delivered_at'
+        )
+
+
+class NeedsSerializer(serializers.ModelSerializer):
+    need_type = NeedTypeSerializer()
+    hospital = HospitalShortInfoSerializer()
+
+    class Meta:
+        model = HospitalNeeds
+        fields = ('need_type', 'hospital', 'reserve_amount', 'request_amount', 'created_at')
+
+
+class NeedsCreateSerializer(serializers.Serializer):
+    hospital_id = serializers.IntegerField()
+    need_type_id = serializers.IntegerField()
+    reserve_amount = serializers.IntegerField()
+    request_amount = serializers.IntegerField()
+    request_amount_month = serializers.IntegerField()
+
+
+class NeedTypeCreateSerializer(serializers.Serializer):
+    measure_id = serializers.IntegerField(allow_null=True)
+    name = serializers.CharField()
+
+
+class MeasureCreateSerializer(serializers.Serializer):
+    name = serializers.CharField()
