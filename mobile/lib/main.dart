@@ -20,11 +20,10 @@ class TirekApplication extends StatelessWidget {
         routes: {
           '/': (context) => new RootPage(
               tokenService: tokenService,
-              authenticationService: new TirekAuthenticationService()
-          ),
+              authenticationService: new TirekAuthenticationService()),
           '/home': (context) => new HomePage(
-            hospitalService: new TirekHospitalService(tokenService),
-          )
+                hospitalService: new TirekHospitalService(tokenService),
+              )
         },
         debugShowCheckedModeBanner: false,
         theme: new ThemeData(
