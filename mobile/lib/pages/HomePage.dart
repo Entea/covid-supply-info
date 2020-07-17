@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:tirek_mobile/exception/TirekException.dart';
 import 'package:tirek_mobile/services/HospitalService.dart';
+import 'package:tirek_mobile/services/LogoutService.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage({this.hospitalService});
+  HomePage({this.hospitalService, this.logoutService});
 
   final HospitalService hospitalService;
+  final LogoutService logoutService;
 
   @override
   State<StatefulWidget> createState() => new _HomePageState();
@@ -38,6 +40,19 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  void logout() async {
+    Navigator.pushNamed(context, '/');
+
+    try {
+      await widget.logoutService.logout();
+    } on TirekException {
+      setState(() {
+        _isLoading = false;
+        _errorMessage = "Произошла ошибка";
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -53,9 +68,7 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         drawer: Theme(
-          data: Theme.of(context).copyWith(
-            canvasColor: Colors.blue
-          ),
+          data: Theme.of(context).copyWith(canvasColor: Colors.blue),
           child: Drawer(
             child: Column(
               mainAxisSize: MainAxisSize.max,
@@ -79,10 +92,8 @@ class _HomePageState extends State<HomePage> {
                             alignment: Alignment.bottomLeft,
                             child: Text(
                               'Андрей Волконский',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 24
-                              ),
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 24),
                             ),
                           ),
                         ),
@@ -96,19 +107,16 @@ class _HomePageState extends State<HomePage> {
                   padding: EdgeInsets.zero,
                   children: <Widget>[
                     ListTile(
-                      title: Text(
-                          'Больницы',
+                      title: Text('Больницы',
                           style: TextStyle(
                             color: Colors.white,
-                          )
-                      ),
+                          )),
                     ),
                     ListTile(
                       title: Text('Распределение',
                           style: TextStyle(
                             color: Colors.white,
-                          )
-                      ),
+                          )),
                     ),
                   ],
                 ),
@@ -117,11 +125,12 @@ class _HomePageState extends State<HomePage> {
                     alignment: Alignment.bottomCenter,
                     child: ListTile(
                       title: Text(
-                          'Выйти из приложения',
-                          style: TextStyle(
-                            color: Colors.white,
-                          )
+                        'Выйти из приложения',
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
                       ),
+                      onTap: logout,
                     ),
                   ),
                 ),

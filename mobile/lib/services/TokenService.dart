@@ -10,4 +10,9 @@ class TokenService {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getString('token');
   }
+
+  remove() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.setString('token', null);
+  }
 }
