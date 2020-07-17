@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:tirek_mobile/exception/TirekException.dart';
-import 'package:tirek_mobile/models/response/HospitalResponse.dart';
 import 'package:tirek_mobile/services/HospitalService.dart';
+import 'package:tirek_mobile/services/LogoutService.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage({this.hospitalService});
+  HomePage({this.hospitalService, this.logoutService});
 
   final HospitalService hospitalService;
+  final LogoutService logoutService;
 
   @override
   State<StatefulWidget> createState() => new _HomePageState();
@@ -39,6 +40,19 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  void logout() async {
+    Navigator.pushNamed(context, '/');
+
+    try {
+      await widget.logoutService.logout();
+    } on TirekException {
+      setState(() {
+        _isLoading = false;
+        _errorMessage = "Произошла ошибка";
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -53,19 +67,88 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
         ),
-        drawer: new Drawer(),
+        drawer: Theme(
+          data: Theme.of(context).copyWith(canvasColor: Colors.blue),
+          child: Drawer(
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              children: <Widget>[
+                DrawerHeader(
+                  child: new Container(
+                    child: new Column(
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        new Container(
+                          child: Align(
+                            alignment: Alignment.topLeft,
+                            child: new Image.asset(
+                              'assets/logo.png',
+                              height: 38.0,
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: Align(
+                            alignment: Alignment.bottomLeft,
+                            child: Text(
+                              'Андрей Волконский',
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 24),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                ListView(
+                  scrollDirection: Axis.vertical,
+                  shrinkWrap: true,
+                  padding: EdgeInsets.zero,
+                  children: <Widget>[
+                    ListTile(
+                      title: Text('Больницы',
+                          style: TextStyle(
+                            color: Colors.white,
+                          )),
+                    ),
+                    ListTile(
+                      title: Text('Распределение',
+                          style: TextStyle(
+                            color: Colors.white,
+                          )),
+                    ),
+                  ],
+                ),
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: ListTile(
+                      title: Text(
+                        'Выйти из приложения',
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                      onTap: logout,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
         body: TabBarView(
           children: [
             new ListView.builder(
-              itemCount: _data.length,
+                itemCount: _data.length,
                 itemBuilder: (BuildContext ctxt, int index) {
                   return new ListTile(
                     title: new Text(_data[index].name),
                     subtitle: new Text('КОД ' + _data[index].code),
                     trailing: Icon(Icons.add),
                   );
-                }
-            ),
+                }),
             new ListView(
               padding: const EdgeInsets.only(top: 10, bottom: 15),
               children: <Widget>[
