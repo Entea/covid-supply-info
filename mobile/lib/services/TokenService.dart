@@ -13,6 +13,6 @@ class TokenService {
 
   remove() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.setString('token', null);
+    return prefs.remove('token');
   }
 }
