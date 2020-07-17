@@ -18,7 +18,6 @@ class TokenService:
 
     @classmethod
     def logout(cls, user: User):
-
         token = cls.get(user=user)
 
         try:
