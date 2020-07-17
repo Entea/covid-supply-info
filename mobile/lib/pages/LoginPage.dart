@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:tirek_mobile/exception/TirekException.dart';
 import 'package:tirek_mobile/services/AuthenticationService.dart';
-import 'package:tirek_mobile/services/TokenService.dart';
+import 'package:tirek_mobile/services/SharedPreferencesService.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage(
-      {this.authenticationService, this.tokenService, this.loginCallback});
+      {this.authenticationService, this.sharedPreferencesService, this.loginCallback});
 
   final AuthenticationService authenticationService;
-  final TokenService tokenService;
+  final SharedPreferencesService sharedPreferencesService;
   final VoidCallback loginCallback;
 
   @override
@@ -47,7 +47,7 @@ class _LoginPageState extends State<LoginPage> {
         final authenticationResponse =
             await widget.authenticationService.login(_username, _password);
 
-        await widget.tokenService.save(authenticationResponse.token);
+        await widget.sharedPreferencesService.saveAuthenticationResponse(authenticationResponse);
 
         Navigator.pushNamed(context, '/home');
 

@@ -2,23 +2,23 @@ import 'dart:async';
 import 'package:tirek_mobile/helper/ApiHelper.dart';
 
 import 'package:tirek_mobile/models/response/HospitalResponse.dart';
-import 'package:tirek_mobile/services/TokenService.dart';
+import 'package:tirek_mobile/services/SharedPreferencesService.dart';
 
 abstract class HospitalService {
   Future<HospitalResponse> get();
 }
 
 class TirekHospitalService implements HospitalService {
-  final TokenService tokenService;
+  final SharedPreferencesService sharedPreferencesService;
 
-  TirekHospitalService(this.tokenService);
+  TirekHospitalService(this.sharedPreferencesService);
 
   @override
   Future<HospitalResponse> get() async {
-    final token = await tokenService.get();
+    final userInfo = await sharedPreferencesService.getCurrentUserInfo();
 
     final Map<String, String> headers = {
-      'Authorization': "Token $token",
+      'Authorization': "Token ${userInfo.token}",
       'Content-Type': 'application/json; charset=utf-8',
       'Accept': 'application/json; charset=utf-8',
     };

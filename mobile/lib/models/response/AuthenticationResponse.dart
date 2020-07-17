@@ -1,9 +1,14 @@
+import 'User.dart';
+
 class AuthenticationResponse {
   final String token;
+  final User user;
 
-  AuthenticationResponse(this.token);
+  AuthenticationResponse(this.token, this.user);
 
   factory AuthenticationResponse.fromJson(dynamic json) {
-    return AuthenticationResponse(json['token'] as String);
+    var userJson = json['user'] as dynamic;
+    var user = User.fromJson(userJson);
+    return AuthenticationResponse(json['token'] as String, user);
   }
 }

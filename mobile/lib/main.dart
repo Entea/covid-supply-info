@@ -3,7 +3,7 @@ import 'package:tirek_mobile/services/AuthenticationService.dart';
 import 'package:tirek_mobile/pages/RootPage.dart';
 import 'package:tirek_mobile/pages/HomePage.dart';
 import 'package:tirek_mobile/services/HospitalService.dart';
-import 'package:tirek_mobile/services/TokenService.dart';
+import 'package:tirek_mobile/services/SharedPreferencesService.dart';
 
 void main() {
   runApp(new TirekApplication());
@@ -12,17 +12,17 @@ void main() {
 class TirekApplication extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    TokenService tokenService = new TokenService();
+    SharedPreferencesService sharedPreferencesService = new TirekSharedPreferencesService();
 
     return new MaterialApp(
         title: 'Tirek Application',
         initialRoute: '/',
         routes: {
           '/': (context) => new RootPage(
-              tokenService: tokenService,
+              sharedPreferencesService: sharedPreferencesService,
               authenticationService: new TirekAuthenticationService()),
           '/home': (context) => new HomePage(
-                hospitalService: new TirekHospitalService(tokenService),
+                hospitalService: new TirekHospitalService(sharedPreferencesService),
               )
         },
         debugShowCheckedModeBanner: false,
