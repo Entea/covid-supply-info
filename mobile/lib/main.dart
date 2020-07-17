@@ -3,6 +3,7 @@ import 'package:tirek_mobile/services/AuthenticationService.dart';
 import 'package:tirek_mobile/pages/RootPage.dart';
 import 'package:tirek_mobile/pages/HomePage.dart';
 import 'package:tirek_mobile/services/HospitalService.dart';
+import 'package:tirek_mobile/services/LogoutService.dart';
 import 'package:tirek_mobile/services/SharedPreferencesService.dart';
 
 void main() {
@@ -23,6 +24,7 @@ class TirekApplication extends StatelessWidget {
               authenticationService: new TirekAuthenticationService()),
           '/home': (context) => new HomePage(
                 hospitalService: new TirekHospitalService(sharedPreferencesService),
+                logoutService: new TirekLogoutService(sharedPreferencesService),
               )
         },
         debugShowCheckedModeBanner: false,

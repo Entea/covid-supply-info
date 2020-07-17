@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:tirek_mobile/helper/ApiHelper.dart';
 import 'package:tirek_mobile/models/response/LogoutResponse.dart';
-import 'package:tirek_mobile/services/TokenService.dart';
+import 'package:tirek_mobile/services/SharedPreferencesService.dart';
 import 'dart:convert';
 
 abstract class LogoutService {
@@ -9,25 +9,22 @@ abstract class LogoutService {
 }
 
 class TirekLogoutService implements LogoutService {
-  final TokenService tokenService;
+  final SharedPreferencesService sharedPreferencesService;
 
-  TirekLogoutService(this.tokenService);
+  TirekLogoutService(this.sharedPreferencesService);
 
   @override
   Future<LogoutResponse> logout() async {
-    final token = await tokenService.get();
+    final userInfo = await sharedPreferencesService.getCurrentUserInfo();
     final body = json.encode({});
 
     final Map<String, String> headers = {
-      'Authorization': "Token $token",
+      'Authorization': "Token ${userInfo.token}",
       'Content-Type': 'application/json; charset=utf-8',
       'Accept': 'application/json',
     };
 
-    final responseJson = await ApiHelper.post("logout/", headers, body);
-
-    await tokenService.remove();
-
-    return LogoutResponse.fromJson(responseJson);
+    await ApiHelper.post("logout/", headers, body);
+    await sharedPreferencesService.removeCurrentUserInfo();
   }
 }
