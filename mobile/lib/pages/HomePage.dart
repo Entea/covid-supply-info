@@ -163,6 +163,7 @@ class _HomePageState extends State<HomePage>
           ),
         ),
         body: TabBarView(
+          controller: _tabController,
           children: [
             new ListView.builder(
                 itemCount: _data.length,
