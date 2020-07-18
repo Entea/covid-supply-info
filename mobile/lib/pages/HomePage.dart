@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tirek_mobile/exception/TirekException.dart';
 import 'package:tirek_mobile/services/HospitalService.dart';
 import 'package:tirek_mobile/services/LogoutService.dart';
+import 'package:tirek_mobile/pages/NeedsPage.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({this.hospitalService, this.logoutService});
@@ -13,17 +14,36 @@ class HomePage extends StatefulWidget {
   State<StatefulWidget> createState() => new _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
   List _data = [];
   String _errorMessage;
   bool _isLoading;
+  final List<Tab> myTabs = <Tab>[
+    new Tab(text: 'Больницы'),
+    new Tab(text: 'Распределение'),
+  ];
+
+  TabController _tabController;
 
   @override
   void initState() {
     _errorMessage = "";
     _isLoading = false;
     super.initState();
+    _tabController = TabController(length: myTabs.length, vsync: this, initialIndex: 0);
+    _tabController.addListener(_handleTabIndex);
     getData();
+  }
+
+  @override
+  void dispose() {
+    _tabController.removeListener(_handleTabIndex);
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  void _handleTabIndex() {
+    setState(() {});
   }
 
   void getData() async {
@@ -61,12 +81,11 @@ class _HomePageState extends State<HomePage> {
         appBar: new AppBar(
           title: new Text('Tirek'),
           bottom: TabBar(
-            tabs: [
-              Tab(text: 'Больницы'),
-              Tab(text: 'Распределение'),
-            ],
+            controller: _tabController,
+            tabs: myTabs,
           ),
         ),
+        floatingActionButton: _bottomButtons(),
         drawer: Theme(
           data: Theme.of(context).copyWith(canvasColor: Colors.blue),
           child: Drawer(
@@ -138,7 +157,8 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
         ),
-        body: TabBarView(
+        body: new TabBarView(
+          controller: _tabController,
           children: [
             new ListView.builder(
                 itemCount: _data.length,
@@ -165,8 +185,34 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
           ],
-        ),
+      ),
       ),
     );
   }
+
+    Widget _bottomButtons() {
+      return _tabController.index == 0
+          ? FloatingActionButton(
+          shape: StadiumBorder(),
+          onPressed: null,
+          backgroundColor: Colors.blue,
+          child: Icon(
+            Icons.add,
+            size: 20.0,
+          ))
+          : FloatingActionButton(
+        shape: StadiumBorder(),
+        onPressed: () => {
+          Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => NeedsPage()),
+          )
+        },
+        backgroundColor: Colors.blue,
+        child: Icon(
+          Icons.add,
+          size: 20.0,
+        ),
+      );
+   }
 }
