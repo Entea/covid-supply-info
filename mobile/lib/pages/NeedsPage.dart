@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:tirek_mobile/components/TextFieldDatePicker.dart';
 import 'package:tirek_mobile/exception/TirekException.dart';
-
 
 class NeedsPage extends StatefulWidget {
   @override
@@ -9,6 +9,7 @@ class NeedsPage extends StatefulWidget {
 
 class _NeedsPageState extends State<NeedsPage> {
   final _formKey = new GlobalKey<FormState>();
+  DateTime selectedDate = DateTime.now();
 
   String _hospital;
   String _organization;
@@ -33,6 +34,7 @@ class _NeedsPageState extends State<NeedsPage> {
     }
     return false;
   }
+
   void validateAndSubmit() async {
     setState(() {
       _errorMessage = "";
@@ -77,16 +79,14 @@ class _NeedsPageState extends State<NeedsPage> {
         title: Text("Детали распределения"),
       ),
       body: Center(
-        child: _showForm(),
-        ),
+        child: _showForm(context),
+      ),
     );
   }
 
-  
-
-  Widget _showForm() {
+  Widget _showForm(BuildContext context) {
     return new Container(
-        padding: EdgeInsets.fromLTRB(0.0, 12.0, 16.0, 16.0),
+        padding: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0),
         child: new Form(
           key: _formKey,
           child: new ListView(
@@ -97,7 +97,7 @@ class _NeedsPageState extends State<NeedsPage> {
               showOrganizationInput(),
               showFromPersonInput(),
               showToPersonInput(),
-              showDistributionDateInput(),
+              showDistributionDateInput(context),
               showDeliveryDateInput(),
               showStatusInput(),
               showPrimaryButton(),
@@ -137,9 +137,9 @@ class _NeedsPageState extends State<NeedsPage> {
         keyboardType: TextInputType.text,
         autofocus: false,
         decoration: new InputDecoration(
-            filled: true,
-            fillColor: Color(0xFFE8E8E8),
-            hintText: 'Больница',
+          filled: true,
+          fillColor: Color(0xFFE8E8E8),
+          hintText: 'Больница',
         ),
         onSaved: (value) => _hospital = value.trim(),
       ),
@@ -148,15 +148,15 @@ class _NeedsPageState extends State<NeedsPage> {
 
   Widget showOrganizationInput() {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(0.0, 44.0, 0.0, 0.0),
+      padding: const EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 0.0),
       child: new TextFormField(
         maxLines: 1,
         keyboardType: TextInputType.text,
         autofocus: false,
         decoration: new InputDecoration(
-            filled: true,
-            fillColor: Color(0xFFE8E8E8),
-            hintText: 'Организация',
+          filled: true,
+          fillColor: Color(0xFFE8E8E8),
+          hintText: 'Организация',
         ),
         onSaved: (value) => _hospital = value.trim(),
       ),
@@ -165,7 +165,7 @@ class _NeedsPageState extends State<NeedsPage> {
 
   Widget showFromPersonInput() {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(0.0, 44.0, 0.0, 0.0),
+      padding: const EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 0.0),
       child: new TextFormField(
         maxLines: 1,
         keyboardType: TextInputType.text,
@@ -174,7 +174,7 @@ class _NeedsPageState extends State<NeedsPage> {
             filled: true,
             fillColor: Color(0xFFE8E8E8),
             hintText: 'Ф.И.О',
-        ),
+            helperText: 'Данные выдающего'),
         onSaved: (value) => _fromPerson = value.trim(),
       ),
     );
@@ -182,7 +182,7 @@ class _NeedsPageState extends State<NeedsPage> {
 
   Widget showToPersonInput() {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(0.0, 44.0, 0.0, 0.0),
+      padding: const EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 0.0),
       child: new TextFormField(
         maxLines: 1,
         keyboardType: TextInputType.text,
@@ -191,64 +191,67 @@ class _NeedsPageState extends State<NeedsPage> {
             filled: true,
             fillColor: Color(0xFFE8E8E8),
             hintText: 'Ф.И.О',
-        ),
+            helperText: 'Данные принемающих'),
         onSaved: (value) => _toPerson = value.trim(),
       ),
     );
   }
 
-  Widget showDistributionDateInput() {
+//  Дата распределения*
+
+  Widget showDistributionDateInput(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(0.0, 44.0, 0.0, 0.0),
-      child: new TextFormField(
-        maxLines: 1,
-        keyboardType: TextInputType.text,
-        autofocus: false,
-        decoration: new InputDecoration(
-            filled: true,
-            fillColor: Color(0xFFE8E8E8),
-            hintText: 'Дата распределения*'
-        ),
-        onSaved: (value) => _distributionDate = value.trim(),
+      padding: const EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 0.0),
+      child: new TextFieldDatePicker(
+        prefixIcon: Icon(Icons.date_range),
+        suffixIcon: Icon(Icons.arrow_drop_down),
+        lastDate: DateTime.now().add(Duration(days: 366)),
+        firstDate: DateTime.now(),
+        initialDate: DateTime.now().add(Duration(days: 1)),
+        helperText: 'Дата распределения',
+        onDateChanged: (selectedDate) {
+          // Do something with the selected date
+        },
       ),
     );
   }
 
   Widget showDeliveryDateInput() {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(0.0, 44.0, 0.0, 0.0),
-      child: new TextFormField(
-        maxLines: 1,
-        keyboardType: TextInputType.text,
-        autofocus: false,
-        decoration: new InputDecoration(
-            filled: true,
-            fillColor: Color(0xFFE8E8E8),
-            hintText: 'Дата доставки',
-        ),
-        onSaved: (value) => _deliveryDate = value.trim(),
+      padding: const EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 0.0),
+      child: new TextFieldDatePicker(
+        prefixIcon: Icon(Icons.date_range),
+        suffixIcon: Icon(Icons.arrow_drop_down),
+        lastDate: DateTime.now().add(Duration(days: 366)),
+        firstDate: DateTime.now(),
+        initialValue: false,
+        initialDate: DateTime.now().add(Duration(days: 1)),
+        helperText: 'Дата доставки',
+        onDateChanged: (selectedDate) {
+          // Do something with the selected date
+        },
       ),
     );
   }
 
   Widget showStatusInput() {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(0.0, 44.0, 0.0, 0.0),
+      padding: const EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 0.0),
       child: new TextFormField(
         maxLines: 1,
         keyboardType: TextInputType.text,
         autofocus: false,
         decoration: new InputDecoration(
-            filled: true,
-            fillColor: Color(0xFFE8E8E8),
-            hintText: 'Статус',
+          filled: true,
+          fillColor: Color(0xFFE8E8E8),
+          hintText: 'Статус',
         ),
         onSaved: (value) => _status = value.trim(),
       ),
     );
   }
 
-    Widget showErrorMessage() {
+  Widget showErrorMessage() {
     if (_errorMessage != null && _errorMessage.length > 0) {
       return new Container(
           padding: EdgeInsets.all(16.0),

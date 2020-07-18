@@ -14,24 +14,27 @@ void main() {
 class TirekApplication extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    SharedPreferencesService sharedPreferencesService = new TirekSharedPreferencesService();
+    SharedPreferencesService sharedPreferencesService =
+        new TirekSharedPreferencesService();
 
     return new MaterialApp(
-        title: 'Tirek Application',
-        initialRoute: '/',
-        routes: {
-          '/': (context) => new RootPage(
-              sharedPreferencesService: sharedPreferencesService,
-              authenticationService: new TirekAuthenticationService()),
-          '/home': (context) => new HomePage(
-                hospitalService: new TirekHospitalService(sharedPreferencesService),
-                logoutService: new TirekLogoutService(sharedPreferencesService),
-              ),
-          '/needs': (context) => new NeedsPage()
-        },
-        debugShowCheckedModeBanner: false,
-        theme: new ThemeData(
-          primarySwatch: Colors.blue,
-        ));
+      title: 'Tirek Application',
+      initialRoute: '/',
+      routes: {
+        '/': (context) => new RootPage(
+            sharedPreferencesService: sharedPreferencesService,
+            authenticationService: new TirekAuthenticationService()),
+        '/home': (context) => new HomePage(
+              hospitalService:
+                  new TirekHospitalService(sharedPreferencesService),
+              logoutService: new TirekLogoutService(sharedPreferencesService),
+            ),
+        '/needs': (context) => new NeedsPage()
+      },
+      debugShowCheckedModeBanner: false,
+      theme: new ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+    );
   }
 }
