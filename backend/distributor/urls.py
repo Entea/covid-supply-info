@@ -4,10 +4,12 @@ from rest_framework import routers
 from distributor.api import (
     HospitalViewSet, DonationViewSet,
     RegionViewSet, DistrictViewSet, LocalityViewSet,
-    PageViewSet, HospitalShortInfoListAPIView, HospitalDetailAPIView, ContactInfoAPIView,
-    ContactMessageAPIView, HelpRequestAPIView, DistributionListAPIView, ManagerHospitalsListAPIView,
-    ManagerDistributionListAPIView, DistributionDetailAPIView, HospitalNeedsListCreateAPIView,
-    NeedTypesListCreateAPIView, MeasureListCreateAPIView)
+    PageViewSet, HospitalShortInfoListAPIView, HospitalDetailAPIView,
+    ContactInfoAPIView, ContactMessageAPIView, HelpRequestAPIView,
+    DistributionListAPIView, ManagerHospitalsListAPIView, ManagerDistributionListAPIView,
+    DistributionDetailAPIView, HospitalNeedsListCreateAPIView, NeedTypesListCreateAPIView,
+    MeasureListCreateAPIView, DonationsListCreateAPIView, DonationDetailCreateAPIView
+)
 
 router = routers.DefaultRouter()
 router.register(r'hospitals', HospitalViewSet)
@@ -30,6 +32,8 @@ urlpatterns = [
     path('hospital-needs/', HospitalNeedsListCreateAPIView.as_view(), name='hospital_needs'),
     path('need-types/', NeedTypesListCreateAPIView.as_view(), name='need_types'),
     path('measures/', MeasureListCreateAPIView.as_view(), name='measures'),
+    path('managers/donations/', DonationsListCreateAPIView.as_view(), name='donations_list_create'),
+    path('donation-details/', DonationDetailCreateAPIView.as_view(), name='donations_details'),
 ]
 
 urlpatterns += router.urls
