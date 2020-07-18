@@ -20,12 +20,12 @@ from distributor.serializers import (
     PageSerializer, HospitalShortInfoSerializer, HospitalDetailSerializer, ContactInfoSerializer,
     ContactMessageSerializer, DistributionListSerializer, DistributionShortListSerializer, NeedsSerializer,
     NeedsCreateSerializer, NeedTypeSerializer, NeedTypeCreateSerializer,
-    MeasureTypeSerializer, MeasureCreateSerializer
-)
+    MeasureTypeSerializer, MeasureCreateSerializer,
+    DistributionCreateSerializer, DonationCreateSerializer, DonationDetailCreateSerializer, DonationDetailSerializer)
 from .services import (
     HospitalService, DistributionService, HospitalNeedsService,
-    NeedTypeService, MeasureService
-)
+    NeedTypeService, MeasureService,
+    DonationService)
 
 
 class HospitalViewSet(viewsets.ReadOnlyModelViewSet):
@@ -212,13 +212,39 @@ class ManagerHospitalsListAPIView(ListAPIView):
         return HospitalService.get_managers_hospitals(user=self.request.user)
 
 
-class ManagerDistributionListAPIView(ListAPIView):
+class ManagerDistributionListAPIView(ListCreateAPIView):
     permission_classes = (IsAuthenticated,)
     authentication_classes = (TokenAuthentication,)
     serializer_class = DistributionShortListSerializer
 
     def get_queryset(self):
         return DistributionService.get_manager_hospitals_distributions(user=self.request.user)
+
+    def create(self, request, *args, **kwargs):
+        serializer = DistributionCreateSerializer(data=request.data, many=False)
+
+        if not serializer.is_valid():
+            return Response(data={
+                'message': 'Invalid input',
+                'errors': serializer.errors
+            }, status=status.HTTP_406_NOT_ACCEPTABLE)
+
+        hospital = HospitalService.get(id=serializer.validated_data.get('hospital_id'))
+        donation = DonationService.get(id=serializer.validated_data.get('donation_id'))
+
+        distribution = DistributionService.create(
+            hospital=hospital,
+            donation=donation,
+            sender=serializer.validated_data.get('sender'),
+            receiver=serializer.validated_data.get('receiver'),
+            distributed_at=serializer.validated_data.get('distributed_at'),
+            delivered_at=serializer.validated_data.get('delivered_at'),
+            status=serializer.validated_data.get('status')
+        )
+
+        return Response(
+            self.serializer_class(distribution, many=False).data, status=status.HTTP_201_CREATED
+        )
 
 
 class DistributionDetailAPIView(APIView):
@@ -298,3 +324,60 @@ class MeasureListCreateAPIView(ListCreateAPIView):
         )
 
         return Response(self.serializer_class(measure, many=False).data, status=status.HTTP_201_CREATED)
+
+
+class DonationsListCreateAPIView(ListCreateAPIView):
+    permission_classes = (IsAuthenticated,)
+    authentication_classes = (TokenAuthentication,)
+    serializer_class = DonationSerializer
+
+    def get_queryset(self):
+        return DonationService.get_manager_donations(user=self.request.user)
+
+    def create(self, request, *args, **kwargs):
+        serializer = DonationCreateSerializer(data=request.data, many=False)
+
+        if not serializer.is_valid():
+            return Response(data={
+                'message': 'Invalid input',
+                'errors': serializer.errors
+            }, status=status.HTTP_406_NOT_ACCEPTABLE)
+
+        donation = DonationService.create(
+            donator_type=serializer.validated_data.get('donator_type'),
+            donator_name=serializer.validated_data.get('donator_name'),
+            total_price=serializer.validated_data.get('total_price'),
+            description=serializer.validated_data.get('description'),
+            created_by=request.user,
+            modified_by=request.user
+        )
+
+        return Response(
+            self.serializer_class(donation, many=False).data, status=status.HTTP_201_CREATED
+        )
+
+
+class DonationDetailCreateAPIView(APIView):
+    permission_classes = (IsAuthenticated,)
+    authentication_classes = (TokenAuthentication,)
+
+    def post(self, request):
+        serializer = DonationDetailCreateSerializer(data=request.data, many=False)
+
+        if not serializer.is_valid():
+            return Response(data={
+                'message': 'Invalid input',
+                'errors': serializer.errors
+            }, status=status.HTTP_406_NOT_ACCEPTABLE)
+
+        need_type = NeedTypeService.get(id=serializer.validated_data.get('need_type_id'))
+        donation = DonationService.get(id=serializer.validated_data.get('donation_id'))
+
+        donation_detail = DonationService.create_donation_detail(
+            need_type=need_type,
+            donation=donation,
+            total_cost=serializer.validated_data.get('total_cost'),
+            amount=serializer.validated_data.get('amount')
+        )
+
+        return Response(DonationDetailSerializer(donation_detail, many=False).data, status=status.HTTP_201_CREATED)

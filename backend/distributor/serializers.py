@@ -1,12 +1,17 @@
 from rest_framework import serializers
 from rest_framework_recaptcha.fields import ReCaptchaField
 
-from distributor.models import (
+from .constants import (
+    DISTRIBUTION_STATUSES, DONATOR_TYPES, ORGANIZATION
+)
+from .models import (
     Hospital, HospitalPhoneNumber, Donation,
     DonationDetail, NeedType, Measure,
     Region, District, Locality,
-    Statistic, HospitalNeeds,
-    Page, ContactInfo, ContactInfoPhoneNumber, ContactInfoEmail, Distribution, DistributionDetail)
+    Statistic, HospitalNeeds, Page,
+    ContactInfo, ContactInfoPhoneNumber, ContactInfoEmail,
+    Distribution, DistributionDetail
+)
 
 
 class HospitalPhoneNumberSerializer(serializers.ModelSerializer):
@@ -226,3 +231,27 @@ class NeedTypeCreateSerializer(serializers.Serializer):
 
 class MeasureCreateSerializer(serializers.Serializer):
     name = serializers.CharField()
+
+
+class DistributionCreateSerializer(serializers.Serializer):
+    hospital_id = serializers.IntegerField()
+    donation_id = serializers.IntegerField()
+    sender = serializers.CharField()
+    receiver = serializers.CharField()
+    distributed_at = serializers.DateField()
+    delivered_at = serializers.DateField(allow_null=True)
+    status = serializers.ChoiceField(choices=DISTRIBUTION_STATUSES)
+
+
+class DonationCreateSerializer(serializers.Serializer):
+    donator_type = serializers.ChoiceField(choices=DONATOR_TYPES, default=ORGANIZATION)
+    donator_name = serializers.CharField()
+    total_price = serializers.CharField(allow_null=True)
+    description = serializers.CharField()
+
+
+class DonationDetailCreateSerializer(serializers.Serializer):
+    need_type_id = serializers.IntegerField()
+    amount = serializers.IntegerField()
+    donation_id = serializers.IntegerField()
+    total_cost = serializers.DecimalField(allow_null=True, decimal_places=2, max_digits=20)

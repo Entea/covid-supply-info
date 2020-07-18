@@ -3,10 +3,15 @@ from typing import Union
 
 import requests
 from django.contrib.auth import get_user_model
-from django.db.models import QuerySet
+from django.db.models import QuerySet, Q
 from rest_framework.exceptions import NotFound, ValidationError
 
-from .models import Hospital, Distribution, HospitalNeeds, NeedType, Measure
+from .models import (
+    Hospital, Distribution,
+    HospitalNeeds, NeedType,
+    Measure, Donation,
+    DonationDetail
+)
 
 User = get_user_model()
 
@@ -61,6 +66,22 @@ class DistributionService:
     @classmethod
     def get_manager_hospitals_distributions(cls, user: User):
         return cls.filter(hospital__managers__in=[user])
+
+    @classmethod
+    def create(cls, hospital: Hospital, donation: Donation, sender: str, receiver: str,
+               distributed_at: str, delivered_at: str, status: str):
+        try:
+            return cls.model.objects.create(
+                hospital=hospital,
+                donation=donation,
+                sender=sender,
+                receiver=receiver,
+                distributed_at=distributed_at,
+                delivered_at=delivered_at,
+                status=status
+            )
+        except Exception as e:
+            raise ValidationError('Error while creating distributions: {e}'.format(e=str(e)))
 
 
 class MeasureService:
@@ -152,3 +173,54 @@ class HospitalNeedsService:
             )
         except Exception as e:
             raise ValidationError('Error while creating hospital needs: {e}'.format(e=str(e)))
+
+
+class DonationService:
+    model = Donation
+
+    @classmethod
+    def get(cls, **filters):
+        try:
+            return cls.model.objects.get(**filters)
+        except cls.model.DoesNotExist:
+            raise NotFound('Donation not found')
+
+    @classmethod
+    def get_donation_detail(cls, **filters):
+        try:
+            return DonationDetail.objects.get(**filters)
+        except DonationDetail.DoesNotExist:
+            raise NotFound('DonationDetail not found')
+
+    @classmethod
+    def create(cls, donator_type: str, donator_name: str, total_price: Union[str, None],
+               description: str, created_by: User, modified_by: User):
+        try:
+            return cls.model.objects.create(
+                donator_type=donator_type,
+                donator_name=donator_name,
+                total_price=total_price,
+                description=description,
+                created_by=created_by,
+                modified_by=modified_by
+            )
+        except Exception as e:
+            raise ValidationError('Error while creating donation: {e}'.format(e=str(e)))
+
+    @classmethod
+    def get_manager_donations(cls, user: User) -> QuerySet:
+        return cls.model.objects.filter(
+            Q(created_by=user) | Q(modified_by=user)
+        )
+
+    @classmethod
+    def create_donation_detail(cls, need_type: NeedType, amount: int, donation: Donation, total_cost):
+        try:
+            return DonationDetail.objects.create(
+                need_type=need_type,
+                amount=amount,
+                donation=donation,
+                total_cost=total_cost
+            )
+        except Exception as e:
+            raise ValidationError('Error while creating donation detail: {e}'.format(e=str(e)))
