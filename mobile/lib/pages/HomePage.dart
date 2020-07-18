@@ -5,7 +5,10 @@ import 'package:tirek_mobile/services/LogoutService.dart';
 import 'package:tirek_mobile/services/SharedPreferencesService.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage({this.hospitalService, this.logoutService, this.sharedPreferencesService});
+  HomePage(
+      {this.hospitalService,
+      this.logoutService,
+      this.sharedPreferencesService});
 
   final HospitalService hospitalService;
   final LogoutService logoutService;
@@ -15,16 +18,26 @@ class HomePage extends StatefulWidget {
   State<StatefulWidget> createState() => new _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage>
+    with SingleTickerProviderStateMixin {
   List _data = [];
   String _errorMessage;
   bool _isLoading;
   String userName = '';
 
+  final List<Tab> myTabs = <Tab>[
+    Tab(text: 'Больницы'),
+    Tab(text: 'Распределение'),
+  ];
+
+  TabController _tabController;
+
   @override
   void initState() {
     _errorMessage = "";
     _isLoading = false;
+    _tabController = new TabController(length: myTabs.length, vsync: this);
+
     super.initState();
     getData();
   }
@@ -67,10 +80,8 @@ class _HomePageState extends State<HomePage> {
         appBar: new AppBar(
           title: new Text('Tirek'),
           bottom: TabBar(
-            tabs: [
-              Tab(text: 'Больницы'),
-              Tab(text: 'Распределение'),
-            ],
+            controller: _tabController,
+            tabs: myTabs,
           ),
         ),
         drawer: Theme(
@@ -117,13 +128,20 @@ class _HomePageState extends State<HomePage> {
                           style: TextStyle(
                             color: Colors.white,
                           )),
+                      onTap: () {
+                        Navigator.of(context).pop();
+                        _tabController.animateTo((0));
+                      },
                     ),
                     ListTile(
-                      title: Text('Распределение',
-                          style: TextStyle(
-                            color: Colors.white,
-                          )),
-                    ),
+                        title: Text('Распределение',
+                            style: TextStyle(
+                              color: Colors.white,
+                            )),
+                        onTap: () {
+                          Navigator.of(context).pop();
+                          _tabController.animateTo((1));
+                        }),
                   ],
                 ),
                 Expanded(
@@ -145,6 +163,7 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         body: TabBarView(
+          controller: _tabController,
           children: [
             new ListView.builder(
                 itemCount: _data.length,
