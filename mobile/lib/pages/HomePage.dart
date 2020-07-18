@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:tirek_mobile/exception/TirekException.dart';
 import 'package:tirek_mobile/services/HospitalService.dart';
 import 'package:tirek_mobile/services/LogoutService.dart';
+import 'package:tirek_mobile/services/SharedPreferencesService.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage({this.hospitalService, this.logoutService});
+  HomePage({this.hospitalService, this.logoutService, this.sharedPreferencesService});
 
   final HospitalService hospitalService;
   final LogoutService logoutService;
+  final SharedPreferencesService sharedPreferencesService;
 
   @override
   State<StatefulWidget> createState() => new _HomePageState();
@@ -17,6 +19,7 @@ class _HomePageState extends State<HomePage> {
   List _data = [];
   String _errorMessage;
   bool _isLoading;
+  String userName = '';
 
   @override
   void initState() {
@@ -29,8 +32,11 @@ class _HomePageState extends State<HomePage> {
   void getData() async {
     try {
       final response = await widget.hospitalService.get();
+      final user = await widget.sharedPreferencesService.getCurrentUserInfo();
+
       setState(() {
         _data = response.hospitals;
+        userName = user.user.fullName;
       });
     } on TirekException {
       setState(() {
@@ -41,7 +47,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void logout() async {
-    Navigator.pushNamed(context, '/');
+    Navigator.pushNamedAndRemoveUntil(context, '/', (r) => false);
 
     try {
       await widget.logoutService.logout();
@@ -91,7 +97,7 @@ class _HomePageState extends State<HomePage> {
                           child: Align(
                             alignment: Alignment.bottomLeft,
                             child: Text(
-                              'Андрей Волконский',
+                              userName,
                               style:
                                   TextStyle(color: Colors.white, fontSize: 24),
                             ),
