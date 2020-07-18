@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:tirek_mobile/exception/TirekException.dart';
 import 'package:tirek_mobile/services/AuthenticationService.dart';
-import 'package:tirek_mobile/services/TokenService.dart';
+import 'package:tirek_mobile/services/SharedPreferencesService.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage(
-      {this.authenticationService, this.tokenService, this.loginCallback});
+      {this.authenticationService, this.sharedPreferencesService, this.loginCallback});
 
   final AuthenticationService authenticationService;
-  final TokenService tokenService;
+  final SharedPreferencesService sharedPreferencesService;
   final VoidCallback loginCallback;
 
   @override
@@ -22,7 +22,10 @@ class _LoginPageState extends State<LoginPage> {
   String _password;
   String _errorMessage;
 
+  bool _showPassword = false;
   bool _isLoading;
+
+  bool _rememberMe = false;
 
   bool validateAndSave() {
     final form = _formKey.currentState;
@@ -44,7 +47,9 @@ class _LoginPageState extends State<LoginPage> {
         final authenticationResponse =
             await widget.authenticationService.login(_username, _password);
 
-        await widget.tokenService.save(authenticationResponse.token);
+        await widget.sharedPreferencesService.saveAuthenticationResponse(authenticationResponse);
+
+        Navigator.pushNamedAndRemoveUntil(context, '/home', (r) => false);
 
         setState(() {
           _isLoading = false;
@@ -81,18 +86,27 @@ class _LoginPageState extends State<LoginPage> {
     _errorMessage = "";
   }
 
+  void _togglePasswordVisibility() {
+    setState(() {
+      _showPassword = !_showPassword;
+    });
+  }
+
+  void _onRememberMeChanged(bool value) {
+    setState(() {
+      _rememberMe = value;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-        appBar: new AppBar(
-          title: new Text('Tirek'),
-        ),
         body: Stack(
-          children: <Widget>[
-            _showForm(),
-            _showCircularProgress(),
-          ],
-        ));
+      children: <Widget>[
+        _showForm(),
+        _showCircularProgress(),
+      ],
+    ));
   }
 
   Widget _showCircularProgress() {
@@ -147,11 +161,15 @@ class _LoginPageState extends State<LoginPage> {
     return new Hero(
       tag: 'hero',
       child: Padding(
-        padding: EdgeInsets.fromLTRB(0.0, 70.0, 0.0, 0.0),
+        padding: EdgeInsets.fromLTRB(0.0, 111.0, 0.0, 0.0),
         child: CircleAvatar(
           backgroundColor: Colors.transparent,
-          radius: 48.0,
-          child: Image.asset('assets/tirek-logo.png'),
+          child: Image.asset(
+            'assets/tirek-logo.png',
+            width: 134,
+            height: 50.55,
+            fit: BoxFit.fitWidth,
+          ),
         ),
       ),
     );
@@ -165,10 +183,12 @@ class _LoginPageState extends State<LoginPage> {
         keyboardType: TextInputType.emailAddress,
         autofocus: false,
         decoration: new InputDecoration(
+            filled: true,
+            fillColor: Color(0xFFE8E8E8),
             hintText: 'Имя пользователя',
-            icon: new Icon(
-              Icons.account_box,
-              color: Colors.grey,
+            prefixIcon: new Icon(
+              Icons.account_circle,
+              color: Color(0xFF6B6B6B),
             )),
         validator: (value) => value.isEmpty ? 'Это поле обязательно' : null,
         onSaved: (value) => _username = value.trim(),
@@ -181,13 +201,23 @@ class _LoginPageState extends State<LoginPage> {
       padding: const EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 0.0),
       child: new TextFormField(
         maxLines: 1,
-        obscureText: true,
+        obscureText: !_showPassword,
         autofocus: false,
         decoration: new InputDecoration(
+            filled: true,
             hintText: 'Пароль',
-            icon: new Icon(
+            prefixIcon: new Icon(
               Icons.lock,
-              color: Colors.grey,
+              color: Color(0xFF6B6B6B),
+            ),
+            suffixIcon: GestureDetector(
+              onTap: () {
+                _togglePasswordVisibility();
+              },
+              child: Icon(
+                _showPassword ? Icons.visibility : Icons.visibility_off,
+                color: Color(0xFF6B6B6B),
+              ),
             )),
         validator: (value) => value.isEmpty ? 'Это поле обязательно' : null,
         onSaved: (value) => _password = value.trim(),
@@ -197,17 +227,22 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget showPrimaryButton() {
     return new Padding(
-        padding: EdgeInsets.fromLTRB(0.0, 45.0, 0.0, 0.0),
+//        right: 100.0,
+        padding: EdgeInsets.fromLTRB(250.0, 45.0, 0.0, 0.0),
         child: SizedBox(
-          height: 40.0,
+          height: 36.0,
+          width: 96.0,
           child: new RaisedButton(
-            elevation: 5.0,
             shape: new RoundedRectangleBorder(
-                borderRadius: new BorderRadius.circular(30.0),
-                side: BorderSide(color: Colors.blue)),
-            color: Colors.lightBlue[400],
-            child: new Text('Вход',
-                style: new TextStyle(fontSize: 20.0, color: Colors.white)),
+                borderRadius: new BorderRadius.circular(200.0),
+                side: BorderSide(color: Color(0xFF2F80ED))),
+            color: Color(0xFF2F80ED),
+            child: new Text('ВОЙТИ',
+                style: new TextStyle(
+                    fontSize: 14.0,
+                    color: Colors.white,
+                    fontFamily: 'Roboto',
+                    fontStyle: FontStyle.normal)),
             onPressed: validateAndSubmit,
           ),
         ));
