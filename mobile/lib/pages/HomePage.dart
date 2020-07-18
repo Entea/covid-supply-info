@@ -144,6 +144,77 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
         ),
+        drawer: Theme(
+          data: Theme.of(context).copyWith(canvasColor: Colors.blue),
+          child: Drawer(
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              children: <Widget>[
+                DrawerHeader(
+                  child: new Container(
+                    child: new Column(
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        new Container(
+                          child: Align(
+                            alignment: Alignment.topLeft,
+                            child: new Image.asset(
+                              'assets/logo.png',
+                              height: 38.0,
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: Align(
+                            alignment: Alignment.bottomLeft,
+                            child: Text(
+                              'Андрей Волконский',
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 24),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                ListView(
+                  scrollDirection: Axis.vertical,
+                  shrinkWrap: true,
+                  padding: EdgeInsets.zero,
+                  children: <Widget>[
+                    ListTile(
+                      title: Text('Больницы',
+                          style: TextStyle(
+                            color: Colors.white,
+                          )),
+                    ),
+                    ListTile(
+                      title: Text('Распределение',
+                          style: TextStyle(
+                            color: Colors.white,
+                          )),
+                    ),
+                  ],
+                ),
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: ListTile(
+                      title: Text(
+                        'Выйти из приложения',
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                      onTap: logout,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
         body: TabBarView(
           children: [
             new ListView.builder(
