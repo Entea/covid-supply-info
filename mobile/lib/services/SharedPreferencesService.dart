@@ -34,7 +34,7 @@ class TirekSharedPreferencesService implements SharedPreferencesService {
   }
 
   @override
-  isLoggedIn() async{
+  isLoggedIn() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
     return token != null;
