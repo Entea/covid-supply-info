@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tirek_mobile/services/AuthenticationService.dart';
 import 'package:tirek_mobile/pages/RootPage.dart';
 import 'package:tirek_mobile/pages/HomePage.dart';
