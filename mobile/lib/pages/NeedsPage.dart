@@ -206,6 +206,7 @@ class _NeedsPageState extends State<NeedsPage> {
         prefixIcon: Icon(Icons.date_range),
         suffixIcon: Icon(Icons.arrow_drop_down),
         lastDate: DateTime.now().add(Duration(days: 366)),
+        initialValue: false,
         firstDate: DateTime.now(),
         initialDate: DateTime.now().add(Duration(days: 1)),
         helperText: 'Дата распределения',
@@ -224,7 +225,6 @@ class _NeedsPageState extends State<NeedsPage> {
         suffixIcon: Icon(Icons.arrow_drop_down),
         lastDate: DateTime.now().add(Duration(days: 366)),
         firstDate: DateTime.now(),
-        initialValue: false,
         initialDate: DateTime.now().add(Duration(days: 1)),
         helperText: 'Дата доставки',
         onDateChanged: (selectedDate) {

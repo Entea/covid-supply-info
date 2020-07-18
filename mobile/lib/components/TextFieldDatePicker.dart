@@ -14,20 +14,20 @@ class TextFieldDatePicker extends StatefulWidget {
   final Icon suffixIcon;
   final bool initialValue;
 
-  TextFieldDatePicker({
-    Key key,
-    this.labelText,
-    this.prefixIcon,
-    this.suffixIcon,
-    this.focusNode,
-    this.dateFormat,
-    @required this.lastDate,
-    @required this.firstDate,
-    @required this.initialDate,
-    @required this.onDateChanged,
-    this.initialValue,
-    this.helperText
-  })  : assert(firstDate != null),
+  TextFieldDatePicker(
+      {Key key,
+      this.labelText,
+      this.prefixIcon,
+      this.suffixIcon,
+      this.focusNode,
+      this.dateFormat,
+      @required this.lastDate,
+      @required this.firstDate,
+      @required this.initialDate,
+      @required this.onDateChanged,
+      this.initialValue,
+      this.helperText})
+      : assert(firstDate != null),
         assert(lastDate != null),
         assert(
             initialDate == null ||
@@ -58,7 +58,7 @@ class _TextFieldDatePicker extends State<TextFieldDatePicker> {
     if (widget.dateFormat != null) {
       _dateFormat = widget.dateFormat;
     } else {
-      _dateFormat = DateFormat.MMMEd();
+      _dateFormat = DateFormat.yMMMd('ru');
     }
 
     _selectedDate = widget.initialDate;
@@ -76,12 +76,11 @@ class _TextFieldDatePicker extends State<TextFieldDatePicker> {
       focusNode: widget.focusNode,
       controller: _controllerDate,
       decoration: InputDecoration(
-        filled: true,
-        prefixIcon: widget.prefixIcon,
-        suffixIcon: widget.suffixIcon,
-        labelText: widget.labelText,
-        helperText: widget.helperText
-      ),
+          filled: true,
+          prefixIcon: widget.prefixIcon,
+          suffixIcon: widget.suffixIcon,
+          labelText: widget.labelText,
+          helperText: widget.helperText),
       onTap: () => _selectDate(context),
       readOnly: true,
     );

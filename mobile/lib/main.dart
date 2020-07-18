@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:tirek_mobile/services/AuthenticationService.dart';
 import 'package:tirek_mobile/pages/RootPage.dart';
 import 'package:tirek_mobile/pages/HomePage.dart';
@@ -20,6 +21,13 @@ class TirekApplication extends StatelessWidget {
     return new MaterialApp(
       title: 'Tirek Application',
       initialRoute: '/',
+      localizationsDelegates: [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ],
+      supportedLocales: [
+        const Locale('ru', 'RU'),
+      ],
       routes: {
         '/': (context) => new RootPage(
             sharedPreferencesService: sharedPreferencesService,
