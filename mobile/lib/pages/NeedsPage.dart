@@ -10,35 +10,31 @@ import 'package:tirek_mobile/services/HospitalService.dart';
 class NeedsPage extends StatefulWidget {
   const NeedsPage({this.hospitalService, this.donationService});
 
-  final HospitalService hospitalService;
   final DonationService donationService;
+  final HospitalService hospitalService;
 
   @override
   State<StatefulWidget> createState() => new _NeedsPageState();
 }
 
 class _NeedsPageState extends State<NeedsPage> {
-  final _formKey = new GlobalKey<FormState>();
-  final hospitalController = TextEditingController();
   final donationController = TextEditingController();
+  final hospitalController = TextEditingController();
+  DateTime selectedDate = DateTime.now();
   final statusController = TextEditingController();
 
-  DateTime selectedDate = DateTime.now();
-
-  String _hospital;
-  String _organization;
-  String _fromPerson;
-  String _toPerson;
-  String _distributionDate;
   String _deliveryDate;
-  String _status;
-
+  String _distributionDate;
   String _errorMessage;
-
-  bool _showPassword = false;
+  final _formKey = new GlobalKey<FormState>();
+  String _fromPerson;
+  String _hospital;
   bool _isLoading;
-
+  String _organization;
   bool _rememberMe = false;
+  bool _showPassword = false;
+  String _status;
+  String _toPerson;
 
   bool validateAndSave() {
     final form = _formKey.currentState;
@@ -47,18 +43,6 @@ class _NeedsPageState extends State<NeedsPage> {
       return true;
     }
     return false;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Детали распределения"),
-      ),
-      body: Center(
-        child: _showForm(context),
-      ),
-    );
   }
 
   Widget _showForm(BuildContext context) {
@@ -355,5 +339,17 @@ class _NeedsPageState extends State<NeedsPage> {
             children: options,
           );
         });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Детали распределения"),
+      ),
+      body: Container(
+        child: _showForm(context),
+      ),
+    );
   }
 }
