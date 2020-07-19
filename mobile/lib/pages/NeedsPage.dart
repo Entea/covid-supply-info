@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tirek_mobile/components/TextFieldDatePicker.dart';
-import 'package:tirek_mobile/exception/TirekException.dart';
+import 'package:tirek_mobile/pages/DistributionNeedsPage.dart';
 
 class NeedsPage extends StatefulWidget {
   @override
@@ -33,43 +33,6 @@ class _NeedsPageState extends State<NeedsPage> {
       return true;
     }
     return false;
-  }
-
-  void validateAndSubmit() async {
-    setState(() {
-      _errorMessage = "";
-      _isLoading = true;
-    });
-
-    if (validateAndSave()) {
-      try {
-        //inal authenticationResponse = await widget.authenticationService.login(_username, _password);
-
-        //await widget.sharedPreferencesService.saveAuthenticationResponse(authenticationResponse);
-
-        Navigator.pushNamed(context, '/home');
-
-        setState(() {
-          _isLoading = false;
-        });
-      } on BadRequestException {
-        setState(() {
-          _isLoading = false;
-          _errorMessage = "Неправильное имя пользователя или пароль";
-          _formKey.currentState.reset();
-        });
-      } on TirekException {
-        setState(() {
-          _isLoading = false;
-          _errorMessage = "Произошла ошибка при подключении";
-          _formKey.currentState.reset();
-        });
-      }
-    } else {
-      setState(() {
-        _isLoading = false;
-      });
-    }
   }
 
   @override
@@ -118,15 +81,20 @@ class _NeedsPageState extends State<NeedsPage> {
                 borderRadius: new BorderRadius.circular(200.0),
                 side: BorderSide(color: Color(0xFF2F80ED))),
             color: Color(0xFF2F80ED),
-            child: new Text('Сохранить',
+            child: new Text('Далее',
                 style: new TextStyle(
                     fontSize: 14.0,
                     color: Colors.white,
                     fontFamily: 'Roboto',
                     fontStyle: FontStyle.normal)),
-            onPressed: validateAndSubmit,
+            onPressed: () => {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => DistributionNeedsPage()),
+              )
+            }),
           ),
-        ));
+        );
   }
 
   Widget showHospitalInput() {
