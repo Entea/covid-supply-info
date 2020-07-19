@@ -3,6 +3,7 @@ import 'package:tirek_mobile/exception/TirekException.dart';
 import 'package:tirek_mobile/services/HospitalService.dart';
 import 'package:tirek_mobile/services/LogoutService.dart';
 import 'package:tirek_mobile/services/SharedPreferencesService.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
 class HomePage extends StatefulWidget {
   HomePage(
@@ -189,6 +190,23 @@ class _HomePageState extends State<HomePage>
                 )
               ],
             ),
+          ],
+        ),
+        floatingActionButton: SpeedDial(
+          animatedIcon: AnimatedIcons.menu_close,
+          children: [
+            SpeedDialChild(
+                child: Icon(Icons.note_add),
+                label: 'Добавить данные в таблицу',
+                backgroundColor: Colors.green),
+            SpeedDialChild(
+                child: Icon(Icons.add),
+                label: 'Добавить больницу',
+                backgroundColor: Colors.green),
+            SpeedDialChild(
+                child: Icon(Icons.add_shopping_cart),
+                label: 'Добавить пожертвование',
+                backgroundColor: Colors.green),
           ],
         ),
       ),
