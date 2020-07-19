@@ -1,20 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:tirek_mobile/exception/TirekException.dart';
+import 'package:tirek_mobile/services/DonationService.dart';
 import 'package:tirek_mobile/services/HospitalService.dart';
 import 'package:tirek_mobile/services/LogoutService.dart';
 import 'package:tirek_mobile/pages/NeedsPage.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage({this.hospitalService, this.logoutService});
+  HomePage({this.hospitalService, this.logoutService, this.donationService});
 
   final HospitalService hospitalService;
   final LogoutService logoutService;
+  final DonationService donationService;
 
   @override
   State<StatefulWidget> createState() => new _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
+class _HomePageState extends State<HomePage>
+    with SingleTickerProviderStateMixin {
   List _data = [];
   String _errorMessage;
   bool _isLoading;
@@ -30,7 +33,8 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     _errorMessage = "";
     _isLoading = false;
     super.initState();
-    _tabController = TabController(length: myTabs.length, vsync: this, initialIndex: 0);
+    _tabController =
+        TabController(length: myTabs.length, vsync: this, initialIndex: 0);
     _tabController.addListener(_handleTabIndex);
     getData();
   }
@@ -185,34 +189,38 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
               ],
             ),
           ],
-      ),
+        ),
       ),
     );
   }
 
-    Widget _bottomButtons() {
-      return _tabController.index == 0
-          ? FloatingActionButton(
-          shape: StadiumBorder(),
-          onPressed: null,
-          backgroundColor: Colors.blue,
-          child: Icon(
-            Icons.add,
-            size: 20.0,
-          ))
-          : FloatingActionButton(
-        shape: StadiumBorder(),
-        onPressed: () => {
-          Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => NeedsPage()),
-          )
-        },
-        backgroundColor: Colors.blue,
-        child: Icon(
-          Icons.add,
-          size: 20.0,
-        ),
-      );
-   }
+  Widget _bottomButtons() {
+    return _tabController.index == 0
+        ? FloatingActionButton(
+            shape: StadiumBorder(),
+            onPressed: null,
+            backgroundColor: Colors.blue,
+            child: Icon(
+              Icons.add,
+              size: 20.0,
+            ))
+        : FloatingActionButton(
+            shape: StadiumBorder(),
+            onPressed: () => {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => NeedsPage(
+                          hospitalService: this.widget.hospitalService,
+                          donationService: this.widget.donationService,
+                        )),
+              )
+            },
+            backgroundColor: Colors.blue,
+            child: Icon(
+              Icons.add,
+              size: 20.0,
+            ),
+          );
+  }
 }

@@ -204,6 +204,7 @@ class _LoginPageState extends State<LoginPage> {
         obscureText: !_showPassword,
         autofocus: false,
         decoration: new InputDecoration(
+            fillColor: Color(0xFFE8E8E8),
             filled: true,
             hintText: 'Пароль',
             prefixIcon: new Icon(

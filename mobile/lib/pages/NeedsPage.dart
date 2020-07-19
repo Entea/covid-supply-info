@@ -1,14 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:tirek_mobile/components/TextFieldDatePicker.dart';
 import 'package:tirek_mobile/pages/DistributionNeedsPage.dart';
+import 'package:tirek_mobile/models/response/DistributionStatus.dart';
+import 'package:tirek_mobile/models/response/DonataionResponse.dart';
+import 'package:tirek_mobile/models/response/HospitalResponse.dart';
+import 'package:tirek_mobile/services/DonationService.dart';
+import 'package:tirek_mobile/services/HospitalService.dart';
 
 class NeedsPage extends StatefulWidget {
+  const NeedsPage({this.hospitalService, this.donationService});
+
+  final HospitalService hospitalService;
+  final DonationService donationService;
+
   @override
   State<StatefulWidget> createState() => new _NeedsPageState();
 }
 
 class _NeedsPageState extends State<NeedsPage> {
   final _formKey = new GlobalKey<FormState>();
+  final hospitalController = TextEditingController();
+  final donationController = TextEditingController();
+  final statusController = TextEditingController();
+
   DateTime selectedDate = DateTime.now();
 
   String _hospital;
@@ -55,22 +69,22 @@ class _NeedsPageState extends State<NeedsPage> {
           child: new ListView(
             shrinkWrap: true,
             children: <Widget>[
-              Text("Создание данных о пожертвование  1 из 2"),
-              showHospitalInput(),
-              showOrganizationInput(),
-              showFromPersonInput(),
-              showToPersonInput(),
-              showDistributionDateInput(context),
-              showDeliveryDateInput(),
-              showStatusInput(),
-              showPrimaryButton(),
-              showErrorMessage(),
+              Text("Создание данных о пожертвование 1 из 2"),
+              _showHospitalInput(context),
+              _showDonationInput(),
+              _showFromPersonInput(),
+              _showToPersonInput(),
+              _showDistributionDateInput(context),
+              _showDeliveryDateInput(),
+              _showStatusInput(),
+              _showPrimaryButton(),
+              _showErrorMessage(),
             ],
           ),
         ));
   }
 
-  Widget showPrimaryButton() {
+  Widget _showPrimaryButton() {
     return new Padding(
         padding: EdgeInsets.fromLTRB(250.0, 45.0, 0.0, 0.0),
         child: SizedBox(
@@ -97,41 +111,57 @@ class _NeedsPageState extends State<NeedsPage> {
         );
   }
 
-  Widget showHospitalInput() {
+  Widget _showHospitalInput(context) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(0.0, 12.0, 0.0, 0.0),
       child: new TextFormField(
+        controller: hospitalController,
+        readOnly: true,
         maxLines: 1,
         keyboardType: TextInputType.text,
         autofocus: false,
         decoration: new InputDecoration(
+          suffixIcon: Icon(Icons.arrow_drop_down),
           filled: true,
           fillColor: Color(0xFFE8E8E8),
           hintText: 'Больница',
+          helperText: 'Укажите больницу',
         ),
         onSaved: (value) => _hospital = value.trim(),
+        onTap: () async {
+          var hospital = await _selectHospital(context);
+          hospitalController.text = hospital.name;
+        },
       ),
     );
   }
 
-  Widget showOrganizationInput() {
+  Widget _showDonationInput() {
     return Padding(
       padding: const EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 0.0),
       child: new TextFormField(
+        controller: donationController,
+        readOnly: true,
         maxLines: 1,
         keyboardType: TextInputType.text,
         autofocus: false,
         decoration: new InputDecoration(
+          suffixIcon: Icon(Icons.arrow_drop_down),
           filled: true,
           fillColor: Color(0xFFE8E8E8),
           hintText: 'Организация',
+          helperText: 'Укажите организацию',
         ),
         onSaved: (value) => _hospital = value.trim(),
+        onTap: () async {
+          var donation = await _selectDonation(context);
+          donationController.text = donation.donatorName;
+        },
       ),
     );
   }
 
-  Widget showFromPersonInput() {
+  Widget _showFromPersonInput() {
     return Padding(
       padding: const EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 0.0),
       child: new TextFormField(
@@ -148,61 +178,7 @@ class _NeedsPageState extends State<NeedsPage> {
     );
   }
 
-  Widget showToPersonInput() {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 0.0),
-      child: new TextFormField(
-        maxLines: 1,
-        keyboardType: TextInputType.text,
-        autofocus: false,
-        decoration: new InputDecoration(
-            filled: true,
-            fillColor: Color(0xFFE8E8E8),
-            hintText: 'Ф.И.О',
-            helperText: 'Данные принемающих'),
-        onSaved: (value) => _toPerson = value.trim(),
-      ),
-    );
-  }
-
-//  Дата распределения*
-
-  Widget showDistributionDateInput(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 0.0),
-      child: new TextFieldDatePicker(
-        prefixIcon: Icon(Icons.date_range),
-        suffixIcon: Icon(Icons.arrow_drop_down),
-        lastDate: DateTime.now().add(Duration(days: 366)),
-        initialValue: false,
-        firstDate: DateTime.now(),
-        initialDate: DateTime.now().add(Duration(days: 1)),
-        helperText: 'Дата распределения',
-        onDateChanged: (selectedDate) {
-          // Do something with the selected date
-        },
-      ),
-    );
-  }
-
-  Widget showDeliveryDateInput() {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 0.0),
-      child: new TextFieldDatePicker(
-        prefixIcon: Icon(Icons.date_range),
-        suffixIcon: Icon(Icons.arrow_drop_down),
-        lastDate: DateTime.now().add(Duration(days: 366)),
-        firstDate: DateTime.now(),
-        initialDate: DateTime.now().add(Duration(days: 1)),
-        helperText: 'Дата доставки',
-        onDateChanged: (selectedDate) {
-          // Do something with the selected date
-        },
-      ),
-    );
-  }
-
-  Widget showStatusInput() {
+  Widget _showToPersonInput() {
     return Padding(
       padding: const EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 0.0),
       child: new TextFormField(
@@ -212,14 +188,76 @@ class _NeedsPageState extends State<NeedsPage> {
         decoration: new InputDecoration(
           filled: true,
           fillColor: Color(0xFFE8E8E8),
-          hintText: 'Статус',
+          hintText: 'Ф.И.О',
+          helperText: 'Данные принимающих',
         ),
-        onSaved: (value) => _status = value.trim(),
+        onSaved: (value) => _toPerson = value.trim(),
       ),
     );
   }
 
-  Widget showErrorMessage() {
+  Widget _showDistributionDateInput(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 0.0),
+      child: new TextFieldDatePicker(
+        prefixIcon: Icon(Icons.date_range),
+        suffixIcon: Icon(Icons.arrow_drop_down),
+        lastDate: DateTime.now().add(Duration(days: 366)),
+        initialValue: true,
+        firstDate: DateTime.now(),
+        initialDate: DateTime.now(),
+        helperText: 'Дата распределения',
+        onDateChanged: (selectedDate) {
+          // Do something with the selected date
+        },
+      ),
+    );
+  }
+
+  Widget _showDeliveryDateInput() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 0.0),
+      child: new TextFieldDatePicker(
+        prefixIcon: Icon(Icons.date_range),
+        suffixIcon: Icon(Icons.arrow_drop_down),
+        lastDate: DateTime.now().add(Duration(days: 366)),
+        firstDate: DateTime.now(),
+        initialDate: DateTime.now(),
+        initialValue: false,
+        helperText: 'Дата доставки',
+        onDateChanged: (selectedDate) {
+          // Do something with the selected date
+        },
+      ),
+    );
+  }
+
+  Widget _showStatusInput() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 0.0),
+      child: new TextFormField(
+        controller: statusController,
+        readOnly: true,
+        maxLines: 1,
+        keyboardType: TextInputType.text,
+        autofocus: false,
+        decoration: new InputDecoration(
+          filled: true,
+          fillColor: Color(0xFFE8E8E8),
+          hintText: 'Статус',
+          helperText: 'Укажите статус пожертвования',
+          suffixIcon: Icon(Icons.arrow_drop_down),
+        ),
+        onSaved: (value) => _status = value.trim(),
+        onTap: () async {
+          var distributionStatus = await _selectStatus(context);
+          statusController.text = distributionStatus.value;
+        },
+      ),
+    );
+  }
+
+  Widget _showErrorMessage() {
     if (_errorMessage != null && _errorMessage.length > 0) {
       return new Container(
           padding: EdgeInsets.all(16.0),
@@ -237,5 +275,85 @@ class _NeedsPageState extends State<NeedsPage> {
         height: 0.0,
       );
     }
+  }
+
+  Future<DistributionStatus> _selectStatus(BuildContext context) async {
+    return await showDialog<DistributionStatus>(
+      context: context,
+      builder: (BuildContext context) {
+        return SimpleDialog(
+          title: const Text('Выберите статус'),
+          children: <Widget>[
+            SimpleDialogOption(
+              onPressed: () {
+                Navigator.pop(
+                    context,
+                    new DistributionStatus(
+                        Status.ready_to_sent, "Подготовлено"));
+              },
+              child: const Text('Подготовлено'),
+            ),
+            SimpleDialogOption(
+              onPressed: () {
+                Navigator.pop(
+                    context, new DistributionStatus(Status.sent, "Отправлено"));
+              },
+              child: const Text('Отправлено'),
+            ),
+            SimpleDialogOption(
+              onPressed: () {
+                Navigator.pop(context,
+                    new DistributionStatus(Status.delivered, "Доставлено"));
+              },
+              child: const Text('Доставлено'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<Hospital> _selectHospital(BuildContext context) async {
+    var hospitalResponse = await widget.hospitalService.get();
+
+    var options = hospitalResponse.hospitals
+        .map((hospital) => SimpleDialogOption(
+              onPressed: () {
+                Navigator.pop(context, hospital);
+              },
+              child: Text(hospital.name),
+            ))
+        .toList();
+
+    return await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return SimpleDialog(
+            title: const Text('Выберите больницу'),
+            children: options,
+          );
+        });
+  }
+
+  Future<Donation> _selectDonation(BuildContext context) async {
+    var donationsResponse = await widget.donationService.get();
+
+    var options = donationsResponse.donations
+        .map((donation) => SimpleDialogOption(
+              onPressed: () {
+                Navigator.pop(context, donation);
+              },
+              child: Text(donation.donatorName),
+            ))
+        .toList();
+
+    return await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return SimpleDialog(
+            title: const Text('Выберите организацию'),
+            children: options,
+          );
+        });
   }
 }
