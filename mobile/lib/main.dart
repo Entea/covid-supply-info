@@ -45,6 +45,20 @@ class TirekApplication extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         theme: new ThemeData(
           primarySwatch: Colors.blue,
+            inputDecorationTheme: const InputDecorationTheme(
+              filled: true,
+              labelStyle: TextStyle(color: Colors.black),
+              hintStyle: TextStyle(color: Colors.grey),
+              enabledBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: Color.fromARGB(0, 0, 0, 0)),
+              ),
+              focusedBorder: UnderlineInputBorder(
+                borderSide:BorderSide(color: Color.fromARGB(38, 0, 0, 0)),
+              ),
+              border: UnderlineInputBorder(
+                borderSide: BorderSide(color: Color.fromARGB(38, 0, 0, 0)),
+              ),
+            )
         ));
   }
 }

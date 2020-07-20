@@ -32,6 +32,7 @@ class ApiHelper {
   static dynamic _returnResponse(http.Response response) async {
     switch (response.statusCode) {
       case 200:
+      case 201:
         var responseJson = json.decode(utf8.decode(response.bodyBytes));
         return responseJson;
       case 400:
