@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:tirek_mobile/exception/TirekException.dart';
 import 'package:tirek_mobile/helper/ApiHelper.dart';
 
 import 'package:tirek_mobile/models/response/NeedsRequestResponse.dart';
@@ -8,17 +9,7 @@ import 'package:tirek_mobile/models/response/HospitalResponse.dart';
 import 'dart:convert';
 
 abstract class NeedsRequestService {
-  //  POST /api/v1/hospital-needs/
-//
-//  Headers:
-//
-//  Name Value
-//  content-type application/json
-//  Authorization Token {token}
-//  Body:
-//
-
-  Future<NeedsRequestResponse> req(Hospital hospital, NeedType needType,
+  Future<NeedsRequestResponse> post(Hospital hospital, NeedType needType,
       String reserveAmount, String requestAmount, String requestAmountMonth);
 }
 
@@ -28,13 +19,14 @@ class TirekNeedsRequestService implements NeedsRequestService {
   TirekNeedsRequestService(this.sharedPreferencesService);
 
   @override
-  Future<NeedsRequestResponse> req(
+  Future<NeedsRequestResponse> post(
       Hospital hospital,
       NeedType needType,
       String reserveAmount,
       String requestAmount,
       String requestAmountMonth) async {
     final userInfo = await sharedPreferencesService.getCurrentUserInfo();
+
     final body = json.encode({
       "hospital_id": hospital.id,
       "need_type_id": needType.id,
@@ -49,7 +41,7 @@ class TirekNeedsRequestService implements NeedsRequestService {
       'Accept': 'application/json; charset=utf-8',
     };
 
-    final responseJson = ApiHelper.post("hospital-needs/", headers, body);
+    final responseJson = await ApiHelper.post("hospital-needs/", headers, body);
     return NeedsRequestResponse.fromJson(responseJson);
   }
 }

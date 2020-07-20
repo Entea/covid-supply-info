@@ -29,7 +29,7 @@ class ApiHelper {
     }
   }
 
-  static dynamic _returnResponse(http.Response response) async {
+  static dynamic _returnResponse(http.Response response) {
     switch (response.statusCode) {
       case 200:
       case 201:
