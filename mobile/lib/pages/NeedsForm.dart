@@ -9,7 +9,10 @@ import 'package:tirek_mobile/services/SharedPreferencesService.dart';
 
 class NeedsForm extends StatefulWidget {
   NeedsForm(
-      {this.hospitalService, this.needsService, this.sharedPreferencesService, this.needsRequestService});
+      {this.hospitalService,
+      this.needsService,
+      this.sharedPreferencesService,
+      this.needsRequestService});
 
   final HospitalService hospitalService;
   final NeedsService needsService;
@@ -38,15 +41,13 @@ class _NeedsFormState extends State<NeedsForm> {
     _errorMessage = "";
     _isLoading = false;
     super.initState();
-    getData();
+    fetchRequiredData();
   }
 
-  void getData() async {
+  void fetchRequiredData() async {
     try {
       final needsResponse = await widget.needsService.get();
       final hospitalsResponse = await widget.hospitalService.get();
-
-      print(_hospitals);
 
       setState(() {
         _needTypes = needsResponse.needs;
@@ -64,7 +65,7 @@ class _NeedsFormState extends State<NeedsForm> {
   final padding = EdgeInsets.all(16);
   final formItemPadding = EdgeInsets.fromLTRB(0, 0, 0, 16.0);
 
-  void validateAndSubmit() {
+  void validateAndSubmit() async {
     setState(() {
       _errorMessage = "";
       _isLoading = true;
@@ -81,24 +82,16 @@ class _NeedsFormState extends State<NeedsForm> {
 
     if (validateAndSave()) {
       try {
-        widget.needsRequestService.req(
-            hospital,
-            needType,
-            reserveAmount,
-            requestAmount,
-            requestAmountMonth);
+        await widget.needsRequestService.post(hospital, needType, reserveAmount,
+            requestAmount, requestAmountMonth);
 
         Navigator.pushNamedAndRemoveUntil(context, '/home', (r) => false);
 
         setState(() {
           _isLoading = false;
         });
-      } on BadRequestException {
-        setState(() {
-          _isLoading = false;
-          _errorMessage = "Неправильное имя пользователя или пароль";
-          _formKey.currentState.reset();
-        });
+      } on UnauthorisedException {
+        Navigator.pushNamedAndRemoveUntil(context, '/login', (r) => false);
       } on TirekException {
         setState(() {
           _isLoading = false;
@@ -118,144 +111,196 @@ class _NeedsFormState extends State<NeedsForm> {
         appBar: new AppBar(
           title: new Text('Создание таблицы данных'),
         ),
-        body: Container(
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                new Form(
-                  key: _formKey,
-                  child: Padding(
-                    padding: padding,
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Padding(
-                            padding: formItemPadding,
-                            child: new DropdownButtonFormField<NeedType>(
-                                decoration: const InputDecoration(
-                                  labelText: 'Тип нужды',
-                                  helperText: 'Укажите тип помощи больнице',
-                                ),
-                                style: TextStyle(color: Colors.black),
-                                onChanged: (NeedType newValue) {
-                                  setState(() {
-                                    needType = newValue;
-                                  });
-                                },
-                                isExpanded: true,
-                                items: _needTypes
-                                    .map((value) =>
-                                        new DropdownMenuItem<NeedType>(
-                                          value: value,
-                                          child: new Text(value.name),
-                                        ))
-                                    .toList()),
-                          ),
-                          Padding(
-                            padding: formItemPadding,
-                            child: new DropdownButtonFormField<Hospital>(
-                              decoration: const InputDecoration(
-                                labelText: 'Больница',
-                                helperText: 'Укажите больницу',
-                              ),
-                              style: TextStyle(color: Colors.black),
-                              onChanged: (Hospital newValue) {
-                                setState(() {
-                                  hospital = newValue;
-                                });
-                              },
-                              isExpanded: true,
-                              items: _hospitals
-                                  .map(
-                                      (value) => new DropdownMenuItem<Hospital>(
+        body: Stack(
+          children: <Widget>[
+            SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  new Form(
+                    key: _formKey,
+                    child: Padding(
+                      padding: padding,
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Padding(
+                              padding: formItemPadding,
+                              child: new DropdownButtonFormField<NeedType>(
+                                  decoration: const InputDecoration(
+                                    labelText: 'Тип нужды',
+                                    helperText: 'Укажите тип помощи больнице',
+                                  ),
+                                  style: TextStyle(color: Colors.black),
+                                  onChanged: (NeedType newValue) {
+                                    setState(() {
+                                      needType = newValue;
+                                    });
+                                  },
+                                  validator: (value) {
+                                    if (value == null) {
+                                      return 'Это обязательное поле';
+                                    }
+                                    return null;
+                                  },
+                                  isExpanded: true,
+                                  items: _needTypes
+                                      .map((value) =>
+                                          new DropdownMenuItem<NeedType>(
                                             value: value,
                                             child: new Text(value.name),
                                           ))
-                                  .toList(),
+                                      .toList()),
                             ),
-                          ),
-                          Padding(
-                            padding: formItemPadding,
-                            child: TextFormField(
-                              decoration: const InputDecoration(
-                                labelText: 'В наличии',
-                                helperText: 'Укажите количество',
+                            Padding(
+                              padding: formItemPadding,
+                              child: new DropdownButtonFormField<Hospital>(
+                                decoration: const InputDecoration(
+                                  labelText: 'Больница',
+                                  helperText: 'Укажите больницу',
+                                ),
+                                style: TextStyle(color: Colors.black),
+                                onChanged: (Hospital newValue) {
+                                  setState(() {
+                                    hospital = newValue;
+                                  });
+                                },
+                                validator: (value) {
+                                  if (value == null) {
+                                    return 'Это обязательное поле';
+                                  }
+                                  return null;
+                                },
+                                isExpanded: true,
+                                items: _hospitals
+                                    .map((value) =>
+                                        new DropdownMenuItem<Hospital>(
+                                          value: value,
+                                          child: new Text(value.name),
+                                        ))
+                                    .toList(),
                               ),
-                              keyboardType: TextInputType.number,
-                              onChanged: (value) => reserveAmount = value,
-                              validator: (value) {
-                                if (value.isEmpty) {
-                                  return 'Please enter some text';
-                                }
-                                return null;
-                              },
                             ),
-                          ),
-                          Padding(
-                            padding: formItemPadding,
-                            child: TextFormField(
-                              decoration: const InputDecoration(
-                                labelText: 'Требуется',
-                                helperText: 'Укажите количество',
+                            Padding(
+                              padding: formItemPadding,
+                              child: TextFormField(
+                                decoration: const InputDecoration(
+                                  labelText: 'В наличии',
+                                  helperText: 'Укажите количество',
+                                ),
+                                keyboardType: TextInputType.number,
+                                onChanged: (value) => reserveAmount = value,
+                                validator: (value) {
+                                  if (value.isEmpty) {
+                                    return 'Это обязательное поле';
+                                  }
+                                  return null;
+                                },
                               ),
-                              keyboardType: TextInputType.number,
-                              onChanged: (value) => requestAmount = value,
-                              validator: (value) {
-                                if (value.isEmpty) {
-                                  return 'Please enter some text';
-                                }
-                                return null;
-                              },
                             ),
-                          ),
-                          Padding(
-                            padding: formItemPadding,
-                            child: TextFormField(
-                              decoration: const InputDecoration(
-                                labelText: 'Требуется в месяц',
-                                helperText: 'Укажите количество',
+                            Padding(
+                              padding: formItemPadding,
+                              child: TextFormField(
+                                decoration: const InputDecoration(
+                                  labelText: 'Требуется',
+                                  helperText: 'Укажите количество',
+                                ),
+                                keyboardType: TextInputType.number,
+                                onChanged: (value) => requestAmount = value,
+                                validator: (value) {
+                                  if (value.isEmpty) {
+                                    return 'Это обязательное поле';
+                                  }
+                                  return null;
+                                },
                               ),
-                              keyboardType: TextInputType.number,
-                              onChanged: (value) => requestAmountMonth = value,
-                              validator: (value) {
-                                if (value.isEmpty) {
-                                  return 'Please enter some text';
-                                }
-                                return null;
-                              },
                             ),
-                          ),
-                          Padding(
-                            padding: formItemPadding,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: <Widget>[
-                                FlatButton(
-                                    color: Colors.blue,
-                                    textColor: Colors.white,
-                                    disabledColor: Colors.grey,
-                                    disabledTextColor: Colors.black,
-                                    padding: EdgeInsets.all(8.0),
-                                    splashColor: Colors.blueAccent,
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(20)),
-                                    onPressed: validateAndSubmit,
-                                    child: Padding(
-                                      padding:
-                                          EdgeInsets.fromLTRB(16, 0, 16, 0),
-                                      child: Text('СОХРАНИТЬ'),
-                                    ))
-                              ],
+                            Padding(
+                              padding: formItemPadding,
+                              child: TextFormField(
+                                decoration: const InputDecoration(
+                                  labelText: 'Требуется в месяц',
+                                  helperText: 'Укажите количество',
+                                ),
+                                keyboardType: TextInputType.number,
+                                onChanged: (value) =>
+                                    requestAmountMonth = value,
+                                validator: (value) {
+                                  if (value.isEmpty) {
+                                    return 'Это обязательное поле';
+                                  }
+                                  return null;
+                                },
+                              ),
                             ),
-                          ),
-                        ]),
+                            Padding(
+                              padding: formItemPadding,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: <Widget>[
+                                  FlatButton(
+                                      color: Colors.blue,
+                                      textColor: Colors.white,
+                                      disabledColor: Colors.grey,
+                                      disabledTextColor: Colors.black,
+                                      padding: EdgeInsets.all(8.0),
+                                      splashColor: Colors.blueAccent,
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(20)),
+                                      onPressed: validateAndSubmit,
+                                      child: Padding(
+                                        padding:
+                                            EdgeInsets.fromLTRB(16, 0, 16, 0),
+                                        child: Text('СОХРАНИТЬ'),
+                                      ))
+                                ],
+                              ),
+                            ),
+                            _showErrorMessage(),
+                          ]),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
+            _showCircularProgress(),
+          ],
         ));
+  }
+
+  Widget _showErrorMessage() {
+    if (_errorMessage != null && _errorMessage.length > 0) {
+      return new Padding(
+        padding: formItemPadding,
+        child: new Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              new Text(
+                _errorMessage,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    fontSize: 13.0,
+                    color: Colors.red,
+                    height: 1.0,
+                    fontWeight: FontWeight.w300),
+              )
+            ]),
+      );
+    } else {
+      return new Container(
+        height: 0.0,
+      );
+    }
+  }
+
+  Widget _showCircularProgress() {
+    if (_isLoading) {
+      return Center(child: CircularProgressIndicator());
+    }
+    return Container(
+      height: 0.0,
+      width: 0.0,
+    );
   }
 }

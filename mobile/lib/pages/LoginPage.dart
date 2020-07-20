@@ -5,7 +5,9 @@ import 'package:tirek_mobile/services/SharedPreferencesService.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage(
-      {this.authenticationService, this.sharedPreferencesService, this.loginCallback});
+      {this.authenticationService,
+      this.sharedPreferencesService,
+      this.loginCallback});
 
   final AuthenticationService authenticationService;
   final SharedPreferencesService sharedPreferencesService;
@@ -47,7 +49,8 @@ class _LoginPageState extends State<LoginPage> {
         final authenticationResponse =
             await widget.authenticationService.login(_username, _password);
 
-        await widget.sharedPreferencesService.saveAuthenticationResponse(authenticationResponse);
+        await widget.sharedPreferencesService
+            .saveAuthenticationResponse(authenticationResponse);
 
         Navigator.pushNamedAndRemoveUntil(context, '/home', (r) => false);
 
