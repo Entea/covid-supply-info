@@ -109,7 +109,7 @@ class _NeedsFormState extends State<NeedsForm> {
   Widget build(BuildContext context) {
     return new Scaffold(
         appBar: new AppBar(
-          title: new Text('Создание таблицы данных'),
+          title: new Text('Назад'),
         ),
         body: Stack(
           children: <Widget>[
@@ -124,6 +124,10 @@ class _NeedsFormState extends State<NeedsForm> {
                       child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
+                            Padding(
+                              padding: EdgeInsets.fromLTRB(0, 0, 0, 10.0),
+                              child: new Text('Создание таблицы данных'),
+                            ),
                             Padding(
                               padding: formItemPadding,
                               child: new DropdownButtonFormField<NeedType>(
