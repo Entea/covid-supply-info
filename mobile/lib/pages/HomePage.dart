@@ -1,8 +1,13 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tirek_mobile/exception/TirekException.dart';
+import 'package:tirek_mobile/pages/NeedsForm.dart';
+import 'package:tirek_mobile/services/NeedsRequestService.dart';
+import 'package:tirek_mobile/services/NeedsService.dart';
 import 'package:tirek_mobile/services/HospitalService.dart';
 import 'package:tirek_mobile/services/LogoutService.dart';
 import 'package:tirek_mobile/services/SharedPreferencesService.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
 class HomePage extends StatefulWidget {
   HomePage(
@@ -74,9 +79,12 @@ class _HomePageState extends State<HomePage>
 
   @override
   Widget build(BuildContext context) {
+    SharedPreferencesService sharedPreferencesService = new TirekSharedPreferencesService();
+
     return DefaultTabController(
       length: 2,
       child: new Scaffold(
+        backgroundColor: Colors.white,
         appBar: new AppBar(
           title: new Text('Tirek'),
           bottom: TabBar(
@@ -189,6 +197,35 @@ class _HomePageState extends State<HomePage>
                 )
               ],
             ),
+          ],
+        ),
+        floatingActionButton: SpeedDial(
+          overlayColor: Color.fromARGB(35, 0, 0, 0),
+          animatedIcon: AnimatedIcons.menu_close,
+          children: [
+            SpeedDialChild(
+                child: Icon(Icons.add_shopping_cart),
+                label: 'Добавить пожертвование',
+                backgroundColor: Colors.green),
+            SpeedDialChild(
+                child: Icon(Icons.add),
+                label: 'Добавить больницу',
+                backgroundColor: Colors.green),
+            SpeedDialChild(
+                child: Icon(Icons.note_add),
+                label: 'Добавить данные в таблицу',
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => new NeedsForm(
+                      needsService: new TirekNeedsService(sharedPreferencesService),
+                      hospitalService: new TirekHospitalService(sharedPreferencesService),
+                      sharedPreferencesService: sharedPreferencesService,
+                        needsRequestService: new TirekNeedsRequestService(sharedPreferencesService)
+                    ),
+                  ));
+                },
+                backgroundColor: Colors.green),
           ],
         ),
       ),
