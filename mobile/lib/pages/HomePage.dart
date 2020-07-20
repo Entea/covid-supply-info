@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tirek_mobile/exception/TirekException.dart';
 import 'package:tirek_mobile/pages/NeedsForm.dart';
+import 'package:tirek_mobile/services/DistributionsService.dart';
 import 'package:tirek_mobile/services/NeedsRequestService.dart';
 import 'package:tirek_mobile/services/NeedsService.dart';
 import 'package:tirek_mobile/services/HospitalService.dart';
@@ -13,11 +14,13 @@ class HomePage extends StatefulWidget {
   HomePage(
       {this.hospitalService,
       this.logoutService,
-      this.sharedPreferencesService});
+      this.sharedPreferencesService,
+      this.distributionsService});
 
   final HospitalService hospitalService;
   final LogoutService logoutService;
   final SharedPreferencesService sharedPreferencesService;
+  final DistributionsService distributionsService;
 
   @override
   State<StatefulWidget> createState() => new _HomePageState();
@@ -25,10 +28,11 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
-  List _data = [];
+  List _hospitals = [];
+  List _distributions = [];
   String _errorMessage;
   bool _isLoading;
-  String userName = '';
+  String _userName = '';
 
   final List<Tab> myTabs = <Tab>[
     Tab(text: 'Больницы'),
@@ -44,22 +48,35 @@ class _HomePageState extends State<HomePage>
     _tabController = new TabController(length: myTabs.length, vsync: this);
 
     super.initState();
-    getData();
+    fetchData();
   }
 
-  void getData() async {
+  void fetchData() async {
+    setState(() {
+      _errorMessage = "";
+      _isLoading = true;
+    });
+
     try {
-      final response = await widget.hospitalService.get();
+      final hospitalResponse = await widget.hospitalService.get();
       final user = await widget.sharedPreferencesService.getCurrentUserInfo();
+      final distributionResponse =
+          await widget.distributionsService.getManagerDistributions();
 
       setState(() {
-        _data = response.hospitals;
-        userName = user.user.fullName;
+        _hospitals = hospitalResponse.hospitals;
+        _distributions = distributionResponse.distributions;
+        _userName = user.user.fullName;
+        _isLoading = false;
       });
     } on TirekException {
       setState(() {
         _isLoading = false;
         _errorMessage = "Произошла ошибка при подключении";
+      });
+    } finally {
+      setState(() {
+        _isLoading = false;
       });
     }
   }
@@ -79,7 +96,8 @@ class _HomePageState extends State<HomePage>
 
   @override
   Widget build(BuildContext context) {
-    SharedPreferencesService sharedPreferencesService = new TirekSharedPreferencesService();
+    SharedPreferencesService sharedPreferencesService =
+        new TirekSharedPreferencesService();
 
     return DefaultTabController(
       length: 2,
@@ -116,7 +134,7 @@ class _HomePageState extends State<HomePage>
                           child: Align(
                             alignment: Alignment.bottomLeft,
                             child: Text(
-                              userName,
+                              _userName,
                               style:
                                   TextStyle(color: Colors.white, fontSize: 24),
                             ),
@@ -170,35 +188,31 @@ class _HomePageState extends State<HomePage>
             ),
           ),
         ),
-        body: TabBarView(
-          controller: _tabController,
-          children: [
-            new ListView.builder(
-                itemCount: _data.length,
-                itemBuilder: (BuildContext ctxt, int index) {
-                  return new ListTile(
-                    title: new Text(_data[index].name),
-                    subtitle: new Text('КОД ' + _data[index].code),
-                    trailing: Icon(Icons.add),
-                  );
-                }),
-            new ListView(
-              padding: const EdgeInsets.only(top: 10, bottom: 15),
-              children: <Widget>[
-                ListTile(
-                  title: new Text('Ошская Медицинский Колледж'),
-                  subtitle: new Text(
-                      'Народный штаб Биз Барбыз. Сообщество Кыргызстанцев в США в лице Айзада Марат...'),
-                ),
-                ListTile(
-                  title: new Text('Ошская Медицинский Колледж'),
-                  subtitle: new Text(
-                      'Народный штаб Биз Барбыз. Сообщество Кыргызстанцев в США в лице Айзада Марат...'),
-                )
-              ],
-            ),
-          ],
-        ),
+        body: Stack(children: <Widget>[
+          TabBarView(
+            controller: _tabController,
+            children: [
+              new ListView.builder(
+                  itemCount: _hospitals.length,
+                  itemBuilder: (BuildContext ctxt, int index) {
+                    return new ListTile(
+                      title: new Text(_hospitals[index].name),
+                      subtitle: new Text('КОД ' + _hospitals[index].code),
+                      trailing: Icon(Icons.add),
+                    );
+                  }),
+              new ListView.builder(
+                  itemCount: _distributions.length,
+                  itemBuilder: (BuildContext ctxt, int index) {
+                    return new ListTile(
+                      title: new Text(_distributions[index].hospital.name),
+                      subtitle: new Text(_distributions[index].sender),
+                    );
+                  }),
+            ],
+          ),
+          _showCircularProgress()
+        ]),
         floatingActionButton: SpeedDial(
           overlayColor: Color.fromARGB(35, 0, 0, 0),
           animatedIcon: AnimatedIcons.menu_close,
@@ -213,22 +227,36 @@ class _HomePageState extends State<HomePage>
                 backgroundColor: Colors.green),
             SpeedDialChild(
                 child: Icon(Icons.note_add),
-                label: 'Добавить данные в таблицу',
+                label: 'Добавить потребности больниц',
                 onTap: () {
                   Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => new NeedsForm(
-                      needsService: new TirekNeedsService(sharedPreferencesService),
-                      hospitalService: new TirekHospitalService(sharedPreferencesService),
-                      sharedPreferencesService: sharedPreferencesService,
-                        needsRequestService: new TirekNeedsRequestService(sharedPreferencesService)
-                    ),
-                  ));
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => new NeedsForm(
+                          needsService:
+                              new TirekNeedsService(sharedPreferencesService),
+                          hospitalService: new TirekHospitalService(
+                              sharedPreferencesService),
+                          sharedPreferencesService: sharedPreferencesService,
+                          needsRequestService: new TirekNeedsRequestService(
+                              sharedPreferencesService),
+                        ),
+                      ));
                 },
                 backgroundColor: Colors.green),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _showCircularProgress() {
+    if (_isLoading) {
+      return Center(child: CircularProgressIndicator());
+    }
+    return Container(
+      height: 0.0,
+      width: 0.0,
     );
   }
 }
