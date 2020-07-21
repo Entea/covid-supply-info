@@ -1,10 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tirek_mobile/exception/TirekException.dart';
-import 'package:tirek_mobile/pages/NeedsForm.dart';
 import 'package:tirek_mobile/services/DistributionsService.dart';
-import 'package:tirek_mobile/services/NeedsRequestService.dart';
-import 'package:tirek_mobile/services/NeedsService.dart';
 import 'package:tirek_mobile/services/HospitalService.dart';
 import 'package:tirek_mobile/services/LogoutService.dart';
 import 'package:tirek_mobile/services/SharedPreferencesService.dart';
@@ -229,19 +226,7 @@ class _HomePageState extends State<HomePage>
                 child: Icon(Icons.note_add),
                 label: 'Добавить потребности больниц',
                 onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => new NeedsForm(
-                          needsService:
-                              new TirekNeedsService(sharedPreferencesService),
-                          hospitalService: new TirekHospitalService(
-                              sharedPreferencesService),
-                          sharedPreferencesService: sharedPreferencesService,
-                          needsRequestService: new TirekNeedsRequestService(
-                              sharedPreferencesService),
-                        ),
-                      ));
+                  Navigator.pushNamed(context, '/needs-create');
                 },
                 backgroundColor: Colors.green),
           ],
