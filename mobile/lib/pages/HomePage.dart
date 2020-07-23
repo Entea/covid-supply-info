@@ -1,18 +1,20 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tirek_mobile/exception/TirekException.dart';
+import 'package:tirek_mobile/pages/HospitalInfo.dart';
 import 'package:tirek_mobile/services/DistributionsService.dart';
 import 'package:tirek_mobile/services/HospitalService.dart';
 import 'package:tirek_mobile/services/LogoutService.dart';
 import 'package:tirek_mobile/services/SharedPreferencesService.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
+import '../main.dart';
+
 class HomePage extends StatefulWidget {
-  HomePage(
-      {this.hospitalService,
-      this.logoutService,
-      this.sharedPreferencesService,
-      this.distributionsService});
+  HomePage({this.hospitalService,
+    this.logoutService,
+    this.sharedPreferencesService,
+    this.distributionsService});
 
   final HospitalService hospitalService;
   final LogoutService logoutService;
@@ -58,7 +60,7 @@ class _HomePageState extends State<HomePage>
       final hospitalResponse = await widget.hospitalService.get();
       final user = await widget.sharedPreferencesService.getCurrentUserInfo();
       final distributionResponse =
-          await widget.distributionsService.getManagerDistributions();
+      await widget.distributionsService.getManagerDistributions();
 
       setState(() {
         _hospitals = hospitalResponse.hospitals;
@@ -93,9 +95,6 @@ class _HomePageState extends State<HomePage>
 
   @override
   Widget build(BuildContext context) {
-    SharedPreferencesService sharedPreferencesService =
-        new TirekSharedPreferencesService();
-
     return DefaultTabController(
       length: 2,
       child: new Scaffold(
@@ -133,7 +132,7 @@ class _HomePageState extends State<HomePage>
                             child: Text(
                               _userName,
                               style:
-                                  TextStyle(color: Colors.white, fontSize: 24),
+                              TextStyle(color: Colors.white, fontSize: 24),
                             ),
                           ),
                         ),
@@ -196,6 +195,15 @@ class _HomePageState extends State<HomePage>
                       title: new Text(_hospitals[index].name),
                       subtitle: new Text('КОД ' + _hospitals[index].code),
                       trailing: Icon(Icons.add),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => HospitalInfoPage(
+                                hospital: _hospitals[index],
+                              )),
+                        );
+                      },
                     );
                   }),
               new ListView.builder(
