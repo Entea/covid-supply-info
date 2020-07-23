@@ -13,13 +13,12 @@ import 'package:tirek_mobile/services/SharedPreferencesService.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage({
-    this.hospitalService,
-    this.logoutService,
-    this.sharedPreferencesService,
-    this.distributionsService,
-    this.donationService
-  });
+  HomePage(
+      {this.hospitalService,
+      this.logoutService,
+      this.sharedPreferencesService,
+      this.distributionsService,
+      this.donationService});
 
   final HospitalService hospitalService;
   final LogoutService logoutService;
@@ -31,8 +30,10 @@ class HomePage extends StatefulWidget {
   State<StatefulWidget> createState() => new _HomePageState();
 }
 
-class _HomePageState extends State<HomePage>
-    with SingleTickerProviderStateMixin {
+class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
+  SharedPreferencesService sharedPreferencesService =
+      new TirekSharedPreferencesService();
+
   List _hospitals = [];
   List _distributions = [];
   String _errorMessage;
@@ -56,7 +57,6 @@ class _HomePageState extends State<HomePage>
     _tabController =
         TabController(length: myTabs.length, vsync: this, initialIndex: 0);
     _tabController.addListener(_handleTabIndex);
-    getData();
     fetchData();
   }
 
@@ -115,9 +115,6 @@ class _HomePageState extends State<HomePage>
 
   @override
   Widget build(BuildContext context) {
-    SharedPreferencesService sharedPreferencesService =
-        new TirekSharedPreferencesService();
-
     return DefaultTabController(
       length: 2,
       child: new Scaffold(
@@ -233,71 +230,69 @@ class _HomePageState extends State<HomePage>
           ),
           _showCircularProgress()
         ]),
-        floatingActionButton: SpeedDial(
-          overlayColor: Color.fromARGB(35, 0, 0, 0),
-          animatedIcon: AnimatedIcons.menu_close,
-          children: [
-            SpeedDialChild(
-                child: Icon(Icons.add_shopping_cart),
-                label: 'Добавить пожертвование',
-                backgroundColor: Colors.green),
-            SpeedDialChild(
-                child: Icon(Icons.add),
-                label: 'Добавить больницу',
-                backgroundColor: Colors.green),
-            SpeedDialChild(
-                child: Icon(Icons.note_add),
-                label: 'Добавить потребности больниц',
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => new NeedsForm(
-                          needsService:
-                              new TirekNeedsService(sharedPreferencesService),
-                          hospitalService: new TirekHospitalService(
-                              sharedPreferencesService),
-                          sharedPreferencesService: sharedPreferencesService,
-                          needsRequestService: new TirekNeedsRequestService(
-                              sharedPreferencesService),
-                        ),
-                      ));
-                },
-                backgroundColor: Colors.green),
-          ],
-        ),
+      ),
+    );
+  }
+
+  Widget _hospitalFloat() {
+    return SpeedDial(
+      overlayColor: Color.fromARGB(35, 0, 0, 0),
+      animatedIcon: AnimatedIcons.menu_close,
+      children: [
+        SpeedDialChild(
+            child: Icon(Icons.add_shopping_cart),
+            label: 'Добавить пожертвование',
+            backgroundColor: Colors.green),
+        SpeedDialChild(
+            child: Icon(Icons.add),
+            label: 'Добавить больницу',
+            backgroundColor: Colors.green),
+        SpeedDialChild(
+            child: Icon(Icons.note_add),
+            label: 'Добавить потребности больниц',
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => new NeedsForm(
+                      needsService:
+                          new TirekNeedsService(sharedPreferencesService),
+                      hospitalService:
+                          new TirekHospitalService(sharedPreferencesService),
+                      sharedPreferencesService: sharedPreferencesService,
+                      needsRequestService: new TirekNeedsRequestService(
+                          sharedPreferencesService),
+                    ),
+                  ));
+            },
+            backgroundColor: Colors.green),
+      ],
+    );
+  }
+
+  Widget _needsFloat() {
+    return FloatingActionButton(
+      shape: StadiumBorder(),
+      onPressed: () => {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => NeedsPage(
+                    hospitalService: this.widget.hospitalService,
+                    donationService: this.widget.donationService,
+                  )),
+        )
+      },
+      backgroundColor: Colors.blue,
+      child: Icon(
+        Icons.add,
+        size: 20.0,
       ),
     );
   }
 
   Widget _bottomButtons() {
-    return _tabController.index == 0
-        ? FloatingActionButton(
-            shape: StadiumBorder(),
-            onPressed: null,
-            backgroundColor: Colors.blue,
-            child: Icon(
-              Icons.add,
-              size: 20.0,
-            ))
-        : FloatingActionButton(
-            shape: StadiumBorder(),
-            onPressed: () => {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => NeedsPage(
-                          hospitalService: this.widget.hospitalService,
-                          donationService: this.widget.donationService,
-                        )),
-              )
-            },
-            backgroundColor: Colors.blue,
-            child: Icon(
-              Icons.add,
-              size: 20.0,
-            ),
-          );
+    return _tabController.index == 0 ? _hospitalFloat() : _needsFloat();
   }
 
   Widget _showCircularProgress() {
