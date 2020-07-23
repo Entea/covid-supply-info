@@ -20,12 +20,12 @@ class Hospital {
   final int id;
   final String name;
   final String code;
-  final int indicator;
+  final double indicator;
 
   Hospital(this.id, this.name, this.code, this.indicator);
 
   factory Hospital.fromJson(dynamic json) {
     return Hospital(json['id'] as int, json['name'] as String,
-        json['code'] as String, json['indicator'] as int);
+        json['code'] as String, json['indicator'] as double);
   }
 }

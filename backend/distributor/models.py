@@ -9,7 +9,7 @@ from django.db import models
 from django.db.models import Sum
 from django.utils.translation import ugettext as _
 
-from distributor.constants import DISTRIBUTION_STATUSES, READY_TO_SEND
+from distributor.constants import DISTRIBUTION_STATUSES, READY_TO_SEND, DONATOR_TYPES, ORGANIZATION
 
 DEFAULT_INDICATOR = -1
 
@@ -49,17 +49,6 @@ class NeedType(models.Model):
 
 
 class Donation(models.Model):
-    ORGANIZATION = 'ORGANIZATION'
-    PERSON = 'PERSONAL'
-    DONOR = 'DONOR'
-    GOVERNMENT = 'GOVERNMENT'
-
-    DONATOR_TYPES = (
-        (ORGANIZATION, _('ORGANIZATION')),
-        (PERSON, _('PERSONAL')),
-        (DONOR, _('DONOR')),
-        (GOVERNMENT, _('GOVERNMENT')),
-    )
     donator_type = models.CharField(verbose_name=_('Тип пожертвования'), choices=DONATOR_TYPES, max_length=12,
                                     default=ORGANIZATION, help_text=_('Выберите тип пожертвования'))
     donator_name = models.CharField(max_length=200, verbose_name=_('Имя мецената'), help_text=_('Введите имя мецената'))
@@ -72,7 +61,7 @@ class Donation(models.Model):
 
     modified_at = models.DateTimeField(verbose_name=_('Дата изменения'), auto_now=True, null=True, blank=True,
                                        editable=False)
-    created_at = models.DateTimeField(verbose_name=_('Дата создания'), editable=True)
+    created_at = models.DateTimeField(verbose_name=_('Дата создания'), editable=True, auto_now_add=True)
     created_by = models.ForeignKey(User, on_delete=models.PROTECT, related_name='%(class)s_created_by',
                                    auto_created=True, editable=False, help_text=_('Было создано пользователем'),
                                    verbose_name=_('Было создано'))

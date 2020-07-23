@@ -1,15 +1,30 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tirek_mobile/exception/TirekException.dart';
 import 'package:tirek_mobile/services/DonationService.dart';
+import 'package:tirek_mobile/pages/NeedsForm.dart';
+import 'package:tirek_mobile/services/DistributionsService.dart';
+import 'package:tirek_mobile/services/NeedsRequestService.dart';
+import 'package:tirek_mobile/services/NeedsService.dart';
 import 'package:tirek_mobile/services/HospitalService.dart';
 import 'package:tirek_mobile/services/LogoutService.dart';
 import 'package:tirek_mobile/pages/NeedsPage.dart';
+import 'package:tirek_mobile/services/SharedPreferencesService.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage({this.hospitalService, this.logoutService, this.donationService});
+  HomePage({
+    this.hospitalService,
+    this.logoutService,
+    this.sharedPreferencesService,
+    this.distributionsService,
+    this.donationService
+  });
 
   final HospitalService hospitalService;
   final LogoutService logoutService;
+  final SharedPreferencesService sharedPreferencesService;
+  final DistributionsService distributionsService;
   final DonationService donationService;
 
   @override
@@ -18,12 +33,15 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
-  List _data = [];
+  List _hospitals = [];
+  List _distributions = [];
   String _errorMessage;
   bool _isLoading;
+  String _userName = '';
+
   final List<Tab> myTabs = <Tab>[
-    new Tab(text: 'Больницы'),
-    new Tab(text: 'Распределение'),
+    Tab(text: 'Больницы'),
+    Tab(text: 'Распределение'),
   ];
 
   TabController _tabController;
@@ -32,11 +50,14 @@ class _HomePageState extends State<HomePage>
   void initState() {
     _errorMessage = "";
     _isLoading = false;
+    _tabController = new TabController(length: myTabs.length, vsync: this);
+
     super.initState();
     _tabController =
         TabController(length: myTabs.length, vsync: this, initialIndex: 0);
     _tabController.addListener(_handleTabIndex);
     getData();
+    fetchData();
   }
 
   @override
@@ -50,22 +71,37 @@ class _HomePageState extends State<HomePage>
     setState(() {});
   }
 
-  void getData() async {
+  void fetchData() async {
+    setState(() {
+      _errorMessage = "";
+      _isLoading = true;
+    });
     try {
-      final response = await widget.hospitalService.get();
+      final hospitalResponse = await widget.hospitalService.get();
+      final user = await widget.sharedPreferencesService.getCurrentUserInfo();
+      final distributionResponse =
+          await widget.distributionsService.getManagerDistributions();
+
       setState(() {
-        _data = response.hospitals;
+        _hospitals = hospitalResponse.hospitals;
+        _distributions = distributionResponse.distributions;
+        _userName = user.user.fullName;
+        _isLoading = false;
       });
     } on TirekException {
       setState(() {
         _isLoading = false;
         _errorMessage = "Произошла ошибка при подключении";
       });
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
   void logout() async {
-    Navigator.pushNamed(context, '/');
+    Navigator.pushNamedAndRemoveUntil(context, '/', (r) => false);
 
     try {
       await widget.logoutService.logout();
@@ -79,9 +115,13 @@ class _HomePageState extends State<HomePage>
 
   @override
   Widget build(BuildContext context) {
+    SharedPreferencesService sharedPreferencesService =
+        new TirekSharedPreferencesService();
+
     return DefaultTabController(
       length: 2,
       child: new Scaffold(
+        backgroundColor: Colors.white,
         appBar: new AppBar(
           title: new Text('Tirek'),
           bottom: TabBar(
@@ -114,7 +154,7 @@ class _HomePageState extends State<HomePage>
                           child: Align(
                             alignment: Alignment.bottomLeft,
                             child: Text(
-                              'Андрей Волконский',
+                              _userName,
                               style:
                                   TextStyle(color: Colors.white, fontSize: 24),
                             ),
@@ -134,13 +174,20 @@ class _HomePageState extends State<HomePage>
                           style: TextStyle(
                             color: Colors.white,
                           )),
+                      onTap: () {
+                        Navigator.of(context).pop();
+                        _tabController.animateTo((0));
+                      },
                     ),
                     ListTile(
-                      title: Text('Распределение',
-                          style: TextStyle(
-                            color: Colors.white,
-                          )),
-                    ),
+                        title: Text('Распределение',
+                            style: TextStyle(
+                              color: Colors.white,
+                            )),
+                        onTap: () {
+                          Navigator.of(context).pop();
+                          _tabController.animateTo((1));
+                        }),
                   ],
                 ),
                 Expanded(
@@ -161,33 +208,62 @@ class _HomePageState extends State<HomePage>
             ),
           ),
         ),
-        body: new TabBarView(
-          controller: _tabController,
+        body: Stack(children: <Widget>[
+          TabBarView(
+            controller: _tabController,
+            children: [
+              new ListView.builder(
+                  itemCount: _hospitals.length,
+                  itemBuilder: (BuildContext ctxt, int index) {
+                    return new ListTile(
+                      title: new Text(_hospitals[index].name),
+                      subtitle: new Text('КОД ' + _hospitals[index].code),
+                      trailing: Icon(Icons.add),
+                    );
+                  }),
+              new ListView.builder(
+                  itemCount: _distributions.length,
+                  itemBuilder: (BuildContext ctxt, int index) {
+                    return new ListTile(
+                      title: new Text(_distributions[index].hospital.name),
+                      subtitle: new Text(_distributions[index].sender),
+                    );
+                  }),
+            ],
+          ),
+          _showCircularProgress()
+        ]),
+        floatingActionButton: SpeedDial(
+          overlayColor: Color.fromARGB(35, 0, 0, 0),
+          animatedIcon: AnimatedIcons.menu_close,
           children: [
-            new ListView.builder(
-                itemCount: _data.length,
-                itemBuilder: (BuildContext ctxt, int index) {
-                  return new ListTile(
-                    title: new Text(_data[index].name),
-                    subtitle: new Text('КОД ' + _data[index].code),
-                    trailing: Icon(Icons.add),
-                  );
-                }),
-            new ListView(
-              padding: const EdgeInsets.only(top: 10, bottom: 15),
-              children: <Widget>[
-                ListTile(
-                  title: new Text('Ошская Медицинский Колледж'),
-                  subtitle: new Text(
-                      'Народный штаб Биз Барбыз. Сообщество Кыргызстанцев в США в лице Айзада Марат...'),
-                ),
-                ListTile(
-                  title: new Text('Ошская Медицинский Колледж'),
-                  subtitle: new Text(
-                      'Народный штаб Биз Барбыз. Сообщество Кыргызстанцев в США в лице Айзада Марат...'),
-                )
-              ],
-            ),
+            SpeedDialChild(
+                child: Icon(Icons.add_shopping_cart),
+                label: 'Добавить пожертвование',
+                backgroundColor: Colors.green),
+            SpeedDialChild(
+                child: Icon(Icons.add),
+                label: 'Добавить больницу',
+                backgroundColor: Colors.green),
+            SpeedDialChild(
+                child: Icon(Icons.note_add),
+                label: 'Добавить потребности больниц',
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => new NeedsForm(
+                          needsService:
+                              new TirekNeedsService(sharedPreferencesService),
+                          hospitalService: new TirekHospitalService(
+                              sharedPreferencesService),
+                          sharedPreferencesService: sharedPreferencesService,
+                          needsRequestService: new TirekNeedsRequestService(
+                              sharedPreferencesService),
+                        ),
+                      ));
+                },
+                backgroundColor: Colors.green),
           ],
         ),
       ),
@@ -222,5 +298,15 @@ class _HomePageState extends State<HomePage>
               size: 20.0,
             ),
           );
+  }
+
+  Widget _showCircularProgress() {
+    if (_isLoading) {
+      return Center(child: CircularProgressIndicator());
+    }
+    return Container(
+      height: 0.0,
+      width: 0.0,
+    );
   }
 }
