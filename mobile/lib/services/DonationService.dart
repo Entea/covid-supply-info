@@ -1,5 +1,5 @@
 import 'package:tirek_mobile/helper/ApiHelper.dart';
-import 'package:tirek_mobile/models/response/DonataionResponse.dart';
+import 'package:tirek_mobile/models/response/DonationResponse.dart';
 
 abstract class DonationService {
   Future<DonationResponse> get();

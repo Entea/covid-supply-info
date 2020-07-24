@@ -35,6 +35,7 @@ class TirekApplication extends StatelessWidget {
       logoutService: tirekLogoutService,
       sharedPreferencesService: sharedPreferencesService,
       distributionsService: tirekDistributionsService,
+      donationService: tirekDonationService
     );
 
     Widget needsPage = new NeedsPage(

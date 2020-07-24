@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:tirek_mobile/components/TextFieldDatePicker.dart';
+import 'package:tirek_mobile/exception/TirekException.dart';
 import 'package:tirek_mobile/pages/DistributionNeedsPage.dart';
 import 'package:tirek_mobile/models/response/DistributionStatus.dart';
-import 'package:tirek_mobile/models/response/DonataionResponse.dart';
+import 'package:tirek_mobile/models/response/DonationResponse.dart';
 import 'package:tirek_mobile/models/response/HospitalResponse.dart';
 import 'package:tirek_mobile/services/DonationService.dart';
 import 'package:tirek_mobile/services/HospitalService.dart';
@@ -23,18 +24,64 @@ class _NeedsPageState extends State<NeedsPage> {
   DateTime selectedDate = DateTime.now();
   final statusController = TextEditingController();
 
+  List _hospitalsList = [];
+  List _donationsList = [];
+
   String _deliveryDate;
   String _distributionDate;
   String _errorMessage;
   final _formKey = new GlobalKey<FormState>();
   String _fromPerson;
-  String _hospital;
+  int _hospital;
+  int _donation;
   bool _isLoading;
   String _organization;
   bool _rememberMe = false;
   bool _showPassword = false;
-  String _status;
+  Status _status;
   String _toPerson;
+
+  final formItemPadding = EdgeInsets.fromLTRB(0, 0, 0, 16.0);
+
+  @override
+  void initState() {
+    _errorMessage = "";
+    _isLoading = false;
+    super.initState();
+    fetchRequiredData();
+    fetchDonationsRequiredData();
+  }
+
+  void fetchRequiredData() async {
+    try {
+      final hospitalsResponse = await widget.hospitalService.get();
+
+      setState(() {
+        _hospitalsList = hospitalsResponse.hospitals;
+      });
+    } on TirekException {
+      setState(() {
+        _isLoading = false;
+        _errorMessage = "Произошла ошибка при подключении";
+      });
+    }
+  }
+
+  void fetchDonationsRequiredData() async {
+    try {
+      final donationsResponse = await widget.donationService.get();
+
+
+      setState(() {
+        _donationsList = donationsResponse.donations;
+      });
+    } on TirekException {
+      setState(() {
+        _isLoading = false;
+        _errorMessage = "Произошла ошибка при подключении";
+      });
+    }
+  }
 
   bool validateAndSave() {
     final form = _formKey.currentState;
@@ -54,7 +101,7 @@ class _NeedsPageState extends State<NeedsPage> {
             shrinkWrap: true,
             children: <Widget>[
               Text("Создание данных о пожертвование 1 из 2"),
-              _showHospitalInput(context),
+              _showHospitalInput(),
               _showDonationInput(),
               _showFromPersonInput(),
               _showToPersonInput(),
@@ -70,11 +117,11 @@ class _NeedsPageState extends State<NeedsPage> {
 
   Widget _showPrimaryButton() {
     return new Padding(
-        padding: EdgeInsets.fromLTRB(250.0, 45.0, 0.0, 0.0),
-        child: SizedBox(
-          height: 36.0,
-          width: 96.0,
-          child: new RaisedButton(
+      padding: EdgeInsets.fromLTRB(250.0, 45.0, 0.0, 0.0),
+      child: SizedBox(
+        height: 36.0,
+        width: 96.0,
+        child: new RaisedButton(
             shape: new RoundedRectangleBorder(
                 borderRadius: new BorderRadius.circular(200.0),
                 side: BorderSide(color: Color(0xFF2F80ED))),
@@ -88,59 +135,72 @@ class _NeedsPageState extends State<NeedsPage> {
             onPressed: () => {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => DistributionNeedsPage()),
+                MaterialPageRoute(
+                    builder: (context) => DistributionNeedsPage()),
               )
             }),
-          ),
-        );
+      ),
+    );
   }
 
-  Widget _showHospitalInput(context) {
+  Widget _showHospitalInput() {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(0.0, 12.0, 0.0, 0.0),
-      child: new TextFormField(
-        controller: hospitalController,
-        readOnly: true,
-        maxLines: 1,
-        keyboardType: TextInputType.text,
-        autofocus: false,
-        decoration: new InputDecoration(
-          suffixIcon: Icon(Icons.arrow_drop_down),
-          filled: true,
-          fillColor: Color(0xFFE8E8E8),
-          hintText: 'Больница',
+      padding: formItemPadding,
+      child: new DropdownButtonFormField<Hospital>(
+        decoration: const InputDecoration(
+          labelText: 'Больница',
           helperText: 'Укажите больницу',
         ),
-        onSaved: (value) => _hospital = value.trim(),
-        onTap: () async {
-          var hospital = await _selectHospital(context);
-          hospitalController.text = hospital.name;
+        style: TextStyle(color: Colors.black),
+        onChanged: (Hospital newValue) {
+          setState(() {
+            _hospital = newValue.id;
+          });
         },
+        validator: (value) {
+          if (value == null) {
+            return 'Это обязательное поле';
+          }
+          return null;
+        },
+        isExpanded: true,
+        items: _hospitalsList
+            .map((value) => new DropdownMenuItem<Hospital>(
+          value: value,
+          child: new Text(value.name),
+        ))
+            .toList(),
       ),
     );
   }
 
   Widget _showDonationInput() {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 0.0),
-      child: new TextFormField(
-        controller: donationController,
-        readOnly: true,
-        maxLines: 1,
-        keyboardType: TextInputType.text,
-        autofocus: false,
-        decoration: new InputDecoration(
-          suffixIcon: Icon(Icons.arrow_drop_down),
-          filled: true,
-          fillColor: Color(0xFFE8E8E8),
-          hintText: 'Организация',
+      padding: formItemPadding,
+      child: new DropdownButtonFormField<Donation>(
+        decoration: const InputDecoration(
+          labelText: 'Организация',
           helperText: 'Укажите организацию',
         ),
-        onSaved: (value) => _hospital = value.trim(),
-        onTap: () async {
-          var donation = await _selectDonation(context);
-          donationController.text = donation.donatorName;
+        style: TextStyle(color: Colors.black),
+        onChanged: (Donation newValue) {
+          setState(() {
+            _donation = newValue.id;
+          });
         },
+        validator: (value) {
+          if (value == null) {
+            return 'Это обязательное поле';
+          }
+          return null;
+        },
+        isExpanded: true,
+        items: _donationsList
+            .map((value) => new DropdownMenuItem<Donation>(
+          value: value,
+          child: new Text(value.donatorName),
+        ))
+            .toList(),
       ),
     );
   }
@@ -192,7 +252,7 @@ class _NeedsPageState extends State<NeedsPage> {
         initialDate: DateTime.now(),
         helperText: 'Дата распределения',
         onDateChanged: (selectedDate) {
-          // Do something with the selected date
+          _distributionDate = selectedDate.toString();
         },
       ),
     );
@@ -210,7 +270,7 @@ class _NeedsPageState extends State<NeedsPage> {
         initialValue: false,
         helperText: 'Дата доставки',
         onDateChanged: (selectedDate) {
-          // Do something with the selected date
+          _deliveryDate = selectedDate.toString();
         },
       ),
     );
@@ -218,25 +278,39 @@ class _NeedsPageState extends State<NeedsPage> {
 
   Widget _showStatusInput() {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 0.0),
-      child: new TextFormField(
-        controller: statusController,
-        readOnly: true,
-        maxLines: 1,
-        keyboardType: TextInputType.text,
-        autofocus: false,
-        decoration: new InputDecoration(
-          filled: true,
-          fillColor: Color(0xFFE8E8E8),
-          hintText: 'Статус',
-          helperText: 'Укажите статус пожертвования',
-          suffixIcon: Icon(Icons.arrow_drop_down),
+      padding: formItemPadding,
+      child: new DropdownButtonFormField<Status>(
+        decoration: const InputDecoration(
+          labelText: 'Статус',
+          helperText: 'Укажите статус пожертвования ',
         ),
-        onSaved: (value) => _status = value.trim(),
-        onTap: () async {
-          var distributionStatus = await _selectStatus(context);
-          statusController.text = distributionStatus.value;
+        style: TextStyle(color: Colors.black),
+        onChanged: (Status newValue) {
+          setState(() {
+            _status = newValue;
+          });
         },
+        validator: (value) {
+          if (value == null) {
+            return 'Это обязательное поле';
+          }
+          return null;
+        },
+        isExpanded: true,
+        items: [
+          DropdownMenuItem(
+            value: Status.ready_to_sent,
+            child: const Text('Подготовлено')
+          ),
+          DropdownMenuItem(
+            value: Status.sent,
+            child: const Text('Отправлено')
+          ),
+          DropdownMenuItem(
+            value: Status.delivered,
+            child: const Text('Доставлено')
+          )
+        ],
       ),
     );
   }
@@ -259,86 +333,6 @@ class _NeedsPageState extends State<NeedsPage> {
         height: 0.0,
       );
     }
-  }
-
-  Future<DistributionStatus> _selectStatus(BuildContext context) async {
-    return await showDialog<DistributionStatus>(
-      context: context,
-      builder: (BuildContext context) {
-        return SimpleDialog(
-          title: const Text('Выберите статус'),
-          children: <Widget>[
-            SimpleDialogOption(
-              onPressed: () {
-                Navigator.pop(
-                    context,
-                    new DistributionStatus(
-                        Status.ready_to_sent, "Подготовлено"));
-              },
-              child: const Text('Подготовлено'),
-            ),
-            SimpleDialogOption(
-              onPressed: () {
-                Navigator.pop(
-                    context, new DistributionStatus(Status.sent, "Отправлено"));
-              },
-              child: const Text('Отправлено'),
-            ),
-            SimpleDialogOption(
-              onPressed: () {
-                Navigator.pop(context,
-                    new DistributionStatus(Status.delivered, "Доставлено"));
-              },
-              child: const Text('Доставлено'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  Future<Hospital> _selectHospital(BuildContext context) async {
-    var hospitalResponse = await widget.hospitalService.get();
-
-    var options = hospitalResponse.hospitals
-        .map((hospital) => SimpleDialogOption(
-              onPressed: () {
-                Navigator.pop(context, hospital);
-              },
-              child: Text(hospital.name),
-            ))
-        .toList();
-
-    return await showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return SimpleDialog(
-            title: const Text('Выберите больницу'),
-            children: options,
-          );
-        });
-  }
-
-  Future<Donation> _selectDonation(BuildContext context) async {
-    var donationsResponse = await widget.donationService.get();
-
-    var options = donationsResponse.donations
-        .map((donation) => SimpleDialogOption(
-              onPressed: () {
-                Navigator.pop(context, donation);
-              },
-              child: Text(donation.donatorName),
-            ))
-        .toList();
-
-    return await showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return SimpleDialog(
-            title: const Text('Выберите организацию'),
-            children: options,
-          );
-        });
   }
 
   @override
