@@ -22,6 +22,37 @@ class _DistributionNeedsPageState extends State<DistributionNeedsPage> {
 
   bool _isLoading;
 
+  List _needTypesList;
+  NeedsType _needType;
+
+  final formItemPadding = EdgeInsets.fromLTRB(0, 0, 0, 16.0);
+
+
+  @override
+  void initState() {
+    _errorMessage = "";
+    _isLoading = false;
+    super.initState();
+    fetchNeedTypesRequiredData();
+    print(widget.needsTypeService);
+
+  }
+
+
+  void fetchNeedTypesRequiredData() async {
+    try {
+      final donationsResponse = await widget.needsTypeService.get();
+      setState(() {
+        _needTypesList = donationsResponse.needsTypes;
+      });
+    } on TirekException {
+      setState(() {
+        _isLoading = false;
+        _errorMessage = "Произошла ошибка при подключении";
+      });
+    }
+  }
+
   bool validateAndSave() {
     final form = _formKey.currentState;
     if (form.validate()) {
@@ -64,28 +95,6 @@ class _DistributionNeedsPageState extends State<DistributionNeedsPage> {
     }
   }
 
-   Future<NeedsType> _selectNeedsType(BuildContext context) async {
-    var needsTypeResponse = await widget.needsTypeService.get();
-
-    var options = needsTypeResponse.needsTypes
-        .map((item) => SimpleDialogOption(
-              onPressed: () {
-                Navigator.pop(context, item);
-              },
-              child: Text(item.name),
-            ))
-        .toList();
-
-    return await showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return SimpleDialog(
-            title: const Text('Выберите тип потребности'),
-            children: options,
-          );
-        });
-  }
-
 
   @override
   Widget build(BuildContext context) {
@@ -124,25 +133,31 @@ class _DistributionNeedsPageState extends State<DistributionNeedsPage> {
 
    Widget _showNeedsTypeSelect(context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(0.0, 12.0, 0.0, 0.0),
-      child: new TextFormField(
-        controller: needsTypelController,
-        readOnly: true,
-        maxLines: 1,
-        keyboardType: TextInputType.text,
-        autofocus: false,
-        decoration: new InputDecoration(
-          suffixIcon: Icon(Icons.arrow_drop_down),
-          filled: true,
-          fillColor: Color(0xFFE8E8E8),
-          hintText: 'Тип помощи',
+      padding: formItemPadding,
+      child: new DropdownButtonFormField<NeedsType>(
+        decoration: const InputDecoration(
+          labelText: 'Тип помощи',
           helperText: 'Укажите тип помощи больнице',
         ),
-        //onSaved: (value) => _hospital = value.trim(),
-        onTap: () async {
-          var needsType = await _selectNeedsType(context);
-          needsTypelController.text = needsType.name;
+        style: TextStyle(color: Colors.black),
+        onChanged: (NeedsType newValue) {
+          setState(() {
+            _needType = newValue;
+          });
         },
+        validator: (value) {
+          if (value == null) {
+            return 'Это обязательное поле';
+          }
+          return null;
+        },
+        isExpanded: true,
+        items: _needTypesList
+            .map((value) => new DropdownMenuItem<NeedsType>(
+                value: value,
+                child: new Text(value.name),
+              ))
+            .toList(),
       ),
     );
   }

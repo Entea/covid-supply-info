@@ -9,6 +9,7 @@ import 'package:tirek_mobile/services/NeedsService.dart';
 import 'package:tirek_mobile/services/HospitalService.dart';
 import 'package:tirek_mobile/services/LogoutService.dart';
 import 'package:tirek_mobile/pages/NeedsPage.dart';
+import 'package:tirek_mobile/services/NeedsTypeService.dart';
 import 'package:tirek_mobile/services/SharedPreferencesService.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
@@ -18,13 +19,15 @@ class HomePage extends StatefulWidget {
       this.logoutService,
       this.sharedPreferencesService,
       this.distributionsService,
-      this.donationService});
+      this.donationService,
+      this.needsTypeService});
 
   final HospitalService hospitalService;
   final LogoutService logoutService;
   final SharedPreferencesService sharedPreferencesService;
   final DistributionsService distributionsService;
   final DonationService donationService;
+  final NeedsTypeService needsTypeService;
 
   @override
   State<StatefulWidget> createState() => new _HomePageState();
@@ -280,6 +283,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               builder: (context) => NeedsPage(
                     hospitalService: this.widget.hospitalService,
                     donationService: this.widget.donationService,
+                    needsTypeService: this.widget.needsTypeService
                   )),
         )
       },

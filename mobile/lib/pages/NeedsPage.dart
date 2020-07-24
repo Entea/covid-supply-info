@@ -7,12 +7,14 @@ import 'package:tirek_mobile/models/response/DonationResponse.dart';
 import 'package:tirek_mobile/models/response/HospitalResponse.dart';
 import 'package:tirek_mobile/services/DonationService.dart';
 import 'package:tirek_mobile/services/HospitalService.dart';
+import 'package:tirek_mobile/services/NeedsTypeService.dart';
 
 class NeedsPage extends StatefulWidget {
-  const NeedsPage({this.hospitalService, this.donationService});
+  const NeedsPage({this.hospitalService, this.donationService, this.needsTypeService});
 
   final DonationService donationService;
   final HospitalService hospitalService;
+  final NeedsTypeService needsTypeService;
 
   @override
   State<StatefulWidget> createState() => new _NeedsPageState();
@@ -50,12 +52,12 @@ class _NeedsPageState extends State<NeedsPage> {
     super.initState();
     fetchRequiredData();
     fetchDonationsRequiredData();
+
   }
 
   void fetchRequiredData() async {
     try {
       final hospitalsResponse = await widget.hospitalService.get();
-
       setState(() {
         _hospitalsList = hospitalsResponse.hospitals;
       });
@@ -70,8 +72,6 @@ class _NeedsPageState extends State<NeedsPage> {
   void fetchDonationsRequiredData() async {
     try {
       final donationsResponse = await widget.donationService.get();
-
-
       setState(() {
         _donationsList = donationsResponse.donations;
       });
@@ -136,7 +136,9 @@ class _NeedsPageState extends State<NeedsPage> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => DistributionNeedsPage()),
+                    builder: (context) => DistributionNeedsPage(
+                      needsTypeService: widget.needsTypeService,
+                    )),
               )
             }),
       ),

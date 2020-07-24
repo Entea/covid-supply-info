@@ -8,6 +8,7 @@ import 'package:tirek_mobile/services/DonationService.dart';
 import 'package:tirek_mobile/services/DistributionsService.dart';
 import 'package:tirek_mobile/services/HospitalService.dart';
 import 'package:tirek_mobile/services/LogoutService.dart';
+import 'package:tirek_mobile/services/NeedsTypeService.dart';
 import 'package:tirek_mobile/services/SharedPreferencesService.dart';
 
 void main() {
@@ -24,6 +25,7 @@ class TirekApplication extends StatelessWidget {
     AuthenticationService tirekAuthenticationService = new TirekAuthenticationService();
     LogoutService tirekLogoutService = new TirekLogoutService(sharedPreferencesService);
     DistributionsService tirekDistributionsService = new TirekDistributionsService(sharedPreferencesService);
+    NeedsTypeService tirekNeedsTypeService = new TirekNeedsTypeService(sharedPreferencesService);
 
     Widget rootPage = new RootPage(
       sharedPreferencesService: sharedPreferencesService,
@@ -35,7 +37,8 @@ class TirekApplication extends StatelessWidget {
       logoutService: tirekLogoutService,
       sharedPreferencesService: sharedPreferencesService,
       distributionsService: tirekDistributionsService,
-      donationService: tirekDonationService
+      donationService: tirekDonationService,
+      needsTypeService: tirekNeedsTypeService
     );
 
     Widget needsPage = new NeedsPage(
