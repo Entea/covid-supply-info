@@ -10,7 +10,8 @@ import 'package:tirek_mobile/services/HospitalService.dart';
 import 'package:tirek_mobile/services/NeedsTypeService.dart';
 
 class NeedsPage extends StatefulWidget {
-  const NeedsPage({this.hospitalService, this.donationService, this.needsTypeService});
+  const NeedsPage(
+      {this.hospitalService, this.donationService, this.needsTypeService});
 
   final DonationService donationService;
   final HospitalService hospitalService;
@@ -52,7 +53,6 @@ class _NeedsPageState extends State<NeedsPage> {
     super.initState();
     fetchRequiredData();
     fetchDonationsRequiredData();
-
   }
 
   void fetchRequiredData() async {
@@ -92,15 +92,20 @@ class _NeedsPageState extends State<NeedsPage> {
     return false;
   }
 
+  final padding = EdgeInsets.all(16);
+
   Widget _showForm(BuildContext context) {
-    return new Container(
-        padding: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0),
-        child: new Form(
-          key: _formKey,
-          child: new ListView(
-            shrinkWrap: true,
+    return Form(
+        key: _formKey,
+        child: Padding(
+          padding: padding,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Text("Создание данных о пожертвование 1 из 2"),
+              Padding(
+                padding: formItemPadding,
+                child: Text("Создание данных о пожертвование 1 из 2"),
+              ),
               _showHospitalInput(),
               _showDonationInput(),
               _showFromPersonInput(),
@@ -116,32 +121,35 @@ class _NeedsPageState extends State<NeedsPage> {
   }
 
   Widget _showPrimaryButton() {
-    return new Padding(
-      padding: EdgeInsets.fromLTRB(250.0, 45.0, 0.0, 0.0),
-      child: SizedBox(
-        height: 36.0,
-        width: 96.0,
-        child: new RaisedButton(
-            shape: new RoundedRectangleBorder(
-                borderRadius: new BorderRadius.circular(200.0),
-                side: BorderSide(color: Color(0xFF2F80ED))),
-            color: Color(0xFF2F80ED),
-            child: new Text('Далее',
-                style: new TextStyle(
-                    fontSize: 14.0,
-                    color: Colors.white,
-                    fontFamily: 'Roboto',
-                    fontStyle: FontStyle.normal)),
-            onPressed: () => {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => DistributionNeedsPage(
-                      needsTypeService: widget.needsTypeService,
-                    )),
-              )
-            }),
-      ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: <Widget>[
+        SizedBox(
+            height: 36.0,
+            width: 96.0,
+            child: FlatButton(
+                color: Colors.blue,
+                textColor: Colors.white,
+                disabledColor: Colors.grey,
+                disabledTextColor: Colors.black,
+                padding: EdgeInsets.all(8.0),
+                splashColor: Colors.blueAccent,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20)),
+                onPressed: () => {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => DistributionNeedsPage(
+                                  needsTypeService: widget.needsTypeService,
+                                )),
+                      )
+                    },
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
+                  child: Text('ДАЛЕЕ'),
+                )))
+      ],
     );
   }
 
@@ -168,9 +176,9 @@ class _NeedsPageState extends State<NeedsPage> {
         isExpanded: true,
         items: _hospitalsList
             .map((value) => new DropdownMenuItem<Hospital>(
-          value: value,
-          child: new Text(value.name),
-        ))
+                  value: value,
+                  child: new Text(value.name),
+                ))
             .toList(),
       ),
     );
@@ -199,9 +207,9 @@ class _NeedsPageState extends State<NeedsPage> {
         isExpanded: true,
         items: _donationsList
             .map((value) => new DropdownMenuItem<Donation>(
-          value: value,
-          child: new Text(value.donatorName),
-        ))
+                  value: value,
+                  child: new Text(value.donatorName),
+                ))
             .toList(),
       ),
     );
@@ -209,7 +217,7 @@ class _NeedsPageState extends State<NeedsPage> {
 
   Widget _showFromPersonInput() {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 0.0),
+      padding: formItemPadding,
       child: new TextFormField(
         maxLines: 1,
         keyboardType: TextInputType.text,
@@ -226,7 +234,7 @@ class _NeedsPageState extends State<NeedsPage> {
 
   Widget _showToPersonInput() {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 0.0),
+      padding: formItemPadding,
       child: new TextFormField(
         maxLines: 1,
         keyboardType: TextInputType.text,
@@ -244,7 +252,7 @@ class _NeedsPageState extends State<NeedsPage> {
 
   Widget _showDistributionDateInput(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 0.0),
+      padding: formItemPadding,
       child: new TextFieldDatePicker(
         prefixIcon: Icon(Icons.date_range),
         suffixIcon: Icon(Icons.arrow_drop_down),
@@ -262,7 +270,7 @@ class _NeedsPageState extends State<NeedsPage> {
 
   Widget _showDeliveryDateInput() {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 0.0),
+      padding: formItemPadding,
       child: new TextFieldDatePicker(
         prefixIcon: Icon(Icons.date_range),
         suffixIcon: Icon(Icons.arrow_drop_down),
@@ -301,17 +309,10 @@ class _NeedsPageState extends State<NeedsPage> {
         isExpanded: true,
         items: [
           DropdownMenuItem(
-            value: Status.ready_to_sent,
-            child: const Text('Подготовлено')
-          ),
+              value: Status.ready_to_sent, child: const Text('Подготовлено')),
+          DropdownMenuItem(value: Status.sent, child: const Text('Отправлено')),
           DropdownMenuItem(
-            value: Status.sent,
-            child: const Text('Отправлено')
-          ),
-          DropdownMenuItem(
-            value: Status.delivered,
-            child: const Text('Доставлено')
-          )
+              value: Status.delivered, child: const Text('Доставлено'))
         ],
       ),
     );
@@ -343,8 +344,17 @@ class _NeedsPageState extends State<NeedsPage> {
       appBar: AppBar(
         title: Text("Детали распределения"),
       ),
-      body: Container(
-        child: _showForm(context),
+      body: Stack(
+        children: <Widget>[
+          SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                _showForm(context),
+              ],
+            ),
+          )
+        ],
       ),
     );
   }

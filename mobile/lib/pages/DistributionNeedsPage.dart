@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tirek_mobile/exception/TirekException.dart';
 import 'package:tirek_mobile/services/NeedsTypeService.dart';
@@ -18,15 +19,15 @@ class _DistributionNeedsPageState extends State<DistributionNeedsPage> {
 
   String _errorMessage;
 
-  List<Map<String, dynamic>> _distributionNeeds = [];  
+  List<Map<String, dynamic>> _distributionNeeds = [];
 
   bool _isLoading;
 
-  List _needTypesList;
+  List _needTypesList = [];
   NeedsType _needType;
+  final padding = EdgeInsets.all(16);
 
   final formItemPadding = EdgeInsets.fromLTRB(0, 0, 0, 16.0);
-
 
   @override
   void initState() {
@@ -35,9 +36,7 @@ class _DistributionNeedsPageState extends State<DistributionNeedsPage> {
     super.initState();
     fetchNeedTypesRequiredData();
     print(widget.needsTypeService);
-
   }
-
 
   void fetchNeedTypesRequiredData() async {
     try {
@@ -95,43 +94,52 @@ class _DistributionNeedsPageState extends State<DistributionNeedsPage> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Назад"),
-      ),
-      body: Center(
-        child: _showForm(context),
-      ),
-    );
+        appBar: AppBar(
+          title: Text("Назад"),
+        ),
+        body: Stack(
+          children: <Widget>[
+            SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[_showForm(context)],
+              ),
+            )
+          ],
+        ));
   }
 
   Widget _showForm(BuildContext context) {
     List _distributionFroms = [];
-    for ( var i in _distributionNeeds ) {
+    for (var i in _distributionNeeds) {
       //_distributionFroms.add()
     }
-    return new Container(
-        padding: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0),
-        child: new Form(
-          key: _formKey,
-          child: new ListView(
-            shrinkWrap: true,
-            children: <Widget>[
-              Text("Создание данных о пожертвование  2 из 2"),
-              ..._distributionFroms,
-              _showNeedsTypeSelect(context),
-              showAddButton(),
-              showPrimaryButton(),
-              showErrorMessage(),
-            ],
-          ),
-        ));
+    return Form(
+      key: _formKey,
+      child: Padding(
+        padding: padding,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.fromLTRB(0, 0, 0, 12.0),
+              child: Text("Создание данных о пожертвование 2 из 2"),
+            ),
+            ..._distributionFroms,
+            _showNeedsTypeSelect(context),
+            showAddButton(),
+            showPrimaryButton(),
+            showErrorMessage(),
+          ],
+        ),
+      ),
+    );
   }
 
-   Widget _showNeedsTypeSelect(context) {
+  Widget _showNeedsTypeSelect(context) {
     return Padding(
       padding: formItemPadding,
       child: new DropdownButtonFormField<NeedsType>(
@@ -154,57 +162,64 @@ class _DistributionNeedsPageState extends State<DistributionNeedsPage> {
         isExpanded: true,
         items: _needTypesList
             .map((value) => new DropdownMenuItem<NeedsType>(
-                value: value,
-                child: new Text(value.name),
-              ))
+                  value: value,
+                  child: new Text(value.name),
+                ))
             .toList(),
       ),
     );
   }
 
   Widget showAddButton() {
-    return new Padding(
-        padding: EdgeInsets.fromLTRB(10.0, 45.0, 0.0, 0.0),
-        child: SizedBox(
-          height: 36.0,
-          width: 96.0,
-          child: new RaisedButton(
-            shape: new RoundedRectangleBorder(
-                borderRadius: new BorderRadius.circular(0.0),
-                side: BorderSide(color: Color(0xFFE8E8E8))),
-            color: Color(0xFFE8E8E8),
-            child: new Text('Добавить еще',
-                style: new TextStyle(
-                    fontSize: 14.0,
-                    color: Color(0xCE000000),
-                    fontFamily: 'Roboto',
-                    fontStyle: FontStyle.normal)),
-            onPressed: validateAndSubmit,
-          ),
-        ));
+    return Padding(
+        padding: formItemPadding,
+        child: ConstrainedBox(
+            constraints: BoxConstraints.expand(height: 56),
+            child: FlatButton(
+                color: Color.fromRGBO(232, 232, 232, 1),
+                textColor: Colors.black,
+                disabledColor: Colors.grey,
+                disabledTextColor: Colors.black,
+                padding: EdgeInsets.all(8.0),
+                onPressed: validateAndSubmit,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Icon(Icons.library_add),
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
+                      child: Text('Добавить еще', style: TextStyle(fontSize: 16, color: Color.fromARGB(153, 0, 0, 0)),),
+                    )
+                  ],
+                )
+            )
+        )
+    );
   }
 
-
   Widget showPrimaryButton() {
-    return new Padding(
-        padding: EdgeInsets.fromLTRB(250.0, 45.0, 0.0, 0.0),
-        child: SizedBox(
-          height: 36.0,
-          width: 96.0,
-          child: new RaisedButton(
-            shape: new RoundedRectangleBorder(
-                borderRadius: new BorderRadius.circular(200.0),
-                side: BorderSide(color: Color(0xFF2F80ED))),
-            color: Color(0xFF2F80ED),
-            child: new Text('Сохранить',
-                style: new TextStyle(
-                    fontSize: 14.0,
-                    color: Colors.white,
-                    fontFamily: 'Roboto',
-                    fontStyle: FontStyle.normal)),
-            onPressed: validateAndSubmit,
-          ),
-        ));
+    return Padding(
+      padding: formItemPadding,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: <Widget>[
+          FlatButton(
+              color: Colors.blue,
+              textColor: Colors.white,
+              disabledColor: Colors.grey,
+              disabledTextColor: Colors.black,
+              padding: EdgeInsets.all(8.0),
+              splashColor: Colors.blueAccent,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20)),
+              onPressed: validateAndSubmit,
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
+                child: Text('СОХРАНИТЬ'),
+              ))
+        ],
+      ),
+    );
   }
 
   Widget showErrorMessage() {
@@ -226,5 +241,4 @@ class _DistributionNeedsPageState extends State<DistributionNeedsPage> {
       );
     }
   }
-
 }
