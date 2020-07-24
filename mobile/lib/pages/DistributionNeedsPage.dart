@@ -35,7 +35,6 @@ class _DistributionNeedsPageState extends State<DistributionNeedsPage> {
     _isLoading = false;
     super.initState();
     fetchNeedTypesRequiredData();
-    print(widget.needsTypeService);
   }
 
   void fetchNeedTypesRequiredData() async {
