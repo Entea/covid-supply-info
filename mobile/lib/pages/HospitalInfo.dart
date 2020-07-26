@@ -93,7 +93,7 @@ class _HospitalInfoPage extends State<HospitalInfoPage> {
                           child: Icon(Icons.navigation,
                               color: Colors.blue, size: 16),
                         ),
-                        Text('asd', style: TextStyle(color: Color.fromARGB(153, 0, 0, 0)))
+                        Text(_address, style: TextStyle(color: Color.fromARGB(153, 0, 0, 0)))
                       ],
                     ),
                   ),
