@@ -30,6 +30,7 @@ class TirekApplication extends StatelessWidget {
     LogoutService tirekLogoutService = new TirekLogoutService(sharedPreferencesService);
     DistributionsService tirekDistributionsService = new TirekDistributionsService(sharedPreferencesService);
     NeedsTypeService tirekNeedsTypeService = new TirekNeedsTypeService(sharedPreferencesService);
+    NeedsService tirekNeedsService = new TirekNeedsService(sharedPreferencesService);
 
     Widget rootPage = new RootPage(
       sharedPreferencesService: sharedPreferencesService,
@@ -42,7 +43,8 @@ class TirekApplication extends StatelessWidget {
       sharedPreferencesService: sharedPreferencesService,
       distributionsService: tirekDistributionsService,
       donationService: tirekDonationService,
-      needsTypeService: tirekNeedsTypeService
+      needsTypeService: tirekNeedsTypeService,
+      needsService: tirekNeedsService
     );
 
     Widget needsPage = new NeedsPage(
@@ -52,7 +54,7 @@ class TirekApplication extends StatelessWidget {
     );
 
     Widget needsForm = new NeedsForm(
-      needsService: new TirekNeedsService(sharedPreferencesService),
+      needsTypeService: new TirekNeedsTypeService(sharedPreferencesService),
       hospitalService: new TirekHospitalService(sharedPreferencesService),
       sharedPreferencesService: sharedPreferencesService,
       needsRequestService:

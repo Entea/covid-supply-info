@@ -7,6 +7,7 @@ import 'package:tirek_mobile/services/DistributionsService.dart';
 import 'package:tirek_mobile/services/HospitalService.dart';
 import 'package:tirek_mobile/services/LogoutService.dart';
 import 'package:tirek_mobile/pages/NeedsPage.dart';
+import 'package:tirek_mobile/services/NeedsService.dart';
 import 'package:tirek_mobile/services/NeedsTypeService.dart';
 import 'package:tirek_mobile/services/SharedPreferencesService.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
@@ -14,12 +15,14 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import '../main.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage({this.hospitalService,
-    this.logoutService,
-    this.sharedPreferencesService,
-    this.distributionsService,
+  HomePage(
+      {this.hospitalService,
+      this.logoutService,
+      this.sharedPreferencesService,
+      this.distributionsService,
       this.donationService,
-      this.needsTypeService});
+      this.needsTypeService,
+      this.needsService});
 
   final HospitalService hospitalService;
   final LogoutService logoutService;
@@ -27,6 +30,7 @@ class HomePage extends StatefulWidget {
   final DistributionsService distributionsService;
   final DonationService donationService;
   final NeedsTypeService needsTypeService;
+  final NeedsService needsService;
 
   @override
   State<StatefulWidget> createState() => new _HomePageState();
@@ -60,6 +64,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         TabController(length: myTabs.length, vsync: this, initialIndex: 0);
     _tabController.addListener(_handleTabIndex);
     fetchData();
+
   }
 
   @override
@@ -83,7 +88,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       final hospitalResponse = await widget.hospitalService.get();
       final user = await widget.sharedPreferencesService.getCurrentUserInfo();
       final distributionResponse =
-      await widget.distributionsService.getManagerDistributions();
+          await widget.distributionsService.getManagerDistributions();
 
       setState(() {
         _hospitals = hospitalResponse.hospitals;
@@ -156,7 +161,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             child: Text(
                               _userName,
                               style:
-                              TextStyle(color: Colors.white, fontSize: 24),
+                                  TextStyle(color: Colors.white, fontSize: 24),
                             ),
                           ),
                         ),
@@ -224,8 +229,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           context,
                           MaterialPageRoute(
                               builder: (context) => HospitalInfoPage(
-                                hospital: _hospitals[index],
-                              )),
+                                    hospital: _hospitals[index],
+                                    needsService: widget.needsService,
+                                  )),
                         );
                       },
                     );
@@ -263,9 +269,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             child: Icon(Icons.note_add),
             label: 'Добавить потребности больниц',
             onTap: () {
-              Navigator.pushNamed(
-                  context,
-                  '/needs-create');
+              Navigator.pushNamed(context, '/needs-create');
             },
             backgroundColor: Colors.green),
       ],
@@ -280,10 +284,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           context,
           MaterialPageRoute(
               builder: (context) => NeedsPage(
-                    hospitalService: this.widget.hospitalService,
-                    donationService: this.widget.donationService,
-                    needsTypeService: this.widget.needsTypeService
-                  )),
+                  hospitalService: this.widget.hospitalService,
+                  donationService: this.widget.donationService,
+                  needsTypeService: this.widget.needsTypeService)),
         )
       },
       backgroundColor: Colors.blue,

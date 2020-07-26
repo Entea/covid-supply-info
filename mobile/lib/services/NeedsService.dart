@@ -23,7 +23,7 @@ class TirekNeedsService implements NeedsService {
       'Accept': 'application/json; charset=utf-8',
     };
 
-    final responseJson = await ApiHelper.get("need-types/", headers);
+    final responseJson = await ApiHelper.get("hospital-needs/", headers);
 
     return NeedsResponse.fromJson(responseJson);
   }

@@ -1,10 +1,15 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:tirek_mobile/exception/TirekException.dart';
 import 'package:tirek_mobile/models/response/HospitalResponse.dart';
+import 'package:tirek_mobile/services/NeedsService.dart';
 
 class HospitalInfoPage extends StatefulWidget {
-  HospitalInfoPage({this.hospital});
+  HospitalInfoPage({this.hospital, this.needsService});
 
   Hospital hospital;
+  NeedsService needsService;
 
   @override
   State<StatefulWidget> createState() => _HospitalInfoPage();
@@ -15,14 +20,42 @@ class _HospitalInfoPage extends State<HospitalInfoPage> {
   String _name = 'Hospital Name';
   String _address = 'address';
 
+  bool _isLoading = false;
+  String _errorMessage;
+  List _needs = [];
+
   @override
   void initState() {
     super.initState();
-    print(widget.hospital.indicator);
     setState(() {
       _name = widget.hospital.name;
       _address = widget.hospital.address;
     });
+    fetchNeeds();
+
+  }
+
+  void fetchNeeds() async {
+    setState(() {
+      _errorMessage = "";
+      _isLoading = true;
+    });
+
+    try {
+      final needsResponse = await widget.needsService.get();
+      setState(() {
+        _needs = needsResponse.needs;
+      });
+    } on TirekException {
+      setState(() {
+        _isLoading = false;
+        _errorMessage = "Произошла ошибка при подключении";
+      });
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 
   Future<void> _selectDate(BuildContext context) async {
@@ -81,9 +114,11 @@ class _HospitalInfoPage extends State<HospitalInfoPage> {
                     ],
                   ),
                   Padding(
-                    padding: EdgeInsets.only(bottom: 16),
-                    child: Text(_name, style: TextStyle(fontSize: 24),)
-                  ),
+                      padding: EdgeInsets.only(bottom: 16),
+                      child: Text(
+                        _name,
+                        style: TextStyle(fontSize: 24),
+                      )),
                   Padding(
                     padding: EdgeInsets.only(bottom: 20),
                     child: Row(
@@ -93,7 +128,9 @@ class _HospitalInfoPage extends State<HospitalInfoPage> {
                           child: Icon(Icons.navigation,
                               color: Colors.blue, size: 16),
                         ),
-                        Text(_address, style: TextStyle(color: Color.fromARGB(153, 0, 0, 0)))
+                        Text(_address,
+                            style:
+                                TextStyle(color: Color.fromARGB(153, 0, 0, 0)))
                       ],
                     ),
                   ),
@@ -120,9 +157,8 @@ class _HospitalInfoPage extends State<HospitalInfoPage> {
                         child: Row(
                           children: <Widget>[
                             Text(
-                                "${selectedDate.year.toString()}-${selectedDate.month.toString().padLeft(2,'0')}-${selectedDate.day.toString().padLeft(2,'0')}",
-                                style: TextStyle(fontSize: 16)
-                            ),
+                                "${selectedDate.year.toString()}-${selectedDate.month.toString().padLeft(2, '0')}-${selectedDate.day.toString().padLeft(2, '0')}",
+                                style: TextStyle(fontSize: 16)),
                             Icon(Icons.arrow_drop_down)
                           ],
                         ),
@@ -132,22 +168,23 @@ class _HospitalInfoPage extends State<HospitalInfoPage> {
                       )
                     ],
                   ),
-                  DataTable(
-                    columns: [
-                      DataColumn(
-                        label:Text('Название'),
-                        numeric: false
+                  DataTable(columns: [
+                    DataColumn(label: Text('Название'), numeric: false),
+                    DataColumn(label: Text('Наличие'), numeric: true),
+                    DataColumn(label: Text('Требуется'), numeric: true),
+                  ], rows: _needs.map((need) => DataRow(
+                    cells: [
+                      DataCell(
+                        Text(need.need_type)
                       ),
-                      DataColumn(
-                        label:Text('Наличие'),
-                        numeric: true
+                      DataCell(
+                        Text(need.reserve_amount.toString())
                       ),
-                      DataColumn(
-                        label:Text('Требуется'),
-                        numeric: true
-                      ),
-                    ],
-                    rows: []
+                      DataCell(
+                        Text(need.request_amount.toString())
+                      )
+                    ]
+                  )).toList()
                   )
                 ],
               ),
