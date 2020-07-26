@@ -81,6 +81,7 @@ class HospitalShortInfoSerializer(serializers.ModelSerializer):
                   'name',
                   'full_location',
                   'code',
+                  'address',
                   'search_locality_id',
                   'search_district_id',
                   'search_region_id',

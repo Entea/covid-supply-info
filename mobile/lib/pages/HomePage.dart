@@ -2,10 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tirek_mobile/exception/TirekException.dart';
 import 'package:tirek_mobile/services/DonationService.dart';
-import 'package:tirek_mobile/pages/NeedsForm.dart';
+import 'package:tirek_mobile/pages/HospitalInfo.dart';
 import 'package:tirek_mobile/services/DistributionsService.dart';
-import 'package:tirek_mobile/services/NeedsRequestService.dart';
-import 'package:tirek_mobile/services/NeedsService.dart';
 import 'package:tirek_mobile/services/HospitalService.dart';
 import 'package:tirek_mobile/services/LogoutService.dart';
 import 'package:tirek_mobile/pages/NeedsPage.dart';
@@ -13,12 +11,13 @@ import 'package:tirek_mobile/services/NeedsTypeService.dart';
 import 'package:tirek_mobile/services/SharedPreferencesService.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
+import '../main.dart';
+
 class HomePage extends StatefulWidget {
-  HomePage(
-      {this.hospitalService,
-      this.logoutService,
-      this.sharedPreferencesService,
-      this.distributionsService,
+  HomePage({this.hospitalService,
+    this.logoutService,
+    this.sharedPreferencesService,
+    this.distributionsService,
       this.donationService,
       this.needsTypeService});
 
@@ -79,11 +78,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       _errorMessage = "";
       _isLoading = true;
     });
+
     try {
       final hospitalResponse = await widget.hospitalService.get();
       final user = await widget.sharedPreferencesService.getCurrentUserInfo();
       final distributionResponse =
-          await widget.distributionsService.getManagerDistributions();
+      await widget.distributionsService.getManagerDistributions();
 
       setState(() {
         _hospitals = hospitalResponse.hospitals;
@@ -156,7 +156,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             child: Text(
                               _userName,
                               style:
-                                  TextStyle(color: Colors.white, fontSize: 24),
+                              TextStyle(color: Colors.white, fontSize: 24),
                             ),
                           ),
                         ),
@@ -219,6 +219,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       title: new Text(_hospitals[index].name),
                       subtitle: new Text('КОД ' + _hospitals[index].code),
                       trailing: Icon(Icons.add),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => HospitalInfoPage(
+                                hospital: _hospitals[index],
+                              )),
+                        );
+                      },
                     );
                   }),
               new ListView.builder(
@@ -254,19 +263,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             child: Icon(Icons.note_add),
             label: 'Добавить потребности больниц',
             onTap: () {
-              Navigator.push(
+              Navigator.pushNamed(
                   context,
-                  MaterialPageRoute(
-                    builder: (context) => new NeedsForm(
-                      needsService:
-                          new TirekNeedsService(sharedPreferencesService),
-                      hospitalService:
-                          new TirekHospitalService(sharedPreferencesService),
-                      sharedPreferencesService: sharedPreferencesService,
-                      needsRequestService: new TirekNeedsRequestService(
-                          sharedPreferencesService),
-                    ),
-                  ));
+                  '/needs-create');
             },
             backgroundColor: Colors.green),
       ],
