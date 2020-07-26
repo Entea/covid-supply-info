@@ -48,8 +48,7 @@ class TirekApplication extends StatelessWidget {
     Widget needsPage = new NeedsPage(
       hospitalService: tirekHospitalService,
       donationService: tirekDonationService,
-      distributionsService:
-          new TirekDistributionsService(sharedPreferencesService)
+      needsTypeService: tirekNeedsTypeService
     );
 
     Widget needsForm = new NeedsForm(
