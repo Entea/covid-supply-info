@@ -5,7 +5,11 @@ import 'package:tirek_mobile/pages/HomePage.dart';
 import 'package:tirek_mobile/services/DistributionsService.dart';
 import 'package:tirek_mobile/services/HospitalService.dart';
 import 'package:tirek_mobile/services/LogoutService.dart';
+import 'package:tirek_mobile/services/NeedsRequestService.dart';
+import 'package:tirek_mobile/services/NeedsService.dart';
 import 'package:tirek_mobile/services/SharedPreferencesService.dart';
+
+import 'pages/NeedsForm.dart';
 
 void main() {
   runApp(new TirekApplication());
@@ -26,7 +30,15 @@ class TirekApplication extends StatelessWidget {
       logoutService: new TirekLogoutService(sharedPreferencesService),
       sharedPreferencesService: sharedPreferencesService,
       distributionsService:
-          new TirekDistributionsService(sharedPreferencesService),
+          new TirekDistributionsService(sharedPreferencesService)
+    );
+
+    Widget needsForm = new NeedsForm(
+      needsService: new TirekNeedsService(sharedPreferencesService),
+      hospitalService: new TirekHospitalService(sharedPreferencesService),
+      sharedPreferencesService: sharedPreferencesService,
+      needsRequestService:
+      new TirekNeedsRequestService(sharedPreferencesService),
     );
 
     Widget _defaultPage = rootPage;
@@ -36,6 +48,7 @@ class TirekApplication extends StatelessWidget {
       _defaultPage = isLoggedIn ? homePage : rootPage;
     }
 
+
     setDefaultPage();
 
     return new MaterialApp(
@@ -43,7 +56,8 @@ class TirekApplication extends StatelessWidget {
         home: _defaultPage,
         routes: {
           '/login': (context) => rootPage,
-          '/home': (context) => homePage
+          '/home': (context) => homePage,
+          '/needs-create': (context) => needsForm,
         },
         debugShowCheckedModeBanner: false,
         theme: new ThemeData(

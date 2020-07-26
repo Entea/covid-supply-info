@@ -21,11 +21,16 @@ class Hospital {
   final String name;
   final String code;
   final double indicator;
+  final String address;
 
-  Hospital(this.id, this.name, this.code, this.indicator);
+  Hospital(this.id, this.name, this.code, this.indicator, this.address);
 
   factory Hospital.fromJson(dynamic json) {
-    return Hospital(json['id'] as int, json['name'] as String,
-        json['code'] as String, json['indicator'] as double);
+    return Hospital(
+        json['id'] as int,
+        json['name'] as String,
+        json['code'] as String,
+        json['indicator'] as double,
+        json['address'] as String);
   }
 }
