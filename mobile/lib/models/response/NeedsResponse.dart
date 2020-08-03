@@ -1,28 +1,32 @@
 class NeedsResponse {
   final int count;
 
-  final List<NeedType> needs;
+  final List<NeedsItem> needs;
 
   NeedsResponse(this.count, this.needs);
 
   factory NeedsResponse.fromJson(dynamic json) {
     var results = json['results'] as dynamic;
-    var needs = <NeedType>[];
+
+    var needs = <NeedsItem>[];
     for (var result in results) {
-      var need = NeedType.fromJson(result);
+      var need = NeedsItem.fromJson(result);
       needs.add(need);
     }
     return NeedsResponse(json['count'] as int, needs);
   }
 }
 
-class NeedType {
-  final int id;
-  final String name;
+class NeedsItem {
+  final String need_type;
+  final Object hospital;
+  final int reserve_amount;
+  final int request_amount;
+  final String created_at;
 
-  NeedType(this.id, this.name);
+  NeedsItem(this.need_type, this.hospital, this.request_amount, this.reserve_amount, this.created_at);
 
-  factory NeedType.fromJson(dynamic json) {
-    return NeedType(json['id'] as int, json['name'] as String);
+  factory NeedsItem.fromJson(dynamic json) {
+    return NeedsItem(json['need_type']['name'] as String, json['hospital'] as Object, json['request_amount'] as int, json['reserve_amount'] as int, json['created_at'] as String);
   }
 }

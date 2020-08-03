@@ -1,15 +1,14 @@
 import 'dart:async';
-import 'package:tirek_mobile/exception/TirekException.dart';
 import 'package:tirek_mobile/helper/ApiHelper.dart';
 
 import 'package:tirek_mobile/models/response/NeedsRequestResponse.dart';
-import 'package:tirek_mobile/models/response/NeedsResponse.dart';
+import 'package:tirek_mobile/models/response/NeedsTypeResponse.dart';
 import 'package:tirek_mobile/services/SharedPreferencesService.dart';
 import 'package:tirek_mobile/models/response/HospitalResponse.dart';
 import 'dart:convert';
 
 abstract class NeedsRequestService {
-  Future<NeedsRequestResponse> post(Hospital hospital, NeedType needType,
+  Future<NeedsRequestResponse> post(Hospital hospital, NeedsType needType,
       String reserveAmount, String requestAmount, String requestAmountMonth);
 }
 
@@ -21,7 +20,7 @@ class TirekNeedsRequestService implements NeedsRequestService {
   @override
   Future<NeedsRequestResponse> post(
       Hospital hospital,
-      NeedType needType,
+      NeedsType needType,
       String reserveAmount,
       String requestAmount,
       String requestAmountMonth) async {

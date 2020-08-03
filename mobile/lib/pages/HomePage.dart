@@ -1,32 +1,45 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tirek_mobile/exception/TirekException.dart';
+import 'package:tirek_mobile/services/DonationService.dart';
 import 'package:tirek_mobile/pages/HospitalInfo.dart';
 import 'package:tirek_mobile/services/DistributionsService.dart';
 import 'package:tirek_mobile/services/HospitalService.dart';
 import 'package:tirek_mobile/services/LogoutService.dart';
+import 'package:tirek_mobile/pages/NeedsPage.dart';
+import 'package:tirek_mobile/services/NeedsService.dart';
+import 'package:tirek_mobile/services/NeedsTypeService.dart';
 import 'package:tirek_mobile/services/SharedPreferencesService.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
 import '../main.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage({this.hospitalService,
-    this.logoutService,
-    this.sharedPreferencesService,
-    this.distributionsService});
+  HomePage(
+      {this.hospitalService,
+      this.logoutService,
+      this.sharedPreferencesService,
+      this.distributionsService,
+      this.donationService,
+      this.needsTypeService,
+      this.needsService});
 
   final HospitalService hospitalService;
   final LogoutService logoutService;
   final SharedPreferencesService sharedPreferencesService;
   final DistributionsService distributionsService;
+  final DonationService donationService;
+  final NeedsTypeService needsTypeService;
+  final NeedsService needsService;
 
   @override
   State<StatefulWidget> createState() => new _HomePageState();
 }
 
-class _HomePageState extends State<HomePage>
-    with SingleTickerProviderStateMixin {
+class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
+  SharedPreferencesService sharedPreferencesService =
+      new TirekSharedPreferencesService();
+
   List _hospitals = [];
   List _distributions = [];
   String _errorMessage;
@@ -47,7 +60,22 @@ class _HomePageState extends State<HomePage>
     _tabController = new TabController(length: myTabs.length, vsync: this);
 
     super.initState();
+    _tabController =
+        TabController(length: myTabs.length, vsync: this, initialIndex: 0);
+    _tabController.addListener(_handleTabIndex);
     fetchData();
+
+  }
+
+  @override
+  void dispose() {
+    _tabController.removeListener(_handleTabIndex);
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  void _handleTabIndex() {
+    setState(() {});
   }
 
   void fetchData() async {
@@ -60,7 +88,7 @@ class _HomePageState extends State<HomePage>
       final hospitalResponse = await widget.hospitalService.get();
       final user = await widget.sharedPreferencesService.getCurrentUserInfo();
       final distributionResponse =
-      await widget.distributionsService.getManagerDistributions();
+          await widget.distributionsService.getManagerDistributions();
 
       setState(() {
         _hospitals = hospitalResponse.hospitals;
@@ -106,6 +134,7 @@ class _HomePageState extends State<HomePage>
             tabs: myTabs,
           ),
         ),
+        floatingActionButton: _bottomButtons(),
         drawer: Theme(
           data: Theme.of(context).copyWith(canvasColor: Colors.blue),
           child: Drawer(
@@ -132,7 +161,7 @@ class _HomePageState extends State<HomePage>
                             child: Text(
                               _userName,
                               style:
-                              TextStyle(color: Colors.white, fontSize: 24),
+                                  TextStyle(color: Colors.white, fontSize: 24),
                             ),
                           ),
                         ),
@@ -200,8 +229,9 @@ class _HomePageState extends State<HomePage>
                           context,
                           MaterialPageRoute(
                               builder: (context) => HospitalInfoPage(
-                                hospital: _hospitals[index],
-                              )),
+                                    hospital: _hospitals[index],
+                                    needsService: widget.needsService,
+                                  )),
                         );
                       },
                     );
@@ -218,29 +248,57 @@ class _HomePageState extends State<HomePage>
           ),
           _showCircularProgress()
         ]),
-        floatingActionButton: SpeedDial(
-          overlayColor: Color.fromARGB(35, 0, 0, 0),
-          animatedIcon: AnimatedIcons.menu_close,
-          children: [
-            SpeedDialChild(
-                child: Icon(Icons.add_shopping_cart),
-                label: 'Добавить пожертвование',
-                backgroundColor: Colors.green),
-            SpeedDialChild(
-                child: Icon(Icons.add),
-                label: 'Добавить больницу',
-                backgroundColor: Colors.green),
-            SpeedDialChild(
-                child: Icon(Icons.note_add),
-                label: 'Добавить потребности больниц',
-                onTap: () {
-                  Navigator.pushNamed(context, '/needs-create');
-                },
-                backgroundColor: Colors.green),
-          ],
-        ),
       ),
     );
+  }
+
+  Widget _hospitalFloat() {
+    return SpeedDial(
+      overlayColor: Color.fromARGB(35, 0, 0, 0),
+      animatedIcon: AnimatedIcons.menu_close,
+      children: [
+        SpeedDialChild(
+            child: Icon(Icons.add_shopping_cart),
+            label: 'Добавить пожертвование',
+            backgroundColor: Colors.green),
+        SpeedDialChild(
+            child: Icon(Icons.add),
+            label: 'Добавить больницу',
+            backgroundColor: Colors.green),
+        SpeedDialChild(
+            child: Icon(Icons.note_add),
+            label: 'Добавить потребности больниц',
+            onTap: () {
+              Navigator.pushNamed(context, '/needs-create');
+            },
+            backgroundColor: Colors.green),
+      ],
+    );
+  }
+
+  Widget _needsFloat() {
+    return FloatingActionButton(
+      shape: StadiumBorder(),
+      onPressed: () => {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => NeedsPage(
+                  hospitalService: this.widget.hospitalService,
+                  donationService: this.widget.donationService,
+                  needsTypeService: this.widget.needsTypeService)),
+        )
+      },
+      backgroundColor: Colors.blue,
+      child: Icon(
+        Icons.add,
+        size: 20.0,
+      ),
+    );
+  }
+
+  Widget _bottomButtons() {
+    return _tabController.index == 0 ? _hospitalFloat() : _needsFloat();
   }
 
   Widget _showCircularProgress() {

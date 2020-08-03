@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:tirek_mobile/exception/TirekException.dart';
 import 'package:tirek_mobile/models/response/HospitalResponse.dart';
-import 'package:tirek_mobile/models/response/NeedsResponse.dart';
+import 'package:tirek_mobile/models/response/NeedsTypeResponse.dart';
 import 'package:tirek_mobile/services/HospitalService.dart';
-import 'package:tirek_mobile/services/NeedsService.dart';
 import 'package:tirek_mobile/services/NeedsRequestService.dart';
+import 'package:tirek_mobile/services/NeedsTypeService.dart';
 import 'package:tirek_mobile/services/SharedPreferencesService.dart';
 
 class NeedsForm extends StatefulWidget {
   NeedsForm(
       {this.hospitalService,
-      this.needsService,
+      this.needsTypeService,
       this.sharedPreferencesService,
       this.needsRequestService});
 
   final HospitalService hospitalService;
-  final NeedsService needsService;
+  final NeedsTypeService needsTypeService;
   final NeedsRequestService needsRequestService;
   final SharedPreferencesService sharedPreferencesService;
 
@@ -31,7 +31,7 @@ class _NeedsFormState extends State<NeedsForm> {
   List _hospitals = [];
 
   Hospital hospital;
-  NeedType needType;
+  NeedsType needType;
   String reserveAmount;
   String requestAmount;
   String requestAmountMonth;
@@ -46,11 +46,11 @@ class _NeedsFormState extends State<NeedsForm> {
 
   void fetchRequiredData() async {
     try {
-      final needsResponse = await widget.needsService.get();
+      final needsResponse = await widget.needsTypeService.get();
       final hospitalsResponse = await widget.hospitalService.get();
 
       setState(() {
-        _needTypes = needsResponse.needs;
+        _needTypes = needsResponse.needsTypes;
         _hospitals = hospitalsResponse.hospitals;
       });
     } on TirekException {
@@ -130,13 +130,13 @@ class _NeedsFormState extends State<NeedsForm> {
                             ),
                             Padding(
                               padding: formItemPadding,
-                              child: new DropdownButtonFormField<NeedType>(
+                              child: new DropdownButtonFormField<NeedsType>(
                                   decoration: const InputDecoration(
                                     labelText: 'Тип нужды',
                                     helperText: 'Укажите тип помощи больнице',
                                   ),
                                   style: TextStyle(color: Colors.black),
-                                  onChanged: (NeedType newValue) {
+                                  onChanged: (NeedsType newValue) {
                                     setState(() {
                                       needType = newValue;
                                     });
@@ -150,7 +150,7 @@ class _NeedsFormState extends State<NeedsForm> {
                                   isExpanded: true,
                                   items: _needTypes
                                       .map((value) =>
-                                          new DropdownMenuItem<NeedType>(
+                                          new DropdownMenuItem<NeedsType>(
                                             value: value,
                                             child: new Text(value.name),
                                           ))

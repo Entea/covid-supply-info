@@ -1,20 +1,20 @@
 import 'dart:async';
 import 'package:tirek_mobile/helper/ApiHelper.dart';
 
-import 'package:tirek_mobile/models/response/NeedsResponse.dart';
+import 'package:tirek_mobile/models/response/NeedsTypeResponse.dart';
 import 'package:tirek_mobile/services/SharedPreferencesService.dart';
 
-abstract class NeedsService {
-  Future<NeedsResponse> get();
+abstract class NeedsTypeService {
+  Future<NeedsTypeResponse> get();
 }
 
-class TirekNeedsService implements NeedsService {
+class TirekNeedsTypeService implements NeedsTypeService {
   final SharedPreferencesService sharedPreferencesService;
 
-  TirekNeedsService(this.sharedPreferencesService);
+  TirekNeedsTypeService(this.sharedPreferencesService);
 
   @override
-  Future<NeedsResponse> get() async {
+  Future<NeedsTypeResponse> get() async {
     final userInfo = await sharedPreferencesService.getCurrentUserInfo();
 
     final Map<String, String> headers = {
@@ -23,8 +23,8 @@ class TirekNeedsService implements NeedsService {
       'Accept': 'application/json; charset=utf-8',
     };
 
-    final responseJson = await ApiHelper.get("hospital-needs/", headers);
+    final responseJson = await ApiHelper.get("need-types/", headers);
 
-    return NeedsResponse.fromJson(responseJson);
+    return NeedsTypeResponse.fromJson(responseJson);
   }
 }
